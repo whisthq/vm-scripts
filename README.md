@@ -14,19 +14,19 @@ The following scripts are yet to be supported:
   
 
 - Creative Script - 2D Graphics
-  -
-  -
+  - Photoshop
+  - Adobe Illustrator
   -
 
 - Creative Script - 3D Graphics
-  -
-  -
-  -
+  - Blender
+  - Maya
+  - ZBrush
   -
 
 - Creative Script - Video Editing
-  -
-  -
+  - Adobe Premiere Pro
+  - DaVinci Resolve
   -
   
 
