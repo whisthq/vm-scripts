@@ -7,17 +7,53 @@ The following scripts are currently supported:
 The following scripts are yet to be supported:
 
 - Gaming Script
+  - Nvidia GeForce
+  - Steam
+  - 
+  
+  
 
 - Creative Script - 2D Graphics
+  -
+  -
+  -
 
 - Creative Script - 3D Graphics
+  -
+  -
+  -
+  -
 
-- Creative Script
+- Creative Script - Video Editing
+  -
+  -
+  -
+  
 
-- Software Development on Windows
+- Software Development Script
+  - Windows Developer Mode Turned On
+  - Visual Studio Community 2019
+  - Visual Studio Code
+  - Git
+  - Windows Subsystem for Linux
+  - Chocolatey
+  - Docker
+  
+  
+  
+- Data Science & Machine Learning Script
+  - Windows Developer Mode Turned On
+  - Anaconda
+  - Git
+  - Chocolatey
+  - 
+  
+  
 
 - Productivity Script
-  - something
+  - Microsoft Office Suite
+  - Zoom Video Conferencing
+  - 
 
 
 
