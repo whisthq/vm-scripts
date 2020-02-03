@@ -2,10 +2,7 @@
 
 This repository contains the Fractal PowerShell scripts that get launched at creation of a cloud computer to set it up in a specific configuration. These scripts can be toggled from a selection on the Fractal website in the cloud computer creation page, and are then fed to the Azure SDK when the VM gets created. A combination of many scripts can be selected.
 
-
-
-
-
+The following scripts are currently supported:
 
 The following scripts are yet to be supported:
 
@@ -15,12 +12,12 @@ The following scripts are yet to be supported:
 
 - Creative Script - 3D Graphics
 
-- Creative Script - 
+- Creative Script
 
 - Software Development on Windows
 
 - Productivity Script
-  - 
+  - something
 
 
 
