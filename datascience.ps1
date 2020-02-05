@@ -5,6 +5,5 @@ Import-Module "C:\Program Files\Fractal\$script_name"
 Install-Git
 Install-Anaconda
 Install-CudaToolkit
-Install-Pillow
 Install-OpenCV
 Install-Caffe

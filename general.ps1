@@ -16,12 +16,7 @@ Import-Module "$script_name"
 ##Enable-Audio
 ##Install-VirtualAudio
 ##Install-Chocolatey
-##Install-Steam
 ##Install-GoogleChrome
-##Install-EpicGamesLauncher
-##Install-Blizzard
-##Install-Git
-
 
 
 
@@ -32,39 +27,20 @@ Import-Module "$script_name"
 
 #Set-Wallpaper
 
-Install-OpenCV
 
-
-#Install-AdobeAcrobat
-
-#Install-AdobePhotoshop
-#Install-AdobeIllustrator
 #Install-NvidiaGeForce
-
-#Install-Blender
 #Install-AutodeskMaya
 #Install-ZBrush
-#Install-AdobeAnimate
 #Install-Cinema4D
 #Install-3DSMaxDesign
-
-#Install-AdobePremiere
 #Install-DaVinciResolve
-#Install-Blender
 #Install-Lightworks
-
-
-
-
 #Install-Office
 #Install-Zoom
-#Install-Skype
 #Install-Anaconda
 #Install-CudaToolkit
-#Install-Pillow
 #Install-OpenCV
 #Install-Caffe
-
 #Enable-DeveloperMode
 #Install-VS2019
 #Install-VSCode
@@ -77,13 +53,6 @@ Install-OpenCV
 #Install-Blizzard
 
 
-
-
-
-#Install-Blender
-
-
-#Install-GOG
 
 #Disable-ScheduleWorkflow
 #Disable-Devices

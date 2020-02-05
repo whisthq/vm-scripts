@@ -22,7 +22,6 @@ The general script, `general.ps1`, always gets installed and sets up the cloud c
 - Install Spotify
 - Install 7zip
 
-  - Chocolatey
   - nvidia drivers
   - .Net Framework 3.5+
   - DirectX
@@ -83,9 +82,7 @@ The following usage-specific scripts are yet to be supported:
   - Git
   - Anaconda & R Studio
   - Cuda Toolkit
-  - Pillow
   - OpenCV
-  - Xgboost
   - Caffe
   
 - Productivity Script

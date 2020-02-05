@@ -148,19 +148,16 @@ function Install-Git {
     Remove-Item -Path $PSScriptRoot\$git_exe -Confirm:$false
 }
 
+function Install-OpenCV {
+    $opencv_exe = "opencv-4.2.0-vc14_vc15.exe"
+    Write-Output "Downloading OpenCV into path $PSScriptRoot\$opencv_exe"
+    $webClient.DownloadFile("https://sourceforge.net/projects/opencvlibrary/files/latest/download", "$PSScriptRoot\$opencv_exe")
+    Write-Output "Installing OpenCV"
+    Start-Process -FilePath "$PSScriptRoot\$opencv_exe" -ArgumentList "/qn" -Wait
 
-
-
-
-
-
-
-
-
-
-
-
-
+    Write-Output "Cleaning up OpenCV installation file"
+    Remove-Item -Path $PSScriptRoot\$opencv_exe -Confirm:$false
+}
 
 function Install-Blender {
     $blender_msi = "blender-2.81a-windows64.msi"
@@ -170,21 +167,38 @@ function Install-Blender {
     Start-Process -FilePath "$PSScriptRoot\$blender_msi" -ArgumentList "/qn" -Wait
 
     Write-Output "Cleaning up Blender installation file"
-    #Remove-Item -Path $PSScriptRoot\$blender_msi -Confirm:$false
+    Remove-Item -Path $PSScriptRoot\$blender_msi -Confirm:$false
+}
+
+function Install-AdobeAcrobat {
+    $acrobat_exe = "readerdc_en_xa_cra_install.exe"
+    Write-Output "Downloading Adobe Acrobat Reader into path $PSScriptRoot\$acrobat_exe"
+    $webClient.DownloadFile("https://get.adobe.com/reader/download/?installer=Reader_DC_2019.021.20058_English_for_Windows&os=Windows%2010&browser_type=KHTML&browser_dist=Chrome&dualoffer=false&mdualoffer=true&cr=true&stype=7468&d=McAfee_Security_Scan_Plus&d=McAfee_Safe_Connect/", "$PSScriptRoot\$acrobat_exe")
+    Write-Output "Installing Adobe Acrobat Reader"
+    Start-Process -FilePath "$PSScriptRoot\$acrobat_exe" -ArgumentList "/qn" -Wait
+
+    Write-Output "Cleaning up Adobe Acrobat Reader installation file"
+    Remove-Item -Path $PSScriptRoot\$acrobat_exe -Confirm:$false
+}
+
+function Install-Skype {
+    $skype_exe = "Skype-8.56.0.103.exe"
+    Write-Output "Downloading Skype into path $PSScriptRoot\$skype_exe"
+    $webClient.DownloadFile("https://go.skype.com/windows.desktop.download", "$PSScriptRoot\$skype_exe")
+    Write-Output "Installing Skype"
+    Start-Process -FilePath "$PSScriptRoot\$skype_exe" -ArgumentList "/qn" -Wait
+
+    Write-Output "Cleaning up Skype installation file"
+    Remove-Item -Path $PSScriptRoot\$skype_exe -Confirm:$false
+}
+
+function Install-AdobeCreativeCloud {
+    # Not downloadable without an Adobe subscription
 }
 
 
 
-function Install-OpenCV {
-    $opencv_exe = "opencv-4.2.0-vc14_vc15.exe"
-    Write-Output "Downloading OpenCV into path $PSScriptRoot\$opencv_exe"
-    $webClient.DownloadFile("https://sourceforge.net/projects/opencvlibrary/files/latest/download", "$PSScriptRoot\$opencv_exe")
-    Write-Output "Installing OpenCV"
-    Start-Process -FilePath "$PSScriptRoot\$opencv_exe" -ArgumentList "/qn" -Wait
 
-    Write-Output "Cleaning up OpenCV installation file"
-    #Remove-Item -Path $PSScriptRoot\$opencv_exe -Confirm:$false
-}
 
 
 
