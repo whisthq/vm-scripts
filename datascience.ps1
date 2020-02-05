@@ -6,4 +6,3 @@ Install-Git
 Install-Anaconda
 Install-CudaToolkit
 Install-OpenCV
-Install-Caffe

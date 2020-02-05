@@ -19,20 +19,17 @@ function GetPowershellScript ($script_name, $script_url) {
     $webClient.DownloadFile($url, "C:\$script_name")
 }
 
-
 # TODO: Change to fixed path & get the file downloaded on VM
 $script_name = "C:\users\phili\Downloads\fractal-setup-scripts\utils.psm1"
 Import-Module "$script_name"
 
-##Update-Windows
-##Update-Firewall
-##Disable-TCC
-##Enable-Audio
-##Install-VirtualAudio
-##Install-Chocolatey
-##Install-GoogleChrome
-
-
+#Update-Windows
+#Update-Firewall
+#Disable-TCC
+#Enable-Audio
+#Install-VirtualAudio
+#Install-Chocolatey
+#Install-GoogleChrome
 
 
 
@@ -41,31 +38,31 @@ Import-Module "$script_name"
 
 #Set-Wallpaper
 
-
-#Install-NvidiaGeForce
 #Install-AutodeskMaya
 #Install-ZBrush
-#Install-Cinema4D
 #Install-3DSMaxDesign
-#Install-DaVinciResolve
 #Install-Lightworks
 #Install-CudaToolkit
-#Install-Caffe
 #Enable-DeveloperMode
 #Install-VS2019
 #Install-VSCode
 #Install-WSL
-#Install-Atom
-
 #Install-Spotify
 #Install-GOG
 #Install-Blizzard
 
-
-
 #Disable-ScheduleWorkflow
 #Disable-Devices
 
+
+#- Set Automatic Time & Timezone
+#- Install Spotify
+#- Install Tesla Nvidia Public Drivers
+#- Install 7zip
+#- Install DirectX
+#- Install .Net Framework (>3.5)
+#- Install Fractal
+#- Set Fractal Wallpaper
 
 
 
@@ -116,6 +113,10 @@ if ($productivity_install) {
     Write-Output "Cleaning up Productivity Install script"
     Remove-Item -Path "C:\productivity.ps1" -Confirm:$false
 }
+
+# Final file cleaning
+#Write-Output "Cleaning up Utils script"
+#Remove-Item -Path "C:\utils.psm1" -Confirm:$false
 
 #Add-AutoLogin $admin_username $admin_password
 ##Restart-Computer

@@ -196,6 +196,10 @@ function Install-AdobeCreativeCloud {
     # Not downloadable without an Adobe subscription
 }
 
+function Install-AdobeCreativeCloud {
+    # Not downloadable without an DaVinci Resolve subscription
+}
+
 function Install-Zoom {
     # Not downloadable without a Zoom account
 }
@@ -225,6 +229,114 @@ function Install-Docker {
     Write-Output "Cleaning up Docker installation file"
     Remove-Item -Path $PSScriptRoot\$docker_exe -Confirm:$false
 }
+
+function Install-Atom {
+    $atom_exe = "AtomSetup-x64.exe"
+    Write-Output "Downloading Atom into path $PSScriptRoot\$atom_exe"
+    $webClient.DownloadFile("https://atom.io/download/windows_x64", "$PSScriptRoot\$atom_exe")
+    Write-Output "Installing Atom"
+    Start-Process -FilePath "$PSScriptRoot\$atom_exe" -ArgumentList "/qn" -Wait
+
+    Write-Output "Cleaning up Atom installation file"
+    Remove-Item -Path $PSScriptRoot\$atom_exe -Confirm:$false
+}
+
+function Install-Cinema4D {
+    $cinema4d_exe = "Cinema4D-21.115_Win_Autoinstaller.exe"
+    Write-Output "Downloading Cinema4D into path $PSScriptRoot\$cinema4d_exe"
+    $webClient.DownloadFile("https://installer.maxon.net/installer/21.115_RB297076/Cinema4D-21.115_Win_Autoinstaller.exe", "$PSScriptRoot\$cinema4d_exe")
+    Write-Output "Installing Cinema4D"
+    Start-Process -FilePath "$PSScriptRoot\$cinema4d_exe" -Wait
+
+    Write-Output "Cleaning up Cinema4D installation file"
+    Remove-Item -Path $PSScriptRoot\$cinema4d_exe -Confirm:$false
+}
+
+function Install-GeForceExperience {
+    $geforce_exe = "GeForce_Experience_v3.20.2.34.exe"
+    Write-Output "Downloading GeForce Experience into path $PSScriptRoot\$geforce_exe"
+    $webClient.DownloadFile("https://us.download.nvidia.com/GFE/GFEClient/3.20.2.34/GeForce_Experience_v3.20.2.34.exe", "$PSScriptRoot\$geforce_exe")
+    Write-Output "Installing GeForce Experience"
+    Start-Process -FilePath "$PSScriptRoot\$geforce_exe" -ArgumentList "/qn" -Wait
+
+    Write-Output "Cleaning up GeForce Experience installation file"
+    Remove-Item -Path $PSScriptRoot\$geforce_exe -Confirm:$false
+}
+
+
+
+
+
+
+
+
+
+
+function Install-VSCode {
+    $vscode_exe = "VSCodeSetup-x64-1.41.1.exe"
+    Write-Output "Downloading Visual Studio Code into path $PSScriptRoot\$vscode_exe"
+    $webClient.DownloadFile("https://code.visualstudio.com/docs/?dv=win64", "$PSScriptRoot\$vscode_exe")
+    Write-Output "Installing Visual Studio Code"
+    Start-Process -FilePath "$PSScriptRoot\$vscode_exe" -ArgumentList "/qn" -Wait
+
+    Write-Output "Cleaning up Visual Studio Code installation file"
+    Remove-Item -Path $PSScriptRoot\$vscode_exe -Confirm:$false
+}
+
+
+
+
+
+
+
+function Install-Spotify {
+    $spotify_exe = "SpotifySetup.exe"
+    Write-Output "Downloading Spotify into path $PSScriptRoot\$spotify_exe"
+    $webClient.DownloadFile("https://www.spotify.com/us/download/", "$PSScriptRoot\$spotify_exe")
+    Write-Output "Installing Spotify"
+    Start-Process -FilePath "$PSScriptRoot\$spotify_exe" -ArgumentList "/qn" -Wait
+
+    Write-Output "Cleaning up Spotify installation file"
+    Remove-Item -Path $PSScriptRoot\$spotify_exe -Confirm:$false
+}
+
+
+
+function Install-Lightworks {
+    $lwks_exe = "lightworks_v14.5.0_full_64bit.exe"
+    Write-Output "Downloading Lightworks into path $PSScriptRoot\$lwks_exe"
+    $webClient.DownloadFile("https://www.lwks.com/index.php?option=com_lwks&view=download&layout=d&dtype=win_public_64&Itemid=206", "$PSScriptRoot\$lwks_exe")
+    Write-Output "Installing Lightworks"
+    Start-Process -FilePath "$PSScriptRoot\$lwks_exe" -ArgumentList "/qn" -Wait
+
+    Write-Output "Cleaning up Lightworks installation file"
+    Remove-Item -Path $PSScriptRoot\$lwks_exe -Confirm:$false
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

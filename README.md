@@ -8,27 +8,17 @@ The general script, `general.ps1`, always gets installed and sets up the cloud c
 - Update Firewall to allow ICMP pings
 - Disable Tesla TCC mode to enable Tesla Graphics (WDM mode)
 - Enable Audio by autostarting the Audio service
+- Set Automatic Time & Timezone
 - Install the Virtual Audio Driver
 - Install Chocolatey for easy Windows packages installation
 - Install Google Chrome
-
-
-
--  
-
-
-
-
 - Install Spotify
+- Install Tesla Nvidia Public Drivers
 - Install 7zip
-
-  - nvidia drivers
-  - .Net Framework 3.5+
-  - DirectX
-  - Devcon
-  - set wallpaper
-  - razer-audio ?
-  - Fractal!
+- Install DirectX
+- Install .Net Framework (>3.5)
+- Install Fractal
+- Set Fractal Wallpaper
 
 
 
@@ -37,12 +27,7 @@ The general script, `general.ps1`, always gets installed and sets up the cloud c
 
 
 
-
-
-
-The following usage-specific scripts are currently supported:
-
-The following usage-specific scripts are yet to be supported:
+The following usage-specific scripts are currently supported, although some of the softwares listed here cannot actually be installed through PowerShell, but are listed for potential manual-install:
 
 - PC Gaming Script
   - Nvidia GeForce
@@ -75,7 +60,6 @@ The following usage-specific scripts are yet to be supported:
   - Anaconda & R Studio
   - Cuda Toolkit
   - OpenCV
-  - Caffe
   
 - Productivity Script
   - Microsoft Office
