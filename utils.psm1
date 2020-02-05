@@ -35,6 +35,17 @@ function Enable-Audio {
     Start-Service Audiosrv
 }
 
+
+
+
+
+
+
+
+
+
+
+
 function Install-VirtualAudio {
     $compressed_file = "VBCABLE_Driver_Pack43.zip"
     $driver_folder = "VBCABLE_Driver_Pack43"
@@ -57,8 +68,15 @@ function Install-VirtualAudio {
     Write-Output "Downloading and installing Windows Development Kit"
     Start-Process -FilePath "$PSScriptRoot\$wdk_installer" -ArgumentList "/S" -Wait
 
+
+
+
+    
     $cert = "vb_certificate.cer"
     $url = "https://github.com/philippemnoel/fractal-setup-scripts/$cert"
+
+
+
 
     Write-Output "Downloading VB certificate from $url"
     $webClient.DownloadFile($url, "$PSScriptRoot\$cert")
@@ -94,8 +112,6 @@ function Install-Chocolatey {
 #Install-AdobePhotoshop
 #Install-AdobeIllustrator
 #Install-NvidiaGeForce
-#Install-Steam
-#Install-EpicGamesLauncher
 
 #Install-Blender
 #Install-AutodeskMaya
@@ -113,7 +129,6 @@ function Install-Chocolatey {
 #Install-Office
 #Install-Zoom
 #Install-Skype
-#Install-Git
 #Install-Anaconda
 #Install-CudaToolkit
 #Install-Pillow
@@ -124,7 +139,6 @@ function Install-Chocolatey {
 #Enable-DeveloperMode
 #Install-VS2019
 #Install-VSCode
-#Install-Git
 #Install-WSL
 #Install-Atom
 #Install-Docker
@@ -169,7 +183,34 @@ function Install-EpicGamesLauncher {
     Write-Output "Cleaning up Epic Games Launcher installation file"
     Remove-Item -Path $PSScriptRoot\$epicgames_msi -Confirm:$false
 }
+
+function Install-Git {
+    $git_exe = "Git-2.25.0-64-bit.exe"
+    Write-Output "Downloading Git into path $PSScriptRoot\$git_exe"
+    $webClient.DownloadFile("https://github.com/git-for-windows/git/releases/download/v2.25.0.windows.1/Git-2.25.0-64-bit.exe", "$PSScriptRoot\$git_exe")
+    Write-Output "Installing Git"
+    Start-Process -FilePath "$PSScriptRoot\$git_exe" -ArgumentList "/qn" -Wait
+
+    Write-Output "Cleaning up Git installation file"
+    Remove-Item -Path $PSScriptRoot\$git_exe -Confirm:$false
+}
 ## end of works
+
+
+
+
+
+
+function Install-Blender {
+    $blender_msi = "blender-2.81a-windows64.msi"
+    Write-Output "Downloading Blender into path $PSScriptRoot\$blender_msi"
+    $webClient.DownloadFile("https://www.blender.org/download/", "$PSScriptRoot\$blender_msi")
+    Write-Output "Installing Blender Launcher"
+    Start-Process -FilePath "$PSScriptRoot\$blender_msi" -ArgumentList "/qn" -Wait
+
+    Write-Output "Cleaning up Blender installation file"
+    Remove-Item -Path $PSScriptRoot\$blender_msi -Confirm:$false
+}
 
 
 
@@ -236,6 +277,19 @@ function Install-Blizzard {
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

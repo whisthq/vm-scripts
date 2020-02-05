@@ -1,4 +1,4 @@
-# This script should be run first before any application-installer script
+# This script should be run (as Administrator) first before any application-installer script
 param (
     [string]        $admin_username = "Fractal",
     [SecureString]  $admin_password = (convertto-securestring "password1234567." -asplaintext -force),
@@ -8,25 +8,24 @@ param (
 $script_name = "C:\users\phili\Downloads\fractal-setup-scripts\utils.psm1"
 Import-Module "$script_name"
 
+##Update-Windows
+##Update-Firewall
+##Disable-TCC
+##Enable-Audio
 ##Install-Chocolatey
 ##Install-Steam
 ##Install-GoogleChrome
 ##Install-EpicGamesLauncher
+##Install-Git
 
 
 
 
 
+#Install-Blender
 
-
-#Update-Windows
-#Update-Firewall
-#Disable-TCC
-#Enable-Audio
-#Install-VirtualAudio
+Install-VirtualAudio
 #Install-Blizzard
-
-
 
 
 #Install-GOG
