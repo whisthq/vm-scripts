@@ -51,22 +51,14 @@ The following usage-specific scripts are yet to be supported:
   - GOG
   - Blizzard
 
-- Creative Script - 2D Graphics
-  - Adobe Photoshop
-  - Adobe Illustrator
-
-- Creative Script - 3D Graphics
+- Creative Script
   - Blender
   - Autodesk Maya
   - ZBrush
-  - AdobeAnimate
+  - Adobe Creative Cloud
   - Cinema4D
   - 3DS Max Design
-
-- Creative Script - Video Editing
-  - Adobe Premiere Pro
   - DaVinci Resolve
-  - Blender
   - Lightworks
 
 - Software Development Script

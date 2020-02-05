@@ -196,6 +196,37 @@ function Install-AdobeCreativeCloud {
     # Not downloadable without an Adobe subscription
 }
 
+function Install-Zoom {
+    # Not downloadable without a Zoom account
+}
+
+function Install-Office {
+    # Not downloadable without a Microsoft account
+}
+
+function Install-Anaconda {
+    $anaconda_exe = "Anaconda3-2019.10-Windows-x86_64.exe"
+    Write-Output "Downloading Anaconda into path $PSScriptRoot\$anaconda_exe"
+    $webClient.DownloadFile("https://repo.anaconda.com/archive/Anaconda3-2019.10-Windows-x86_64.exe", "$PSScriptRoot\$anaconda_exe")
+    Write-Output "Installing Anaconda"
+    Start-Process -FilePath "$PSScriptRoot\$anaconda_exe" -ArgumentList "/qn" -Wait
+
+    Write-Output "Cleaning up Anaconda installation file"
+    Remove-Item -Path $PSScriptRoot\$anaconda_exe -Confirm:$false
+}
+
+function Install-Docker {
+    $docker_exe = "Docker Desktop Installer.exe"
+    Write-Output "Downloading Docker into path $PSScriptRoot\$docker_exe"
+    $webClient.DownloadFile("https://download.docker.com/win/stable/Docker%20Desktop%20Installer.exe", "$PSScriptRoot\$docker_exe")
+    Write-Output "Installing Docker"
+    Start-Process -FilePath "$PSScriptRoot\$docker_exe" -ArgumentList "/qn" -Wait
+
+    Write-Output "Cleaning up Docker installation file"
+    Remove-Item -Path $PSScriptRoot\$docker_exe -Confirm:$false
+}
+
+
 
 
 
