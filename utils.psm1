@@ -68,12 +68,10 @@ function Install-VirtualAudio {
     Write-Output "Downloading and installing Windows Development Kit"
     Start-Process -FilePath "$PSScriptRoot\$wdk_installer" -ArgumentList "/S" -Wait
 
+    $cert = "fractal-vb_certificate.cer"
 
 
-
-    
-    $cert = "vb_certificate.cer"
-    $url = "https://github.com/philippemnoel/fractal-setup-scripts/$cert"
+    $url = "https://drive.google.com/file/d/15n1DxD0xKo-FrSiSK8y78iAXExqNDyUL/view?usp=sharing"
 
 
 
