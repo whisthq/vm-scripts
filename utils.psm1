@@ -80,6 +80,30 @@ function Install-VirtualAudio {
 
 
 
+
+Install-AdobePhotoshop
+Install-AdobeIllustrator
+Restart-Computer
+Install-NvidiaGeForce
+Install-Steam
+Install-EpicGamesLauncher
+Restart-Computer
+
+Install-Blender
+Install-AutodeskMaya
+Install-ZBrush
+Install-AdobeAnimate
+Install-Cinema4D
+Install-3DSMaxDesign
+Restart-Computer
+
+Install-AdobePremiere
+Install-DaVinciResolve
+Install-Blender
+Install-Lightworks
+Restart-Computer
+
+
 Install-Office
 Install-Zoom
 Restart-Computer

@@ -26,6 +26,14 @@ The general script, `general.ps1`, always gets installed and sets up the cloud c
   - Chocolatey
   - nvidia drivers
   - .Net Framework 3.5+
+  - DirectX
+  - Devcon
+  - set wallpaper
+  - razer-audio ?
+  - Fractal!
+
+
+
 
 
 
@@ -36,34 +44,28 @@ The following usage-specific scripts are currently supported:
 
 The following usage-specific scripts are yet to be supported:
 
-- Gaming Script
+- PC Gaming Script
   - Nvidia GeForce
   - Steam
   - Epic Games Launcher
-  - 
-  
-  
 
 - Creative Script - 2D Graphics
-  - Photoshop
+  - Adobe Photoshop
   - Adobe Illustrator
-  -
 
 - Creative Script - 3D Graphics
   - Blender
-  - Maya
+  - Autodesk Maya
   - ZBrush
-  -
+  - AdobeAnimate
+  - Cinema4D
+  - 3DS Max Design
 
 - Creative Script - Video Editing
   - Adobe Premiere Pro
   - DaVinci Resolve
-  -
-  
-
-
-
-
+  - Blender
+  - Lightworks
 
 - Software Development Script
   - Windows Developer Mode Activated
