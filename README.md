@@ -2,13 +2,29 @@
 
 This repository contains the Fractal PowerShell scripts that get launched at creation of a cloud computer to set it up in a specific configuration. These scripts can be toggled from a selection on the Fractal website in the cloud computer creation page, and are then fed to the Azure SDK when the VM gets created. A combination of many scripts can be selected.
 
-The following scripts are currently supported:
+The general script, `general.ps1`, always gets installed and sets up the cloud computer for optimal general usage with Fractal. The following tasks are performed by the general script.
 
-The following scripts are yet to be supported:
+
+
+
+
+- Install Google Chrome
+- 
+
+
+
+
+
+
+
+The following usage-specific scripts are currently supported:
+
+The following usage-specific scripts are yet to be supported:
 
 - Gaming Script
   - Nvidia GeForce
   - Steam
+  - Epic Games Launcher
   - 
   
   
