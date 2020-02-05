@@ -1,3 +1,4 @@
+# This file contains the functions called in the PowerShell scripts
 [Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
 $webClient = new-object System.Net.WebClient
 
@@ -18,7 +19,7 @@ function Update-Windows {
 }
 
 function Update-Firewall {
-    Write-Output "Enable ICMP Ping in Firewall."
+    Write-Output "Enable ICMP Ping in Firewall"
     Set-NetFirewallRule -DisplayName "File and Printer Sharing (Echo Request - ICMPv4-In)" -Enabled True
 }
 
@@ -41,15 +42,26 @@ function Enable-Audio {
 
 
 
+
+
 function Install-VirtualAudio {
+
+
+
+    
     $compressed_file = "VBCABLE_Driver_Pack43.zip"
     $driver_folder = "VBCABLE_Driver_Pack43"
     $driver_inf = "vbMmeCable64_win7.inf"
     $hardward_id = "VBAudioVACWDM"
 
+
+
+
     Write-Output "Downloading Virtual Audio Driver"
     $webClient.DownloadFile("http://vbaudio.jcedeveloppement.com/Download_CABLE/VBCABLE_Driver_Pack43.zip", "$PSScriptRoot\$compressed_file")
     Unblock-File -Path "$PSScriptRoot\$compressed_file"
+
+
 
     Write-Output "Extracting Virtual Audio Driver"
     Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\$driver_folder" -Force
@@ -63,16 +75,16 @@ function Install-VirtualAudio {
     Write-Output "Downloading and installing Windows Development Kit"
     Start-Process -FilePath "$PSScriptRoot\$wdk_installer" -ArgumentList "/S" -Wait
 
-    $cert = "vb_cert.cer"
-    $url = "https://github.com/ecalder6/azure-gaming/raw/master/$cert"
+    $cert = "vb_certificate.cer"
+    $url = "https://github.com/philippemnoel/fractal-setup-scripts/$cert"
 
-    Write-Output "Downloading vb certificate from $url"
+    Write-Output "Downloading VB certificate from $url"
     $webClient.DownloadFile($url, "$PSScriptRoot\$cert")
 
-    Write-Output "Importing vb certificate"
+    Write-Output "Importing VB certificate"
     Import-Certificate -FilePath "$PSScriptRoot\$cert" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher"
 
-    Write-Output "Installing virtual audio driver"
+    Write-Output "Installing Virtual Audio Driver"
     Start-Process -FilePath $devcon -ArgumentList "install", "$PSScriptRoot\$driver_folder\$driver_inf", $hardward_id -Wait
 }
 
@@ -80,6 +92,7 @@ function Install-VirtualAudio {
 
 
 
+Install-AdobeAcrobat
 
 Install-AdobePhotoshop
 Install-AdobeIllustrator

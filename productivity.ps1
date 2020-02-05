@@ -5,4 +5,5 @@ Import-Module "C:\$script_name"
 Install-Office
 Install-Skype
 Install-Zoom
+Install-AdobeAcrobat
 Restart-Computer

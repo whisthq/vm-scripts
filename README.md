@@ -4,11 +4,18 @@ This repository contains the Fractal PowerShell scripts that get launched at cre
 
 The general script, `general.ps1`, always gets installed and sets up the cloud computer for optimal general usage with Fractal. The following tasks are performed by the general script.
 
-
-
-
 - Update Windows
 - Update Firewall to allow ICMP pings
+- Disable Tesla TCC mode to enable Tesla Graphics (WDM mode)
+- Enable Audio by autostarting the Audio service
+
+
+
+
+
+
+
+- 
 
 
 
@@ -31,6 +38,8 @@ The general script, `general.ps1`, always gets installed and sets up the cloud c
   - set wallpaper
   - razer-audio ?
   - Fractal!
+
+
 
 
 
@@ -87,6 +96,7 @@ The following usage-specific scripts are yet to be supported:
   
 - Productivity Script
   - Microsoft Office
+  - Adobe Acrobat
   - Skype
   - Zoom
 
