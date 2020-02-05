@@ -1,4 +1,4 @@
-# Fractal Cloud Computer Setup Scripts
+# Fractal Cloud Computers Setup Scripts
 
 This repository contains the Fractal PowerShell scripts that get launched at creation of a cloud computer to set it up in a specific configuration. These scripts can be toggled from a selection on the Fractal website in the cloud computer creation page, and are then fed to the Azure SDK when the VM gets created. A combination of many scripts can be selected.
 
@@ -7,10 +7,25 @@ The general script, `general.ps1`, always gets installed and sets up the cloud c
 
 
 
+- Update Windows
+- Update Firewall to allow ICMP pings
+
+
+
+
+
+-  
+
+
+
 
 - Install Google Chrome
-- 
+- Install Spotify
+- Install 7zip
 
+  - Chocolatey
+  - nvidia drivers
+  - .Net Framework 3.5+
 
 
 
@@ -46,34 +61,31 @@ The following usage-specific scripts are yet to be supported:
   -
   
 
+
+
+
+
 - Software Development Script
-  - Windows Developer Mode Turned On
+  - Windows Developer Mode Activated
   - Visual Studio Community 2019
   - Visual Studio Code
   - Git
   - Windows Subsystem for Linux
-  - Chocolatey
+  - Atom
   - Docker
-  
-  
-  
+    
 - Data Science & Machine Learning Script
-  - Windows Developer Mode Turned On
-  - Anaconda
   - Git
-  - Chocolatey
-  - 
+  - Anaconda & R Studio
+  - Cuda Toolkit
+  - Pillow
+  - OpenCV
+  - Xgboost
+  - Caffe
   
-  
-
 - Productivity Script
-  - Microsoft Office Suite
-  - Zoom Video Conferencing
-  - 
+  - Microsoft Office
+  - Skype
+  - Zoom
 
-
-
-
-
-
-
+*Once we have a solid customer base, it could be valuable to have companies pay us to have their software installed by default on Fractal cloud computers.
