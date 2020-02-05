@@ -8,15 +8,8 @@ The general script, `general.ps1`, always gets installed and sets up the cloud c
 - Update Firewall to allow ICMP pings
 - Disable Tesla TCC mode to enable Tesla Graphics (WDM mode)
 - Enable Audio by autostarting the Audio service
-
-
-
-
-
-
-
-- 
-
+- Install the Virtual Audio Driver
+- Install Chocolatey for easy Windows packages installation
 
 
 
@@ -57,6 +50,8 @@ The following usage-specific scripts are yet to be supported:
   - Nvidia GeForce
   - Steam
   - Epic Games Launcher
+  - GOG
+  - Blizzard
 
 - Creative Script - 2D Graphics
   - Adobe Photoshop

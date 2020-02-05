@@ -35,33 +35,15 @@ function Enable-Audio {
     Start-Service Audiosrv
 }
 
-
-
-
-
-
-
-
-
-
 function Install-VirtualAudio {
-
-
-
-    
     $compressed_file = "VBCABLE_Driver_Pack43.zip"
     $driver_folder = "VBCABLE_Driver_Pack43"
     $driver_inf = "vbMmeCable64_win7.inf"
     $hardward_id = "VBAudioVACWDM"
 
-
-
-
     Write-Output "Downloading Virtual Audio Driver"
     $webClient.DownloadFile("http://vbaudio.jcedeveloppement.com/Download_CABLE/VBCABLE_Driver_Pack43.zip", "$PSScriptRoot\$compressed_file")
     Unblock-File -Path "$PSScriptRoot\$compressed_file"
-
-
 
     Write-Output "Extracting Virtual Audio Driver"
     Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\$driver_folder" -Force
@@ -88,6 +70,21 @@ function Install-VirtualAudio {
     Start-Process -FilePath $devcon -ArgumentList "install", "$PSScriptRoot\$driver_folder\$driver_inf", $hardward_id -Wait
 }
 
+function Install-Chocolatey {
+    Write-Output "Installing Chocolatey"
+    Invoke-Expression ($webClient.DownloadString('https://chocolatey.org/install.ps1'))
+    $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
+    chocolatey feature enable -n allowGlobalConfirmation
+}
+
+
+
+
+
+
+
+
+
 
 
 
@@ -96,7 +93,6 @@ Install-AdobeAcrobat
 
 Install-AdobePhotoshop
 Install-AdobeIllustrator
-Restart-Computer
 Install-NvidiaGeForce
 Install-Steam
 Install-EpicGamesLauncher
@@ -139,6 +135,9 @@ Install-Atom
 Install-Docker
 
 
+Install-GOG
+Install-Blizzard
+
 
 
 function Install-Steam {
@@ -155,11 +154,11 @@ function Install-Steam {
 
 
 
-#set wallpaper
+
 function Set-Wallpaper {
     Write-Output "Setting Fractal Wallpaper"
     if((Test-Path -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System) -eq $true) {} Else {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null}
-    if((Test-RegistryValue -path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -value Wallpaper) -eq $true) {Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -value "C:\ParsecTemp\parsec+desktop.png" | Out-Null} Else {New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -PropertyType String -value "C:\ParsecTemp\parsec+desktop.png" | Out-Null}
+    if((Test-RegistryValue -path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -value Wallpaper) -eq $true) {Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -value "C:\Program Files\Fractal\desktop.png" | Out-Null} Else {New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -PropertyType String -value "C:\ParsecTemp\parsec+desktop.png" | Out-Null}
     if((Test-RegistryValue -path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -value WallpaperStyle) -eq $true) {Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -value 2 | Out-Null} Else {New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -PropertyType String -value 2 | Out-Null}
     Stop-Process -ProcessName explorer
     }
@@ -173,3 +172,16 @@ function Set-Wallpaper {
 
 
 
+
+
+function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
+    Write-Output "Make the password and account of admin user never expire"
+    Set-LocalUser -Name $admin_username -PasswordNeverExpires $true -AccountNeverExpires
+
+    Write-Output "Make the admin login at startup"
+    $registry = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
+    Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String
+    Set-ItemProperty $registry "DefaultDomainName" -Value "$env:computername" -type String
+    Set-ItemProperty $registry "DefaultUsername" -Value $admin_username -type String
+    Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -type String
+}

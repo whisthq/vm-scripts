@@ -5,4 +5,6 @@ Import-Module "C:\$script_name"
 Install-NvidiaGeForce
 Install-Steam
 Install-EpicGamesLauncher
+Install-GOG
+Install-Blizzard
 Restart-Computer
