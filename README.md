@@ -10,7 +10,7 @@ The general script, `general.ps1`, always gets installed and sets up the cloud c
 - Enable Audio by autostarting the Audio service
 - Install the Virtual Audio Driver
 - Install Chocolatey for easy Windows packages installation
-
+- Install Google Chrome
 
 
 
@@ -19,7 +19,6 @@ The general script, `general.ps1`, always gets installed and sets up the cloud c
 
 
 
-- Install Google Chrome
 - Install Spotify
 - Install 7zip
 
