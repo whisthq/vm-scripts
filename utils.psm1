@@ -89,67 +89,159 @@ function Install-Chocolatey {
 
 
 
-Install-AdobeAcrobat
+#Install-AdobeAcrobat
 
-Install-AdobePhotoshop
-Install-AdobeIllustrator
-Install-NvidiaGeForce
-Install-Steam
-Install-EpicGamesLauncher
-Restart-Computer
+#Install-AdobePhotoshop
+#Install-AdobeIllustrator
+#Install-NvidiaGeForce
+#Install-Steam
+#Install-EpicGamesLauncher
 
-Install-Blender
-Install-AutodeskMaya
-Install-ZBrush
-Install-AdobeAnimate
-Install-Cinema4D
-Install-3DSMaxDesign
-Restart-Computer
+#Install-Blender
+#Install-AutodeskMaya
+#Install-ZBrush
+#Install-AdobeAnimate
+#Install-Cinema4D
+#Install-3DSMaxDesign
 
-Install-AdobePremiere
-Install-DaVinciResolve
-Install-Blender
-Install-Lightworks
-Restart-Computer
+#Install-AdobePremiere
+#Install-DaVinciResolve
+#Install-Blender
+#Install-Lightworks
 
 
-Install-Office
-Install-Zoom
-Restart-Computer
-Install-Skype
-Install-Git
-Install-Anaconda
-Install-CudaToolkit
-Install-Pillow
-Install-OpenCV
-Install-Xgboost
-Install-Caffe
-Restart-Computer
+#Install-Office
+#Install-Zoom
+#Install-Skype
+#Install-Git
+#Install-Anaconda
+#Install-CudaToolkit
+#Install-Pillow
+#Install-OpenCV
+#Install-Xgboost
+#Install-Caffe
 
-Enable-DeveloperMode
-Install-VS2019
-Install-VSCode
-Install-Git
-Install-WSL
-Install-Atom
-Install-Docker
+#Enable-DeveloperMode
+#Install-VS2019
+#Install-VSCode
+#Install-Git
+#Install-WSL
+#Install-Atom
+#Install-Docker
 
 
-Install-GOG
-Install-Blizzard
+#Install-GOG
+#Install-Blizzard
 
 
 
+
+## works 
 function Install-Steam {
     $steam_exe = "steam.exe"
     Write-Output "Downloading Steam into path $PSScriptRoot\$steam_exe"
     $webClient.DownloadFile("https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe", "$PSScriptRoot\$steam_exe")
-    Write-Output "Installing steam"
+    Write-Output "Installing Steam"
     Start-Process -FilePath "$PSScriptRoot\$steam_exe" -ArgumentList "/S" -Wait
 
     Write-Output "Cleaning up Steam installation file"
     Remove-Item -Path $PSScriptRoot\$steam_exe -Confirm:$false
 }
+
+function Install-GoogleChrome {
+    $chrome_msi = "googlechromestandaloneenterprise64.msi"
+    Write-Output "Downloading Google Chrome into path $PSScriptRoot\$chrome_msi"
+    $webClient.DownloadFile("https://dl.google.com/tag/s/dl/chrome/install/googlechromestandaloneenterprise64.msi", "$PSScriptRoot\$chrome_msi")
+    Write-Output "Installing Google Chrome"
+    Start-Process -FilePath "$PSScriptRoot\$chrome_msi" -ArgumentList "/qn" -Wait
+
+    Write-Output "Cleaning up Google Chrome installation file"
+    Remove-Item -Path $PSScriptRoot\$chrome_msi -Confirm:$false
+}
+
+function Install-EpicGamesLauncher {
+    $epicgames_msi = "EpicInstaller-10.12.3-unrealtournament-94b142e24f5e49ffb002092313539737.msi"
+    Write-Output "Downloading Epic Games Launcher into path $PSScriptRoot\$epicgames_msi"
+    $webClient.DownloadFile("https://www.epicgames.com/unrealtournament/download", "$PSScriptRoot\$epicgames_msi")
+    Write-Output "Installing Epic Games Launcher"
+    Start-Process -FilePath "$PSScriptRoot\$epicgames_msi" -ArgumentList "/qn" -Wait
+
+    Write-Output "Cleaning up Epic Games Launcher installation file"
+    Remove-Item -Path $PSScriptRoot\$epicgames_msi -Confirm:$false
+}
+## end of works
+
+
+
+
+
+
+
+
+function Install-GOG {
+    $gog_exe = "GOG_Galaxy_2.0.exe"
+
+    if (-not $PSScriptRoot) {
+        $PSScriptRoot = Split-Path -Parent -Path $script:MyInvocation.MyCommand.Definition
+    }
+    $outFile = "$PSScriptRoot\GOG_Galaxy_2.0.exe"
+    
+    Write-Output "Downloading GOG into path $PSScriptRoot\$gog_exe"
+
+
+    Start-BitsTransfer -Source $url -Destination $outFile
+
+    
+    
+    
+
+    Write-Output "Installing GOG"
+    Start-Process -FilePath $outFile -Args "/qn" -Wait
+
+#    Start-Process -FilePath "$PSScriptRoot\$gog_exe" -ArgumentList "/S" -Wait
+
+    Write-Output "Cleaning up GOG installation file"
+    Remove-Item -Path $PSScriptRoot\$gog_exe -Confirm:$false
+}
+
+
+
+
+
+function Install-Blizzard {
+    $blizzard_exe = "Battle.net-Setup.exe"
+
+    Write-Output "Downloading Blizzard Battle.Net Launcher into path $PSScriptRoot\$blizzard_exe"
+    #$webClient.DownloadFile("https://www.google.com/search?q=install+blizzard&rlz=1C1CHBF_enUS880US880&oq=install+blizzard&aqs=chrome.0.0l8.1938j0j7&sourceid=chrome&ie=UTF-8", "$PSScriptRoot\$blizzard_exe")
+   
+   
+
+    $webClient.DownloadFile("https://www.blizzard.com/en-us/apps/battle.net/desktop", "$PSScriptRoot\$blizzard_exe")
+
+   
+    Write-Output "Installing Blizzard Battle.Net Launcher"
+    Start-Process -FilePath "$PSScriptRoot\$blizzard_exe" -ArgumentList "/S" -Wait
+
+    Write-Output "Cleaning up Blizzard Battle.Net Launcher installation file"
+    Remove-Item -Path $PSScriptRoot\$blizzard_exe -Confirm:$false
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
 
 
 
