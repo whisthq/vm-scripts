@@ -6,26 +6,32 @@ The general script, `general.ps1`, always gets installed and sets up the cloud c
 
 - Update Windows
 - Update Firewall to allow ICMP pings
+- Install Nvidia Tesla Public Drivers (in addition to GRID drivers, includes Cuda Toolkit 10.2)
 - Disable Tesla TCC mode to enable Tesla Graphics (WDM mode)
+- Set Optimal Tesla M60 GPU Settings
 - Enable Audio by autostarting the Audio service
 - Set Automatic Time & Timezone
 - Install the Virtual Audio Driver
 - Install Chocolatey for easy Windows packages installation
+- Enable the Fractal Service
+- Enable Fractal Firewall Rules
 - Install Google Chrome
 - Install Spotify
 - Install Tesla Nvidia Public Drivers
 - Install 7zip
 - Install DirectX
-- Install .Net Framework (>3.5)
-- Install Fractal
+- Install .Net Framework (4.7)
+- Create Fractal Directory in Program Files
+- Install Fractal & Create Desktop Shortcut
 - Set Fractal Wallpaper
-
-
-
-
-
-
-
+- Set Automatic Time & Timezone
+- Disable Network Window since always connected via Ethernet
+- Set Mouse Pointer Precision
+- Enable Accessibility Mouse Keys
+- Show File Extensions
+- Disable Hyper-V Video (to use the GPU instead)
+- Disable Shutdown, Logout and Sleep in Start Menu
+- Set Auto-Login
 
 The following usage-specific scripts are currently supported, although some of the softwares listed here cannot actually be installed through PowerShell, but are listed for potential manual-install:
 

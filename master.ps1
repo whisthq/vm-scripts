@@ -3,7 +3,6 @@
 param (
     [string]        $admin_username = "Fractal",
     [SecureString]  $admin_password = (convertto-securestring "password1234567." -asplaintext -force),
-    [switch]        $manual_install         = $false,
     [switch]        $creative_install       = $false,
     [switch]        $datascience_install    = $false,
     [switch]        $gaming_install         = $false,
@@ -25,50 +24,32 @@ Import-Module "$script_name"
 
 #Update-Windows
 #Update-Firewall
+#Install-NvidiaTeslaPublicDrivers
 #Disable-TCC
+#Set-OptimalGPUSettings
+#Disable-HyperV
+#Set-Time
+#Disable-NetworkWindow
+#Set-MousePrecision
+#Enable-MouseKeys
 #Enable-Audio
+#Show-FileExtensions
+#Install-DotNetFramework
 #Install-VirtualAudio
 #Install-Chocolatey
 #Enable-FractalService
 #Enable-FractalFirewallRule
+Install-DirectX
 #Install-GoogleChrome
 #Install-Spotify
 #Install-7Zip
-
-
-
-
-
-
-
-
+#Set-FractalDirectory
+#Install-Fractal
 #Set-Wallpaper
-
-#Install-AutodeskMaya
-#Install-ZBrush
-#Install-3DSMaxDesign
-#Install-CudaToolkit
-#Enable-DeveloperMode
-#Install-VS2019
-#Install-WSL
-
-#Disable-ScheduleWorkflow
-#Disable-Devices
-
-#- Set Automatic Time & Timezone
-#- Install Tesla Nvidia Public Drivers
-#- Install DirectX
-#- Install .Net Framework (>3.5)
-#- Install Fractal
-#- Set Fractal Wallpaper
-
-
-
-
-
-
-
-
+#Disable-Lock
+#Disable-Logout
+#Disable-Shutdown
+#Add-AutoLogin $admin_username $admin_password
 
 # Install creative packages
 if ($creative_install) {
@@ -115,9 +96,8 @@ if ($productivity_install) {
     Remove-Item -Path "C:\productivity.ps1" -Confirm:$false
 }
 
-# Final file cleaning
+# Clean PowerShell install script
 #Write-Output "Cleaning up Utils script"
 #Remove-Item -Path "C:\utils.psm1" -Confirm:$false
 
-#Add-AutoLogin $admin_username $admin_password
 #Restart-Computer

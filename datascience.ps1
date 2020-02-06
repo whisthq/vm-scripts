@@ -2,7 +2,7 @@
 $script_name = "utils.psm1"
 Import-Module "C:\Program Files\Fractal\$script_name"
 
+Enable-DeveloperMode
 Install-Git
 Install-Anaconda
-Install-CudaToolkit
 Install-OpenCV

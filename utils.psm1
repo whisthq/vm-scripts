@@ -2,6 +2,23 @@
 [Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
 $webClient = new-object System.Net.WebClient
 
+function Test-RegistryValue {
+    # https://www.jonathanmedd.net/2014/02/testing-for-the-presence-of-a-registry-key-and-value.html
+    param (
+        [parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]$Path,
+        [parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]$Value
+    )
+    try {
+        Get-ItemProperty -Path $Path | Select-Object -ExpandProperty $Value -ErrorAction Stop | Out-Null
+        return $true
+    }
+    catch {
+        return $false
+    }
+}
+    
 function Update-Windows {
     $url = "https://gallery.technet.microsoft.com/scriptcenter/Execute-Windows-Update-fc6acb16/file/144365/1/PS_WinUpdate.zip"
     $compressed_file = "PS_WinUpdate.zip"
@@ -41,6 +58,14 @@ function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
     Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -type String
 }
 
+function Set-Wallpaper {
+    Write-Output "Setting Fractal Wallpaper"
+    if((Test-Path -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System) -eq $true) {} Else {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null}
+    if((Test-RegistryValue -path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -value Wallpaper) -eq $true) {Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -value "C:\Program Files\Fractal\desktop.png" | Out-Null} Else {New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -PropertyType String -value "C:\Program Files\Fractal\desktop.png" | Out-Null}
+    if((Test-RegistryValue -path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -value WallpaperStyle) -eq $true) {Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -value 2 | Out-Null} Else {New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -PropertyType String -value 2 | Out-Null}
+    Stop-Process -ProcessName explorer
+}
+
 function Enable-FractalService {
     Write-host "Enabling Fractal Service"
     cmd.exe /c 'sc.exe Create "Fractal" binPath= "\"C:\Program Files\Fractal\FractalService.exe\"" start= "auto"' | Out-Null
@@ -50,6 +75,11 @@ function Enable-FractalService {
 function Enable-FractalFirewallRule {
     Write-host "Creating Fractal Firewall Rule"
     New-NetFirewallRule -DisplayName "Fractal" -Direction Inbound -Program "C:\Program Files\Fractal\Fractal.exe" -Profile Private, Public -Action Allow -Enabled True | Out-Null
+}
+
+function Enable-DeveloperMode {
+    Write-Output "Enabling Windows Developer Mode"
+    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v "AllowDevelopmentWithoutDevLicense" /d "1"
 }
 
 function Enable-Audio {
@@ -204,11 +234,23 @@ function Install-Skype {
 }
 
 function Install-AdobeCreativeCloud {
-    # Not downloadable without an Adobe subscription
+    # Not downloadable without a Adobe subscription
 }
 
 function Install-DaVinciResolve {
-    # Not downloadable without an DaVinci Resolve subscription
+    # Not downloadable without a DaVinci Resolve subscription
+}
+
+function Install-ZBrush {
+    # Not downloadable without a ZBrush subscription
+}
+
+function Install-AutodeskMaya {
+    # Not downloadable without an Autodesk subscription
+}
+
+function Install-3DSMaxDesign {
+    # Not downloadable without an Autodesk subscription
 }
 
 function Install-Zoom {
@@ -279,6 +321,11 @@ function Install-Lightworks {
     choco install lightworks --force
 }
 
+function Install-VS2019 {
+    Write-Output "Installing Visual Studio Professional 2019 through Chocolatey"
+    choco install visualstudio2019professional --force
+}
+
 function Install-VSCode {
     Write-Output "Installing Visual Studio Code through Chocolatey"
     choco install vscode --force
@@ -305,34 +352,127 @@ function Install-7Zip {
     Remove-Item -Path $PSScriptRoot\$7zip_exe -Confirm:$false
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function Set-Wallpaper {
-    Write-Output "Setting Fractal Wallpaper"
-    if((Test-Path -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System) -eq $true) {} Else {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null}
-    if((Test-RegistryValue -path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -value Wallpaper) -eq $true) {Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -value "C:\Program Files\Fractal\desktop.png" | Out-Null} Else {New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -PropertyType String -value "C:\Program Files\Fractal\desktop.png" | Out-Null}
-    if((Test-RegistryValue -path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -value WallpaperStyle) -eq $true) {Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -value 2 | Out-Null} Else {New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -PropertyType String -value 2 | Out-Null}
-    Stop-Process -ProcessName explorer
+function Install-WSL {
+    Write-Output "Installing Windows Subsystem for Linux through Chocolatey"
+    choco install wsl --force
 }
 
+function Set-Time {
+    Write-Output "Setting Time & Timezone to Automatic"
+    Set-ItemProperty -path HKLM:\SYSTEM\CurrentControlSet\Services\W32Time\Parameters -Name Type -Value NTP | Out-Null
+    Set-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Services\tzautoupdate -Name Start -Value 00000003 | Out-Null
+}
 
+function Disable-NetworkWindow {
+    Write-Output "Disabling New Network Window"
+    if((Test-RegistryValue -path HKLM:\SYSTEM\CurrentControlSet\Control\Network -Value NewNetworkWindowOff)-eq $true) {} Else {new-itemproperty -path HKLM:\SYSTEM\CurrentControlSet\Control\Network -name "NewNetworkWindowOff" | Out-Null}
+}
 
+function Set-MousePrecision {
+    Write-Output "Enabling Enhanced Pointer Precision"
+    Set-Itemproperty -Path 'HKCU:\Control Panel\Mouse' -Name MouseSpeed -Value 1 | Out-Null
+}
+    
+function Enable-MouseKeys {
+    Write-Output "Enabling Mouse Keys"
+    set-Itemproperty -Path 'HKCU:\Control Panel\Accessibility\MouseKeys' -Name Flags -Value 63 | Out-Null
+}
 
+function Disable-Logout {
+    Write-Output "Disabling Logout Option in Start Menu"
+    if((Test-RegistryValue -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer -Value StartMenuLogOff )-eq $true) {Set-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer -Name StartMenuLogOff -Value 1 | Out-Null} Else {New-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer -Name StartMenuLogOff -Value 1 | Out-Null}
+}
+    
+function Disable-Lock {
+    Write-Output "Disable Lock Option in Start Menu"
+    if((Test-Path -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System) -eq $true) {} Else {New-Item -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies -Name Software | Out-Null}
+    if((Test-RegistryValue -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Value DisableLockWorkstation) -eq $true) {Set-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Name DisableLockWorkstation -Value 1 | Out-Null } Else {New-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Name DisableLockWorkstation -Value 1 | Out-Null}
+}
 
+function Disable-Shutdown {
+    Write-Output "Disabling Shutdown Option in Start Menu"
+    New-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer -Name NoClose -Value 1 | Out-Null
+}
+    
+function Show-FileExtensions {
+    Write-Output "Showing File Extensions"
+    Set-itemproperty -path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -name HideFileExt -Value 0 | Out-Null
+}
+  
+function Set-FractalDirectory {
+    Write-Output "Creating Fractal Directory in C:\Program Files\"
+    if((Test-Path -Path 'C:\Program Files\Fractal') -eq $true) {} Else {New-Item -Path 'C:\Program Files\Fractal' -ItemType directory | Out-Null}
+}
 
+function Install-DotNetFramework {
+    Write-Output "Installing .Net Framework Core 4.7 through Chocolatey"
+    choco install dotnet4.7 --force
+}
 
+function Disable-HyperV {
+    $url = "https://gallery.technet.microsoft.com/PowerShell-Device-60d73bb0/file/147248/2/DeviceManagement.zip"
+    $compressed_file = "DeviceManagement.zip"
+    $extract_folder = "DeviceManagement"
+
+    Write-Output "Downloading Device Management Powershell Script from $url"
+    $webClient.DownloadFile($url, "$PSScriptRoot\$compressed_file")
+    Unblock-File -Path "$PSScriptRoot\$compressed_file"
+
+    Write-Output "Extracting Device Management Powershell Script"
+    Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\$extract_folder" -Force
+
+    Write-Output "Disabling Hyper-V Video"
+    Import-Module "$PSScriptRoot\$extract_folder\DeviceManagement.psd1"
+    Get-Device | Where-Object -Property Name -Like "Microsoft Hyper-V Video" | Disable-Device -Confirm:$false
+
+    Write-Output "Cleaning up Hyper-V Video disabling file"
+    Remove-Item -Path $PSScriptRoot\$compressed_file -Confirm:$false
+    Remove-Item -Path $PSScriptRoot\$extract_folder -Confirm:$false -Recurse
+}
+
+function Install-Fractal {
+    $fractal_exe = "fractal.exe"
+    $fractal_path = "C:\Program Files\Fractal"
+
+    Write-Output "Downloading Fractal into path $fractal_path\$fractal_exe"
+    $webClient.DownloadFile("TODO-S3Bucket", "$fractal_path\$fractal_exe")
+
+    Write-Output "Installing Fractal"
+    Start-Process -FilePath "$fractal_path\$fractal_exe" -ArgumentList "/qn" -Wait
+}
+
+function Install-NvidiaTeslaPublicDrivers {
+    Write-Output "Installing Nvidia Public Driver (GRID already installed at deployment through Azure)"
+    $driver_file = "441.22-tesla-desktop-win10-64bit-international.exe"
+    $version = "441.22"
+    $url = "http://us.download.nvidia.com/tesla/441.22/441.22-tesla-desktop-win10-64bit-international.exe"
+    
+    Write-Output "Downloading Nvidia M60 driver from URL $url"
+    $webClient.DownloadFile($url, "$PSScriptRoot\$driver_file")
+
+    Write-Output "Installing Nvidia M60 driver from file $PSScriptRoot\$driver_file"
+    Start-Process -FilePath "$PSScriptRoot\$driver_file" -ArgumentList "-s", "-noreboot" -Wait
+    Start-Process -FilePath "C:\NVIDIA\$version\setup.exe" -ArgumentList "-s", "-noreboot" -Wait
+}
+
+function Set-OptimalGPUSettings {
+    Write-Output "Setting Optimal Tesla M60 GPU Settings"
+    .\C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi --auto-boost-default=0
+    .\C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi -ac "2505,1177"
+}
+
+function Install-DirectX {
+    $directx_exe = "directx_Jun2010_redist.exe"
+    Write-Output "Downloading DirectX into path $PSScriptRoot\$direct_exe"
+    $webClient.DownloadFile("https://download.microsoft.com/download/8/4/A/84A35BF1-DAFE-4AE8-82AF-AD2AE20B6B14/directx_Jun2010_redist.exe", "$PSScriptRoot\$directx_exe")
+    
+    Write-Output "Creating temporary DirectX directory in $PSScriptRoot/"
+    if((Test-Path -Path '/DirectX') -eq $true) {} Else {New-Item -Path '/DirectX' -ItemType directory | Out-Null}
+
+    Write-Output "Installing DirectX"
+    Start-Process -FilePath "$PSScriptRoot\$directx_exe" "/T:$PSScriptRoot/DirectX /Q" -Wait
+
+    Write-Output "Cleaning up DirectX installation file"
+    Remove-Item -Path $PSScriptRoot\$directx_exe -Confirm:$false
+    Remove-Item -Path $PSScriptRoot\DirectX -Confirm:$false -Recurse
+}
