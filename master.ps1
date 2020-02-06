@@ -22,34 +22,34 @@ function GetPowershellScript ($script_name, $script_url) {
 $script_name = "C:\users\phili\Downloads\fractal-setup-scripts\utils.psm1"
 Import-Module "$script_name"
 
-#Update-Windows
-#Update-Firewall
-#Install-NvidiaTeslaPublicDrivers
-#Disable-TCC
-#Set-OptimalGPUSettings
-#Disable-HyperV
-#Set-Time
-#Disable-NetworkWindow
-#Set-MousePrecision
-#Enable-MouseKeys
-#Enable-Audio
-#Show-FileExtensions
-#Install-DotNetFramework
-#Install-VirtualAudio
-#Install-Chocolatey
-#Enable-FractalService
-#Enable-FractalFirewallRule
+Update-Windows
+Update-Firewall
+Install-NvidiaTeslaPublicDrivers
+Disable-TCC
+Set-OptimalGPUSettings
+Disable-HyperV
+Set-Time
+Disable-NetworkWindow
+Set-MousePrecision
+Enable-MouseKeys
+Enable-Audio
+Show-FileExtensions
+Install-DotNetFramework
+Install-VirtualAudio
+Install-Chocolatey
+Enable-FractalService
+Enable-FractalFirewallRule
 Install-DirectX
-#Install-GoogleChrome
-#Install-Spotify
-#Install-7Zip
-#Set-FractalDirectory
-#Install-Fractal
-#Set-Wallpaper
-#Disable-Lock
-#Disable-Logout
-#Disable-Shutdown
-#Add-AutoLogin $admin_username $admin_password
+Install-GoogleChrome
+Install-Spotify
+Install-7Zip
+Set-FractalDirectory
+Install-Fractal
+Set-Wallpaper
+Disable-Lock
+Disable-Logout
+Disable-Shutdown
+Add-AutoLogin $admin_username $admin_password
 
 # Install creative packages
 if ($creative_install) {
@@ -97,7 +97,7 @@ if ($productivity_install) {
 }
 
 # Clean PowerShell install script
-#Write-Output "Cleaning up Utils script"
-#Remove-Item -Path "C:\utils.psm1" -Confirm:$false
+Write-Output "Cleaning up Utils script"
+Remove-Item -Path "C:\utils.psm1" -Confirm:$false
 
-#Restart-Computer
+Restart-Computer
