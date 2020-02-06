@@ -29,7 +29,13 @@ Import-Module "$script_name"
 #Enable-Audio
 #Install-VirtualAudio
 #Install-Chocolatey
+#Enable-FractalService
+#Enable-FractalFirewallRule
 #Install-GoogleChrome
+#Install-Spotify
+#Install-7Zip
+
+
 
 
 
@@ -41,24 +47,16 @@ Import-Module "$script_name"
 #Install-AutodeskMaya
 #Install-ZBrush
 #Install-3DSMaxDesign
-#Install-Lightworks
 #Install-CudaToolkit
 #Enable-DeveloperMode
 #Install-VS2019
-#Install-VSCode
 #Install-WSL
-#Install-Spotify
-#Install-GOG
-#Install-Blizzard
 
 #Disable-ScheduleWorkflow
 #Disable-Devices
 
-
 #- Set Automatic Time & Timezone
-#- Install Spotify
 #- Install Tesla Nvidia Public Drivers
-#- Install 7zip
 #- Install DirectX
 #- Install .Net Framework (>3.5)
 #- Install Fractal
@@ -72,8 +70,7 @@ Import-Module "$script_name"
 
 
 
-
-
+# Install creative packages
 if ($creative_install) {
     # fetch the script, run it and clean
     GetPowershellScript("creative.ps1", "TODO")
@@ -82,6 +79,7 @@ if ($creative_install) {
     Remove-Item -Path "C:\creative.ps1" -Confirm:$false
 }
 
+# Install data science packages
 if ($datascience_install) {
     # fetch the script, run it and clean
     GetPowershellScript("datascience.ps1", "TODO")
@@ -90,6 +88,7 @@ if ($datascience_install) {
     Remove-Item -Path "C:\datascience.ps1" -Confirm:$false
 }
 
+# Install gaming packages
 if ($gaming_install) {
     # fetch the script, run it and clean
     GetPowershellScript("gaming.ps1", "TODO")
@@ -98,6 +97,7 @@ if ($gaming_install) {
     Remove-Item -Path "C:\gaming.ps1" -Confirm:$false
 }
 
+# Install software development packages
 if ($softwaredev_install) {
     # fetch the script, run it and clean
     GetPowershellScript("softwaredev.ps1", "TODO")
@@ -106,6 +106,7 @@ if ($softwaredev_install) {
     Remove-Item -Path "C:\softwaredev.ps1" -Confirm:$false
 }
 
+# Install productivity packages
 if ($productivity_install) {
     # fetch the script, run it and clean
     GetPowershellScript("productivity.ps1", "TODO")
@@ -119,4 +120,4 @@ if ($productivity_install) {
 #Remove-Item -Path "C:\utils.psm1" -Confirm:$false
 
 #Add-AutoLogin $admin_username $admin_password
-##Restart-Computer
+#Restart-Computer

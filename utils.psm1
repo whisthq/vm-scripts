@@ -41,6 +41,17 @@ function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
     Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -type String
 }
 
+function Enable-FractalService {
+    Write-host "Enabling Fractal Service"
+    cmd.exe /c 'sc.exe Create "Fractal" binPath= "\"C:\Program Files\Fractal\FractalService.exe\"" start= "auto"' | Out-Null
+    sc.exe Start 'Fractal' | Out-Null
+}
+
+function Enable-FractalFirewallRule {
+    Write-host "Creating Fractal Firewall Rule"
+    New-NetFirewallRule -DisplayName "Fractal" -Direction Inbound -Program "C:\Program Files\Fractal\Fractal.exe" -Profile Private, Public -Action Allow -Enabled True | Out-Null
+}
+
 function Enable-Audio {
     Write-Output "Enabling Audio Service"
     Set-Service -Name "Audiosrv" -StartupType Automatic
@@ -196,7 +207,7 @@ function Install-AdobeCreativeCloud {
     # Not downloadable without an Adobe subscription
 }
 
-function Install-AdobeCreativeCloud {
+function Install-DaVinciResolve {
     # Not downloadable without an DaVinci Resolve subscription
 }
 
@@ -263,118 +274,36 @@ function Install-GeForceExperience {
     Remove-Item -Path $PSScriptRoot\$geforce_exe -Confirm:$false
 }
 
-
-
-
-
-
-
-
-
+function Install-Lightworks {
+    Write-Output "Installing Lightworks through Chocolatey"
+    choco install lightworks --force
+}
 
 function Install-VSCode {
-    $vscode_exe = "VSCodeSetup-x64-1.41.1.exe"
-    Write-Output "Downloading Visual Studio Code into path $PSScriptRoot\$vscode_exe"
-    $webClient.DownloadFile("https://code.visualstudio.com/docs/?dv=win64", "$PSScriptRoot\$vscode_exe")
-    Write-Output "Installing Visual Studio Code"
-    Start-Process -FilePath "$PSScriptRoot\$vscode_exe" -ArgumentList "/qn" -Wait
-
-    Write-Output "Cleaning up Visual Studio Code installation file"
-    Remove-Item -Path $PSScriptRoot\$vscode_exe -Confirm:$false
+    Write-Output "Installing Visual Studio Code through Chocolatey"
+    choco install vscode --force
 }
-
-
-
-
-
-
 
 function Install-Spotify {
-    $spotify_exe = "SpotifySetup.exe"
-    Write-Output "Downloading Spotify into path $PSScriptRoot\$spotify_exe"
-    $webClient.DownloadFile("https://www.spotify.com/us/download/", "$PSScriptRoot\$spotify_exe")
-    Write-Output "Installing Spotify"
-    Start-Process -FilePath "$PSScriptRoot\$spotify_exe" -ArgumentList "/qn" -Wait
-
-    Write-Output "Cleaning up Spotify installation file"
-    Remove-Item -Path $PSScriptRoot\$spotify_exe -Confirm:$false
+    Write-Output "Installing Spotify through Chocolatey"
+    choco install spotify --force
 }
-
-
-
-function Install-Lightworks {
-    $lwks_exe = "lightworks_v14.5.0_full_64bit.exe"
-    Write-Output "Downloading Lightworks into path $PSScriptRoot\$lwks_exe"
-    $webClient.DownloadFile("https://www.lwks.com/index.php?option=com_lwks&view=download&layout=d&dtype=win_public_64&Itemid=206", "$PSScriptRoot\$lwks_exe")
-    Write-Output "Installing Lightworks"
-    Start-Process -FilePath "$PSScriptRoot\$lwks_exe" -ArgumentList "/qn" -Wait
-
-    Write-Output "Cleaning up Lightworks installation file"
-    Remove-Item -Path $PSScriptRoot\$lwks_exe -Confirm:$false
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 function Install-GOG {
-    $gog_exe = "GOG_Galaxy_2.0.exe"
-    Write-Output "Downloading GOG into path $PSScriptRoot\$gog_exe"
-
-    $webClient.DownloadFile("https://webinstallers.gog.com/download/GOG_Galaxy_2.0.exe?payload=9ExNDZcADjPidRmZn1nV56tJ-GAUGB99aV5E_5aE6R_SLBrSrEigIzEt-kEXuaC0WCSRwd190BJPEJqvP_YGdL9ZbWcCBnr0s-G2kZFSATmkEzgZuMxf2V7qigul26-mc39iqBJJZlLK8Ub4Ll2zoAjxDU3L6amGAloGhYbsrVSpFumh-8RjQXqb_xnu1pV1AMQbHnukEznVjANrTMesZCQ3hHW4Mmjdp5wiJ-tAVBXByDqMFS72nW6UHKRfr6BMDX6iLkxGXuosyMkHzBuYstLrIWkW37Ojfzhq08-7PTuVUZ-DgFnve2R4GziLqAEAhISDov8sEuW1BRhEz3Fan9WnzMDXz4HW7aAI3eWzCo6AP5N3T_khiaQZQ_3Tdvh6ECmrtnsQtISjjRE2uTZXE7bAW9lUtYvli5S0MJJI6YRXB9Wc_te_VGpuEbXFtWtxR5A8ZBH5fYhQGZk2b1REbSk3dT1YsKEMoxK0X1cYiwVUCunNrIacUljTW2SNLSc72hF5jJelpYQdDLbPBKH3Cvgpmcw9mIqoB2Pqal9wJv48Ox2Ta5TTCSkjvlOoAsvcXItodsEZ7-Q0RI8NyO7XeHrPCWd2Q8TTdbMZOfuKX3h7im7RYsOwxUDqKh2W0--HORrm9Iqe5AI_Bc1JjTwDdlTS8YkCw41PW6gvfZCeny0j14KZHc89S0vE6vHkDSqJOC_Go5fcgCd2-6kG_-Ot7OV9W3WC0tkQ-ShJxfhTz-Z90TGs9g..&_ga=2.246957188.1649399055.1580925790-935404483.1580925790", "$PSScriptRoot\$blender_msi")
-    
-
-    
-
-    Write-Output "Installing GOG"
-    Start-Process -FilePath "$PSScriptRoot\$gog_exe" -ArgumentList "/qn" -Wait
-
-    Write-Output "Cleaning up GOG installation file"
-    Remove-Item -Path $PSScriptRoot\$gog_exe -Confirm:$false
+    Write-Output "Installing GOG through Chocolatey"
+    choco install goggalaxy --force
 }
 
+function Install-7Zip {
+    $7zip_exe = "7z1900-x64.exe"
+    Write-Output "Downloading 7Zip into path $PSScriptRoot\$7zip_exe"
+    $webClient.DownloadFile("https://www.7-zip.org/a/7z1900-x64.exe", "$PSScriptRoot\$7zip_exe")
+    Write-Output "Installing 7Zip"
+    Start-Process -FilePath "$PSScriptRoot\$7zip_exe" -ArgumentList "/qn" -Wait
 
-
-
-
-
-
-
-
-
-
-
+    Write-Output "Cleaning up 7Zip installation file"
+    Remove-Item -Path $PSScriptRoot\$7zip_exe -Confirm:$false
+}
 
 
 
