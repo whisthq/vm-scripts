@@ -2,7 +2,7 @@
 
 This repository contains the Fractal PowerShell scripts that get launched at creation of a cloud computer to set it up in a specific configuration. These scripts can be toggled from a selection on the Fractal website in the cloud computer creation page, and are then fed to the Azure SDK when the VM gets created. A combination of many scripts can be selected.
 
-The general script, `master.ps1`, always gets installed and sets up the cloud computer for optimal general usage with Fractal. The following tasks are performed by the general script.
+The general script, `master.ps1`, always gets installed and sets up the cloud computer for optimal general usage with Fractal. When you run the PowerShell script initially on a VM from the PowerShell prompt (as-opposed to loading it directly in the Azure VM creation), you might get an access denied error. If this is the case, run `Set-ExecutionPolicy RemoteSigned` and retry. The following tasks are performed by the general script:
 
 - Update Windows
 - Update Firewall to allow ICMP pings
