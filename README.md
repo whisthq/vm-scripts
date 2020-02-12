@@ -74,3 +74,5 @@ The following usage-specific scripts are currently supported, although some of t
   - Adobe Acrobat Reader DC
   - Skype
   - Zoom
+  
+  All of these scripts are hosted in the Fractal AWS S3 bucket "fractal-cloud-setup-s3bucket" at https://s3.console.aws.amazon.com/s3/home?region=us-east-1 and should be replaced there when there is another change for release.
