@@ -2,8 +2,5 @@
 $script_name = "utils.psm1"
 Import-Module "C:\$script_name"
 
-Install-GeForceExperience
-Install-Steam
-Install-EpicGamesLauncher
-Install-GOG
-Install-Blizzard
+Install-Solidworks
+Install-Fusion360

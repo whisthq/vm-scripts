@@ -135,14 +135,8 @@ function Install-Chocolatey {
 }
 
 function Install-Steam {
-    $steam_exe = "steam.exe"
-    Write-Output "Downloading Steam into path $PSScriptRoot\$steam_exe"
-    $webClient.DownloadFile("https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe", "$PSScriptRoot\$steam_exe")
-    Write-Output "Installing Steam"
-    Start-Process -FilePath "$PSScriptRoot\$steam_exe" -ArgumentList "/S" -Wait
-
-    Write-Output "Cleaning up Steam installation file"
-    Remove-Item -Path $PSScriptRoot\$steam_exe -Confirm:$false
+    Write-Output 'Installing Steam through Chrocolatey'
+    choco install steam --force
 }
 
 function Install-GoogleChrome {
@@ -179,58 +173,28 @@ function Install-Blizzard {
 }
 
 function Install-Git {
-    $git_exe = "Git-2.25.0-64-bit.exe"
-    Write-Output "Downloading Git into path $PSScriptRoot\$git_exe"
-    $webClient.DownloadFile("https://github.com/git-for-windows/git/releases/download/v2.25.0.windows.1/Git-2.25.0-64-bit.exe", "$PSScriptRoot\$git_exe")
-    Write-Output "Installing Git"
-    Start-Process -FilePath "$PSScriptRoot\$git_exe" -ArgumentList "/qn" -Wait
-
-    Write-Output "Cleaning up Git installation file"
-    Remove-Item -Path $PSScriptRoot\$git_exe -Confirm:$false
+    Write-Output "Installing Git through Chocolatey"
+    choco install git --force
 }
 
 function Install-OpenCV {
-    $opencv_exe = "opencv-4.2.0-vc14_vc15.exe"
-    Write-Output "Downloading OpenCV into path $PSScriptRoot\$opencv_exe"
-    $webClient.DownloadFile("https://sourceforge.net/projects/opencvlibrary/files/latest/download", "$PSScriptRoot\$opencv_exe")
-    Write-Output "Installing OpenCV"
-    Start-Process -FilePath "$PSScriptRoot\$opencv_exe" -ArgumentList "/qn" -Wait
-
-    Write-Output "Cleaning up OpenCV installation file"
-    Remove-Item -Path $PSScriptRoot\$opencv_exe -Confirm:$false
+    Write-Output "Installing OpenCV through Chocolatey"
+    choco install opencv --force
 }
 
 function Install-Blender {
-    $blender_msi = "blender-2.81a-windows64.msi"
-    Write-Output "Downloading Blender into path $PSScriptRoot\$blender_msi"
-    $webClient.DownloadFile("https://www.blender.org/download/Blender2.81/blender-2.81a-windows64.msi/", "$PSScriptRoot\$blender_msi")
-    Write-Output "Installing Blender"
-    Start-Process -FilePath "$PSScriptRoot\$blender_msi" -ArgumentList "/qn" -Wait
-
-    Write-Output "Cleaning up Blender installation file"
-    Remove-Item -Path $PSScriptRoot\$blender_msi -Confirm:$false
+    Write-Output "Installing Blender through Chocolatey"
+    choco install blender --force
 }
 
 function Install-AdobeAcrobat {
-    $acrobat_exe = "readerdc_en_xa_cra_install.exe"
-    Write-Output "Downloading Adobe Acrobat Reader into path $PSScriptRoot\$acrobat_exe"
-    $webClient.DownloadFile("https://get.adobe.com/reader/download/?installer=Reader_DC_2019.021.20058_English_for_Windows&os=Windows%2010&browser_type=KHTML&browser_dist=Chrome&dualoffer=false&mdualoffer=true&cr=true&stype=7468&d=McAfee_Security_Scan_Plus&d=McAfee_Safe_Connect/", "$PSScriptRoot\$acrobat_exe")
-    Write-Output "Installing Adobe Acrobat Reader"
-    Start-Process -FilePath "$PSScriptRoot\$acrobat_exe" -ArgumentList "/qn" -Wait
-
-    Write-Output "Cleaning up Adobe Acrobat Reader installation file"
-    Remove-Item -Path $PSScriptRoot\$acrobat_exe -Confirm:$false
+    Write-Output "Installing Adobe Acrobat Reader DC through Chocolatey"
+    choco install adobereader --force
 }
 
 function Install-Skype {
-    $skype_exe = "Skype-8.56.0.103.exe"
-    Write-Output "Downloading Skype into path $PSScriptRoot\$skype_exe"
-    $webClient.DownloadFile("https://go.skype.com/windows.desktop.download", "$PSScriptRoot\$skype_exe")
-    Write-Output "Installing Skype"
-    Start-Process -FilePath "$PSScriptRoot\$skype_exe" -ArgumentList "/qn" -Wait
-
-    Write-Output "Cleaning up Skype installation file"
-    Remove-Item -Path $PSScriptRoot\$skype_exe -Confirm:$false
+    Write-Output "Installing Skype through Chocolatey"
+    choco install skype --force
 }
 
 function Install-AdobeCreativeCloud {
@@ -254,11 +218,13 @@ function Install-3DSMaxDesign {
 }
 
 function Install-Zoom {
-    # Not downloadable without a Zoom account
+    Write-Output "Installing Zoom through Chocolatey"
+    choco install zoom --force
 }
 
 function Install-Office {
-    # Not downloadable without a Microsoft account
+    Write-Output "Installing Microsoft Office Suite through Chocolatey"
+    choco install microsoft-office-deployment --force
 }
 
 function Install-Anaconda {
@@ -273,25 +239,13 @@ function Install-Anaconda {
 }
 
 function Install-Docker {
-    $docker_exe = "Docker Desktop Installer.exe"
-    Write-Output "Downloading Docker into path $PSScriptRoot\$docker_exe"
-    $webClient.DownloadFile("https://download.docker.com/win/stable/Docker%20Desktop%20Installer.exe", "$PSScriptRoot\$docker_exe")
-    Write-Output "Installing Docker"
-    Start-Process -FilePath "$PSScriptRoot\$docker_exe" -ArgumentList "/qn" -Wait
-
-    Write-Output "Cleaning up Docker installation file"
-    Remove-Item -Path $PSScriptRoot\$docker_exe -Confirm:$false
+    Write-Output "Installing Docker through Chocolatey"
+    choco install docker --force
 }
 
 function Install-Atom {
-    $atom_exe = "AtomSetup-x64.exe"
-    Write-Output "Downloading Atom into path $PSScriptRoot\$atom_exe"
-    $webClient.DownloadFile("https://atom.io/download/windows_x64", "$PSScriptRoot\$atom_exe")
-    Write-Output "Installing Atom"
-    Start-Process -FilePath "$PSScriptRoot\$atom_exe" -ArgumentList "/qn" -Wait
-
-    Write-Output "Cleaning up Atom installation file"
-    Remove-Item -Path $PSScriptRoot\$atom_exe -Confirm:$false
+    Write-Output "Installing Atom through Chocolatey"
+    choco install atom --force
 }
 
 function Install-Cinema4D {

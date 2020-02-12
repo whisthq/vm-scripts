@@ -11,93 +11,136 @@ param (
 )
 
 # Helper function to download the PowerShell scripts from S3 buckets
-function GetPowershellScript ($script_name, $script_url) {
-    Write-Host "Downloading Powershell script $script_name from $script_url"
+function GetPowerShellScript ($script_name, $script_url) {
+    Write-Output "Downloading Powershell script $script_name from $script_url"
     [Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
     $webClient = new-object System.Net.WebClient
-    $webClient.DownloadFile($url, "C:\$script_name")
+    $webClient.DownloadFile($script_url, $script_name)
 }
 
-# TODO: Change to fixed path & get the file downloaded on VM
-$script_name = "C:\users\phili\Downloads\fractal-setup-scripts\utils.psm1"
-Import-Module "$script_name"
+# Get utils PowerShell script with all helper functions
+$utils_script_name = "C:\utils.psm1"
+$utils_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/utils.psm1"
+GetPowerShellScript $utils_script_name $utils_script_url
+Import-Module "$utils_script_name"
 
-Update-Windows
-Update-Firewall
-Install-NvidiaTeslaPublicDrivers
-Disable-TCC
-Set-OptimalGPUSettings
-Disable-HyperV
-Set-Time
-Disable-NetworkWindow
-Set-MousePrecision
-Enable-MouseKeys
-Enable-Audio
-Show-FileExtensions
-Install-DotNetFramework
-Install-VirtualAudio
-Install-Chocolatey
-Enable-FractalService
-Enable-FractalFirewallRule
-Install-DirectX
-Install-GoogleChrome
-Install-Spotify
-Install-7Zip
-Set-FractalDirectory
-Install-Fractal
-Set-Wallpaper
-Disable-Lock
-Disable-Logout
-Disable-Shutdown
-Add-AutoLogin $admin_username $admin_password
+# Run all the basic commands to setup a Fractal cloud computer
+
+# Update-Windows
+# Update-Firewall
+# Install-Chocolatey
+# Install-DotNetFramework
+# Install-DirectX
+# Install-VirtualAudio
+# Enable-Audio
+# Enable-MouseKeys
+# Set-MousePrecision
+
+
+
+# solidworks, fushion360
+
+Install-GeForceExperience
+Install-EpicGamesLauncher
+Install-Blizzard
+Install-AutodeskMaya
+Install-ZBrush
+Install-Cinema4D
+Install-3DSMaxDesign
+Install-AdobeCreativeCloud
+Install-DaVinciResolve
+Install-Anaconda
+
+
+
+# Install-NvidiaTeslaPublicDrivers
+# Disable-TCC
+# Set-OptimalGPUSettings
+# Disable-HyperV
+# Set-Time
+# Disable-NetworkWindow
+# Show-FileExtensions
+
+# Enable-FractalService
+# Enable-FractalFirewallRule
+# Install-GoogleChrome
+# Install-Spotify
+# Install-7Zip
+# Set-FractalDirectory
+# Install-Fractal
+# Set-Wallpaper
+# Disable-Lock
+# Disable-Logout
+# Disable-Shutdown
+# Add-AutoLogin $admin_username $admin_password
+
+
+
+
+
 
 # Install creative packages
 if ($creative_install) {
     # fetch the script, run it and clean
-    GetPowershellScript("creative.ps1", "TODO")
-    Start-Process powershell.exe -verb RunAs -argument "-file C:\creative.ps1" -Wait
+    Write-Output "Launching Creative Install script"
+    $creative_script_name = "C:\creative.ps1"
+    $creative_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/creative.ps1"
+    GetPowerShellScript $creative_script_name $creative_script_url
+    Start-Process powershell.exe -verb RunAs -argument "-file $creative_script_name" -Wait
     Write-Output "Cleaning up Creative Install script"
-    Remove-Item -Path "C:\creative.ps1" -Confirm:$false
+    Remove-Item -Path $creative_script_name -Confirm:$false
 }
 
 # Install data science packages
 if ($datascience_install) {
     # fetch the script, run it and clean
-    GetPowershellScript("datascience.ps1", "TODO")
-    Start-Process powershell.exe -verb RunAs -argument "-file C:\datascience.ps1" -Wait
+    Write-Output "Launching Data Science Install script"
+    $datascience_script_name = "C:\datascience.ps1"
+    $datascience_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/datascience.ps1"
+    GetPowerShellScript $datascience_script_name $datascience_script_url
+    Start-Process powershell.exe -verb RunAs -argument "-file $datascience_script_name" -Wait
     Write-Output "Cleaning up Data Science Install script"
-    Remove-Item -Path "C:\datascience.ps1" -Confirm:$false
+    Remove-Item -Path $datascience_script_name -Confirm:$false
 }
 
 # Install gaming packages
 if ($gaming_install) {
     # fetch the script, run it and clean
-    GetPowershellScript("gaming.ps1", "TODO")
-    Start-Process powershell.exe -verb RunAs -argument "-file C:\gaming.ps1" -Wait
+    Write-Output "Launching Gaming Install script"
+    $gaming_script_name = "C:\gaming.ps1"
+    $gaming_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/gaming.ps1"
+    GetPowerShellScript $gaming_script_name $gaming_script_url
+    Start-Process powershell.exe -verb RunAs -argument "-file $gaming_script_name" -Wait
     Write-Output "Cleaning up Gaming Install script"
-    Remove-Item -Path "C:\gaming.ps1" -Confirm:$false
+    Remove-Item -Path $gaming_script_name -Confirm:$false
 }
 
 # Install software development packages
 if ($softwaredev_install) {
     # fetch the script, run it and clean
-    GetPowershellScript("softwaredev.ps1", "TODO")
-    Start-Process powershell.exe -verb RunAs -argument "-file C:\softwaredev.ps1" -Wait
+    Write-Output "Launching Software Development Install script"
+    $softwaredev_script_name = "C:\softwaredev.ps1"
+    $softwaredev_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/softwaredev.ps1"
+    GetPowerShellScript $softwaredev_script_name $softwaredev_script_url
+    Start-Process powershell.exe -verb RunAs -argument "-file $software_script_name" -Wait
     Write-Output "Cleaning up Software Development Install script"
-    Remove-Item -Path "C:\softwaredev.ps1" -Confirm:$false
+    Remove-Item -Path $softwaredev_script_name -Confirm:$false
 }
 
 # Install productivity packages
 if ($productivity_install) {
     # fetch the script, run it and clean
-    GetPowershellScript("productivity.ps1", "TODO")
-    Start-Process powershell.exe -verb RunAs -argument "-file C:\productivity.ps1" -Wait
+    Write-Output "Launching Productivity Install script"
+    $productivity_script_name = "C:\productivity.ps1"
+    $productivity_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/productivity.ps1"
+    GetPowerShellScript $productivity_script_name $productivity_script_url
+    Start-Process powershell.exe -verb RunAs -argument "-file $productivity_script_name" -Wait
     Write-Output "Cleaning up Productivity Install script"
-    Remove-Item -Path "C:\productivity.ps1" -Confirm:$false
+    Remove-Item -Path $productivity_script_name -Confirm:$false
 }
 
-# Clean PowerShell install script
+# # Clean PowerShell install script
 Write-Output "Cleaning up Utils script"
-Remove-Item -Path "C:\utils.psm1" -Confirm:$false
+Remove-Item -Path $utils_script_name -Confirm:$false
 
-Restart-Computer
+# Restart-Computer

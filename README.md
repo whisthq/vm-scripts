@@ -6,21 +6,28 @@ The general script, `master.ps1`, always gets installed and sets up the cloud co
 
 - Update Windows
 - Update Firewall to allow ICMP pings
+- Install Chocolatey for easy Windows packages installation
+- Install .Net Framework (4.7)
+- Install DirectX
+- Install the Virtual Audio Driver
+
+
+
+
+
+
+
 - Install Nvidia Tesla Public Drivers (in addition to GRID drivers, includes Cuda Toolkit 10.2)
 - Disable Tesla TCC mode to enable Tesla Graphics (WDM mode)
 - Set Optimal Tesla M60 GPU Settings
 - Enable Audio by autostarting the Audio service
 - Set Automatic Time & Timezone
-- Install the Virtual Audio Driver
-- Install Chocolatey for easy Windows packages installation
 - Enable the Fractal Service
 - Enable Fractal Firewall Rules
 - Install Google Chrome
 - Install Spotify
 - Install Tesla Nvidia Public Drivers
 - Install 7zip
-- Install DirectX
-- Install .Net Framework (4.7)
 - Create Fractal Directory in Program Files
 - Install Fractal & Create Desktop Shortcut
 - Set Fractal Wallpaper
@@ -32,6 +39,10 @@ The general script, `master.ps1`, always gets installed and sets up the cloud co
 - Disable Hyper-V Video (to use the GPU instead)
 - Disable Shutdown, Logout and Sleep in Start Menu
 - Set Auto-Login
+
+
+
+
 
 The following usage-specific scripts are currently supported, although some of the softwares listed here cannot actually be installed through PowerShell, but are listed for potential manual-install:
 
@@ -67,10 +78,13 @@ The following usage-specific scripts are currently supported, although some of t
   - Cuda Toolkit
   - OpenCV
   
+
+
+
+
+
 - Productivity Script
-  - Microsoft Office
-  - Adobe Acrobat
+  - Microsoft Office Suite
+  - Adobe Acrobat Reader DC
   - Skype
   - Zoom
-
-*Once we have a solid customer base, it could be valuable to have companies pay us to have their software installed by default on Fractal cloud computers.
