@@ -7,7 +7,8 @@ param (
     [switch]        $datascience_install    = $false,
     [switch]        $gaming_install         = $false,
     [switch]        $productivity_install   = $false,
-    [switch]        $softwaredev_install    = $false
+    [switch]        $softwaredev_install    = $false,
+    [switch]        $engineering_install    = $false
 )
 
 # Helper function to download the PowerShell scripts from S3 buckets
@@ -18,14 +19,13 @@ function GetPowerShellScript ($script_name, $script_url) {
     $webClient.DownloadFile($script_url, $script_name)
 }
 
-# Get utils PowerShell script with all helper functions
+# Download utils PowerShell script with helper functions
 $utils_script_name = "C:\utils.psm1"
 $utils_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/utils.psm1"
 GetPowerShellScript $utils_script_name $utils_script_url
 Import-Module "$utils_script_name"
 
 # Run all the basic commands to setup a Fractal cloud computer
-
 # Update-Windows
 # Update-Firewall
 # Install-Chocolatey
@@ -35,49 +35,38 @@ Import-Module "$utils_script_name"
 # Enable-Audio
 # Enable-MouseKeys
 # Set-MousePrecision
-
-
-
-# solidworks, fushion360
-
-Install-GeForceExperience
-Install-EpicGamesLauncher
-Install-Blizzard
-Install-AutodeskMaya
-Install-ZBrush
-Install-Cinema4D
-Install-3DSMaxDesign
-Install-AdobeCreativeCloud
-Install-DaVinciResolve
-Install-Anaconda
-
-
-
+# Set-Time
+# Disable-NetworkWindow
+# Show-FileExtensions
+# Install-7Zip
+# Install-Spotify
+# Install-GoogleChrome
 # Install-NvidiaTeslaPublicDrivers
 # Disable-TCC
 # Set-OptimalGPUSettings
 # Disable-HyperV
-# Set-Time
-# Disable-NetworkWindow
-# Show-FileExtensions
-
-# Enable-FractalService
-# Enable-FractalFirewallRule
-# Install-GoogleChrome
-# Install-Spotify
-# Install-7Zip
 # Set-FractalDirectory
-# Install-Fractal
-# Set-Wallpaper
+
+
+
+
+
+
+# - Download the Fractal service
+# - Enable the Fractal Service
+# - Download the Fractal server executable
+# - Download the Fractal wallpaper
+# - Set Fractal Wallpaper
+
+
+
+
+
+# Enable-FractalFirewallRule
 # Disable-Lock
 # Disable-Logout
 # Disable-Shutdown
 # Add-AutoLogin $admin_username $admin_password
-
-
-
-
-
 
 # Install creative packages
 if ($creative_install) {
@@ -122,9 +111,21 @@ if ($softwaredev_install) {
     $softwaredev_script_name = "C:\softwaredev.ps1"
     $softwaredev_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/softwaredev.ps1"
     GetPowerShellScript $softwaredev_script_name $softwaredev_script_url
-    Start-Process powershell.exe -verb RunAs -argument "-file $software_script_name" -Wait
+    Start-Process powershell.exe -verb RunAs -argument "-file $softwaredev_script_name" -Wait
     Write-Output "Cleaning up Software Development Install script"
     Remove-Item -Path $softwaredev_script_name -Confirm:$false
+}
+
+# Install engineering packages
+if ($engineering_install) {
+    # fetch the script, run it and clean
+    Write-Output "Launching Engineering Install script"
+    $engineering_script_name = "C:\engineering.ps1"
+    $engineering_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/engineering.ps1"
+    GetPowerShellScript $engineering_script_name $engineering_script_url
+    Start-Process powershell.exe -verb RunAs -argument "-file $engineering_script_name" -Wait
+    Write-Output "Cleaning up Engineering Install script"
+    Remove-Item -Path $engineering_script_name -Confirm:$false
 }
 
 # Install productivity packages

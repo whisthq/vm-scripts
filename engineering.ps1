@@ -4,3 +4,4 @@ Import-Module "C:\$script_name"
 
 Install-Solidworks
 Install-Fusion360
+Install-Matlab

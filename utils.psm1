@@ -61,9 +61,8 @@ function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
 function Set-Wallpaper {
     Write-Output "Setting Fractal Wallpaper"
     if((Test-Path -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System) -eq $true) {} Else {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null}
-    if((Test-RegistryValue -path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -value Wallpaper) -eq $true) {Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -value "C:\Program Files\Fractal\desktop.png" | Out-Null} Else {New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -PropertyType String -value "C:\Program Files\Fractal\desktop.png" | Out-Null}
+    if((Test-RegistryValue -path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -value Wallpaper) -eq $true) {Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -value "C:\Program Files\Fractal\wallpaper.png" | Out-Null} Else {New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -PropertyType String -value "C:\Program Files\Fractal\wallpaper.png" | Out-Null}
     if((Test-RegistryValue -path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -value WallpaperStyle) -eq $true) {Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -value 2 | Out-Null} Else {New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -PropertyType String -value 2 | Out-Null}
-    Stop-Process -ProcessName explorer
 }
 
 function Enable-FractalService {
@@ -140,25 +139,13 @@ function Install-Steam {
 }
 
 function Install-GoogleChrome {
-    $chrome_msi = "googlechromestandaloneenterprise64.msi"
-    Write-Output "Downloading Google Chrome into path $PSScriptRoot\$chrome_msi"
-    $webClient.DownloadFile("https://dl.google.com/tag/s/dl/chrome/install/googlechromestandaloneenterprise64.msi", "$PSScriptRoot\$chrome_msi")
-    Write-Output "Installing Google Chrome"
-    Start-Process -FilePath "$PSScriptRoot\$chrome_msi" -ArgumentList "/qn" -Wait
-
-    Write-Output "Cleaning up Google Chrome installation file"
-    Remove-Item -Path $PSScriptRoot\$chrome_msi -Confirm:$false
+    Write-Output 'Installing Google Chrome through Chrocolatey'
+    choco install googlechrome --force
 }
 
 function Install-EpicGamesLauncher {
-    $epicgames_msi = "EpicInstaller-10.12.3-unrealtournament-94b142e24f5e49ffb002092313539737.msi"
-    Write-Output "Downloading Epic Games Launcher into path $PSScriptRoot\$epicgames_msi"
-    $webClient.DownloadFile("https://www.epicgames.com/unrealtournament/download", "$PSScriptRoot\$epicgames_msi")
-    Write-Output "Installing Epic Games Launcher"
-    Start-Process -FilePath "$PSScriptRoot\$epicgames_msi" -ArgumentList "/qn" -Wait
-
-    Write-Output "Cleaning up Epic Games Launcher installation file"
-    Remove-Item -Path $PSScriptRoot\$epicgames_msi -Confirm:$false
+    Write-Output 'Installing Epic Games Launcher through Chrocolatey'
+    choco install epicgameslauncher --force
 }
 
 function Install-Blizzard {
@@ -166,7 +153,7 @@ function Install-Blizzard {
     Write-Output "Downloading Blizzard Battle.Net Launcher into path $PSScriptRoot\$blizzard_exe"
     $webClient.DownloadFile("https://www.battle.net/download/getInstallerForGame?os=win&locale=enUS&version=LIVE&gameProgram=BATTLENET_APP&id=634826696.1580926426", "$PSScriptRoot\$blizzard_exe")    
     Write-Output "Installing Blizzard Battle.Net Launcher"
-    Start-Process -FilePath "$PSScriptRoot\$blizzard_exe" -ArgumentList "/qn" -Wait
+    Start-Process -FilePath "$PSScriptRoot\$blizzard_exe" -ArgumentList "/q" -Wait
 
     Write-Output "Cleaning up Blizzard Battle.Net Launcher installation file"
     Remove-Item -Path $PSScriptRoot\$blizzard_exe -Confirm:$false
@@ -217,6 +204,14 @@ function Install-3DSMaxDesign {
     # Not downloadable without an Autodesk subscription
 }
 
+function Install-Solidworks {
+    # Not downloadable without a Dassault Systemes subscription
+}
+
+function Install-Matlab {
+    # Not downloadable without a Mathworks subscription
+}
+
 function Install-Zoom {
     Write-Output "Installing Zoom through Chocolatey"
     choco install zoom --force
@@ -228,14 +223,8 @@ function Install-Office {
 }
 
 function Install-Anaconda {
-    $anaconda_exe = "Anaconda3-2019.10-Windows-x86_64.exe"
-    Write-Output "Downloading Anaconda into path $PSScriptRoot\$anaconda_exe"
-    $webClient.DownloadFile("https://repo.anaconda.com/archive/Anaconda3-2019.10-Windows-x86_64.exe", "$PSScriptRoot\$anaconda_exe")
-    Write-Output "Installing Anaconda"
-    Start-Process -FilePath "$PSScriptRoot\$anaconda_exe" -ArgumentList "/qn" -Wait
-
-    Write-Output "Cleaning up Anaconda installation file"
-    Remove-Item -Path $PSScriptRoot\$anaconda_exe -Confirm:$false
+    Write-Output "Installing Anaconda (Python 3) through Chocolatey"
+    choco install anaconda3 --force
 }
 
 function Install-Docker {
@@ -249,25 +238,13 @@ function Install-Atom {
 }
 
 function Install-Cinema4D {
-    $cinema4d_exe = "Cinema4D-21.115_Win_Autoinstaller.exe"
-    Write-Output "Downloading Cinema4D into path $PSScriptRoot\$cinema4d_exe"
-    $webClient.DownloadFile("https://installer.maxon.net/installer/21.115_RB297076/Cinema4D-21.115_Win_Autoinstaller.exe", "$PSScriptRoot\$cinema4d_exe")
-    Write-Output "Installing Cinema4D"
-    Start-Process -FilePath "$PSScriptRoot\$cinema4d_exe" -Wait
-
-    Write-Output "Cleaning up Cinema4D installation file"
-    Remove-Item -Path $PSScriptRoot\$cinema4d_exe -Confirm:$false
+    Write-Output "Installing Cinema4D through Chocolatey"
+    choco install cinebench --force
 }
 
 function Install-GeForceExperience {
-    $geforce_exe = "GeForce_Experience_v3.20.2.34.exe"
-    Write-Output "Downloading GeForce Experience into path $PSScriptRoot\$geforce_exe"
-    $webClient.DownloadFile("https://us.download.nvidia.com/GFE/GFEClient/3.20.2.34/GeForce_Experience_v3.20.2.34.exe", "$PSScriptRoot\$geforce_exe")
-    Write-Output "Installing GeForce Experience"
-    Start-Process -FilePath "$PSScriptRoot\$geforce_exe" -ArgumentList "/qn" -Wait
-
-    Write-Output "Cleaning up GeForce Experience installation file"
-    Remove-Item -Path $PSScriptRoot\$geforce_exe -Confirm:$false
+    Write-Output "Installing Nvidia GeForce Experience through Chocolatey"
+    choco install geforce-experience --force
 }
 
 function Install-Lightworks {
@@ -285,6 +262,11 @@ function Install-VSCode {
     choco install vscode --force
 }
 
+function Install-Fusion360 {
+    Write-Output "Installing Autodesk Fusion360 through Chocolatey"
+    choco install autodesk-fusion360 --force
+}
+
 function Install-Spotify {
     Write-Output "Installing Spotify through Chocolatey"
     choco install spotify --force
@@ -296,14 +278,8 @@ function Install-GOG {
 }
 
 function Install-7Zip {
-    $7zip_exe = "7z1900-x64.exe"
-    Write-Output "Downloading 7Zip into path $PSScriptRoot\$7zip_exe"
-    $webClient.DownloadFile("https://www.7-zip.org/a/7z1900-x64.exe", "$PSScriptRoot\$7zip_exe")
-    Write-Output "Installing 7Zip"
-    Start-Process -FilePath "$PSScriptRoot\$7zip_exe" -ArgumentList "/qn" -Wait
-
-    Write-Output "Cleaning up 7Zip installation file"
-    Remove-Item -Path $PSScriptRoot\$7zip_exe -Confirm:$false
+    Write-Output "Installing 7-Zip through Chocolatey"
+    choco install 7zip --force
 }
 
 function Install-WSL {
@@ -377,7 +353,7 @@ function Disable-HyperV {
 
     Write-Output "Disabling Hyper-V Video"
     Import-Module "$PSScriptRoot\$extract_folder\DeviceManagement.psd1"
-    Get-Device | Where-Object -Property Name -Like "Microsoft Hyper-V Video" | Disable-Device -Confirm:$false
+    Get-Device | Where-Object -Property Name -Like "Microsoft Hyper-V Video" | Disable-Device -Confirm:$false -Force
 
     Write-Output "Cleaning up Hyper-V Video disabling file"
     Remove-Item -Path $PSScriptRoot\$compressed_file -Confirm:$false

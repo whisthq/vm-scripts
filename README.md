@@ -10,39 +10,26 @@ The general script, `master.ps1`, always gets installed and sets up the cloud co
 - Install .Net Framework (4.7)
 - Install DirectX
 - Install the Virtual Audio Driver
-
-
-
-
-
-
-
+- Enable Audio by Autostarting the Audio service
+- Enable Accessibility Mouse Keys
+- Set Mouse Pointer Precision
+- Set Automatic Time & Timezone
+- Disable Network Window since always connected via Ethernet
+- Show File Extensions
+- Install 7-Zip
+- Install Spotify
+- Install Google Chrome
 - Install Nvidia Tesla Public Drivers (in addition to GRID drivers, includes Cuda Toolkit 10.2)
 - Disable Tesla TCC mode to enable Tesla Graphics (WDM mode)
 - Set Optimal Tesla M60 GPU Settings
-- Enable Audio by autostarting the Audio service
-- Set Automatic Time & Timezone
-- Enable the Fractal Service
-- Enable Fractal Firewall Rules
-- Install Google Chrome
-- Install Spotify
-- Install Tesla Nvidia Public Drivers
-- Install 7zip
+- Disable Hyper-V Video (to use the GPU instead, will fail if you're using RDP when running the script)
 - Create Fractal Directory in Program Files
-- Install Fractal & Create Desktop Shortcut
-- Set Fractal Wallpaper
-- Set Automatic Time & Timezone
-- Disable Network Window since always connected via Ethernet
-- Set Mouse Pointer Precision
-- Enable Accessibility Mouse Keys
-- Show File Extensions
-- Disable Hyper-V Video (to use the GPU instead)
+- Download & Enable the Fractal service
+- Download the Fractal server executable
+- Download & Set the Fractal wallpaper
+- Enable Fractal Firewall Rules
 - Disable Shutdown, Logout and Sleep in Start Menu
 - Set Auto-Login
-
-
-
-
 
 The following usage-specific scripts are currently supported, although some of the softwares listed here cannot actually be installed through PowerShell, but are listed for potential manual-install:
 
@@ -56,12 +43,17 @@ The following usage-specific scripts are currently supported, although some of t
 - Creative Script
   - Blender
   - Autodesk Maya
-  - ZBrush
-  - Adobe Creative Cloud
+  - ZBrush (can't be installed without a subscription)
+  - Adobe Creative Cloud (can't be installed without a subscription)
   - Cinema4D
-  - 3DS Max Design
-  - DaVinci Resolve
+  - 3DS Max Design (can't be installed without a subscription)
+  - DaVinci Resolve (can't be installed without a subscription)
   - Lightworks
+
+- Engineering Script
+  - Solidworks (can't be installed without a subscription)
+  - Autodesk Fusion 360
+  - Matlab (can't be installed without a subscription)
 
 - Software Development Script
   - Windows Developer Mode Activated
@@ -75,13 +67,7 @@ The following usage-specific scripts are currently supported, although some of t
 - Data Science & Machine Learning Script
   - Git
   - Anaconda & R Studio
-  - Cuda Toolkit
   - OpenCV
-  
-
-
-
-
 
 - Productivity Script
   - Microsoft Office Suite
