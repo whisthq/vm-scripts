@@ -58,15 +58,29 @@ function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
     Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -type String
 }
 
-function Set-Wallpaper {
+function Install-FractalWallpaper {
+    # first download the wallpaper
+    Write-Output "Downloading Fractal Wallpaper"
+    $fractalwallpaper_name = "C:\Program Files\Fractal\wallpaper.png"
+    $fractalwallpaper_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/wallpaper.png"
+    $webClient.DownloadFile($fractalwallpaper_url, $fractalwallpaper_name)
+
+    # then set the wallpaper
     Write-Output "Setting Fractal Wallpaper"
     if((Test-Path -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System) -eq $true) {} Else {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null}
     if((Test-RegistryValue -path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -value Wallpaper) -eq $true) {Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -value "C:\Program Files\Fractal\wallpaper.png" | Out-Null} Else {New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -PropertyType String -value "C:\Program Files\Fractal\wallpaper.png" | Out-Null}
     if((Test-RegistryValue -path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -value WallpaperStyle) -eq $true) {Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -value 2 | Out-Null} Else {New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -PropertyType String -value 2 | Out-Null}
 }
 
-function Enable-FractalService {
-    Write-host "Enabling Fractal Service"
+function Install-FractalService {
+    # first download the service executable
+    Write-Output "Downloading Fractal Service"
+    $fractalservice_name = "C:\Program Files\Fractal\FractalService.exe"
+    $fractalservice_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/FractalService.exe"
+    $webClient.DownloadFile($fractalservice_url, $fractalservice_name)
+
+    # then install the service
+    Write-Output "Enabling Fractal Service"
     cmd.exe /c 'sc.exe Create "Fractal" binPath= "\"C:\Program Files\Fractal\FractalService.exe\"" start= "auto"' | Out-Null
     sc.exe Start 'Fractal' | Out-Null
 }
@@ -360,15 +374,12 @@ function Disable-HyperV {
     Remove-Item -Path $PSScriptRoot\$extract_folder -Confirm:$false -Recurse
 }
 
-function Install-Fractal {
-    $fractal_exe = "fractal.exe"
-    $fractal_path = "C:\Program Files\Fractal"
-
-    Write-Output "Downloading Fractal into path $fractal_path\$fractal_exe"
-    $webClient.DownloadFile("TODO-S3Bucket", "$fractal_path\$fractal_exe")
-
-    Write-Output "Installing Fractal"
-    Start-Process -FilePath "$fractal_path\$fractal_exe" -ArgumentList "/qn" -Wait
+function Install-FractalServer {
+    # only download, server will get started by service
+    Write-Output "Downloading Fractal Server"
+    $fractalserver_name = "C:\Program Files\Fractal\fractalserver.exe"
+    $fractalserver_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/fractalserver.exe"
+    $webClient.DownloadFile($fractalserver_url, $fractalserver_name)
 }
 
 function Install-NvidiaTeslaPublicDrivers {

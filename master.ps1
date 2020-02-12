@@ -1,5 +1,4 @@
 # This script should be run (as Administrator) first before any application-installer script
-# TODO: change password to secure password
 param (
     [string]        $admin_username = "Fractal",
     [SecureString]  $admin_password = (convertto-securestring "password1234567." -asplaintext -force),
@@ -26,47 +25,34 @@ GetPowerShellScript $utils_script_name $utils_script_url
 Import-Module "$utils_script_name"
 
 # Run all the basic commands to setup a Fractal cloud computer
-# Update-Windows
-# Update-Firewall
-# Install-Chocolatey
-# Install-DotNetFramework
-# Install-DirectX
-# Install-VirtualAudio
-# Enable-Audio
-# Enable-MouseKeys
-# Set-MousePrecision
-# Set-Time
-# Disable-NetworkWindow
-# Show-FileExtensions
-# Install-7Zip
-# Install-Spotify
-# Install-GoogleChrome
-# Install-NvidiaTeslaPublicDrivers
-# Disable-TCC
-# Set-OptimalGPUSettings
-# Disable-HyperV
-# Set-FractalDirectory
-
-
-
-
-
-
-# - Download the Fractal service
-# - Enable the Fractal Service
-# - Download the Fractal server executable
-# - Download the Fractal wallpaper
-# - Set Fractal Wallpaper
-
-
-
-
-
-# Enable-FractalFirewallRule
-# Disable-Lock
-# Disable-Logout
-# Disable-Shutdown
-# Add-AutoLogin $admin_username $admin_password
+Update-Windows
+Update-Firewall
+Install-Chocolatey
+Install-DotNetFramework
+Install-DirectX
+Install-VirtualAudio
+Enable-Audio
+Enable-MouseKeys
+Set-MousePrecision
+Set-Time
+Disable-NetworkWindow
+Show-FileExtensions
+Install-7Zip
+Install-Spotify
+Install-GoogleChrome
+Install-NvidiaTeslaPublicDrivers
+Disable-TCC
+Set-OptimalGPUSettings
+Disable-HyperV
+Set-FractalDirectory
+Install-FractalService
+Install-FractalServer
+Install-FractalWallpaper
+Enable-FractalFirewallRule
+Disable-Lock
+Disable-Logout
+Disable-Shutdown
+Add-AutoLogin $admin_username $admin_password
 
 # Install creative packages
 if ($creative_install) {
@@ -144,4 +130,4 @@ if ($productivity_install) {
 Write-Output "Cleaning up Utils script"
 Remove-Item -Path $utils_script_name -Confirm:$false
 
-# Restart-Computer
+Restart-Computer
