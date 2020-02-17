@@ -37,7 +37,7 @@ function Update-Windows {
     Write-Output "Cleaning up Windows Update installation files"
     Remove-Item -Path $PSScriptRoot\$update_script -Confirm:$false
     Remove-Item -Path $PSScriptRoot\$compressed_file -Confirm:$false
-    Remove-Item -Path $PSScriptRoot\"TestServ01_Report.txt" -Confirm:$false
+    Remove-Item -Path $PSScriptRoot\"'$env:COMPUTERNAME'_Report.txt" -Confirm:$false
 }
 
 function Update-Firewall {
@@ -87,7 +87,7 @@ function Install-FractalService {
     # then install the service
     Write-Output "Enabling Fractal Service"
     cmd.exe /c 'sc.exe Create "Fractal" binPath= "\"C:\Program Files\Fractal\FractalService.exe\"" start= "auto"' | Out-Null
-    cmd.exe /c 'sc.exe "Fractal" "Fractal Service"' | Out-Null
+    cmd.exe /c 'sc.exe description "Fractal" "Fractal Service"' | Out-Null
     sc.exe Start 'Fractal' | Out-Null
 }
 
@@ -146,6 +146,10 @@ function Install-VirtualAudio {
     Remove-Item -Path $PSScriptRoot\$wdk_installer -Confirm:$false
     Remove-Item -Path $PSScriptRoot\$compressed_file -Confirm:$false
     Remove-Item -Path $PSScriptRoot\$cert -Confirm:$false
+
+    Write-Output "Removing WDK Desktop shortcuts"
+    Remove-Item -Path C:\Users\Fractal\Desktop\'Windows TShell'.lnk –Force
+    Remove-Item -Path C:\Users\Fractal\Desktop\WPCups.lnk –Force
 }
 
 function Install-Chocolatey {
@@ -362,8 +366,8 @@ function Set-FractalDirectory {
 }
 
 function Install-DotNetFramework {
-    Write-Output "Installing .Net Framework Core 4.7 through Chocolatey"
-    choco install dotnet4.7 --force
+    Write-Output "Installing .Net Framework Core 4.8 through Chocolatey"
+    choco install dotnetfx --force
 }
 
 function Disable-HyperV {
@@ -439,8 +443,8 @@ function Install-NvidiaTeslaPublicDrivers {
     $webClient.DownloadFile($url, $driver_file)
 
     Write-Output "Installing Nvidia M60 driver from file $PSScriptRoot\$driver_file"
-    Start-Process -FilePath "$PSScriptRoot\$driver_file" -ArgumentList "-s", "-noreboot" -Wait
-    Start-Process -FilePath "C:\NVIDIA\$version\setup.exe" -ArgumentList "-s", "-noreboot" -Wait
+    Start-Process -FilePath "C:\Users\Fractal\$driver_file" -ArgumentList "-s", "-noreboot" -Wait
+    Start-Process -FilePath "C:\NVIDIA\DisplayDriver\$version\Win10_64\International\setup.exe" -ArgumentList "-s", "-noreboot" -Wait
 
     Write-Output "Cleaning up Nvidia Public Drivers installation file"
     Remove-Item -Path $PSScriptRoot\$driver_file -Confirm:$false
