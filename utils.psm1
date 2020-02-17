@@ -419,7 +419,7 @@ function Install-FractalServer {
 
     $postproc_name = "C:\Program Files\Fractal\postproc-55.dll"
     $postproc_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/postproc-55.dll"
-    $webClient.DownloadFile($fractalserver_url, $fractalserver_name)
+    $webClient.DownloadFile($postproc_url, $postproc_name)
 
     $swresample_name = "C:\Program Files\Fractal\swresample-3.dll"
     $swresample_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/swresample-3.dll"
