@@ -43,12 +43,12 @@ Install-GoogleChrome
 Install-NvidiaTeslaPublicDrivers
 Disable-TCC
 Set-OptimalGPUSettings
-Disable-HyperV
 Set-FractalDirectory
 Install-FractalService
 Install-FractalServer
 Install-FractalWallpaper
 Enable-FractalFirewallRule
+#Disable-HyperV
 #Disable-Lock
 #Disable-Logout
 #Disable-Shutdown

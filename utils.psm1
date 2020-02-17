@@ -124,7 +124,7 @@ function Install-VirtualAudio {
     Start-Process -FilePath "$PSScriptRoot\$wdk_installer" -ArgumentList "/S" -Wait
 
     $cert = "vb_cert.cer"
-    $url = "https://fractal-audiodriver-certificate.s3.amazonaws.com/vb_cert.cer"
+    $url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/vb_cert.cer"
 
     Write-Output "Downloading VB certificate from $url"
     $webClient.DownloadFile($url, "$PSScriptRoot\$cert")
@@ -154,7 +154,7 @@ function Install-Steam {
 
 function Install-GoogleChrome {
     Write-Output 'Installing Google Chrome through Chrocolatey'
-    choco install googlechrome --force
+    choco install googlechrome --force --ignorance-checksums
 }
 
 function Install-EpicGamesLauncher {
@@ -367,7 +367,7 @@ function Disable-HyperV {
 
     Write-Output "Disabling Hyper-V Video"
     Import-Module "$PSScriptRoot\$extract_folder\DeviceManagement.psd1"
-    Get-Device | Where-Object -Property Name -Like "Microsoft Hyper-V Video" | Disable-Device -Confirm:$false -Force
+    Get-Device | Where-Object -Property Name -Like "Microsoft Hyper-V Video" | Disable-Device -Confirm:$false
 
     Write-Output "Cleaning up Hyper-V Video disabling file"
     Remove-Item -Path $PSScriptRoot\$compressed_file -Confirm:$false
@@ -412,18 +412,18 @@ function Install-FractalServer {
     $webClient.DownloadFile($swresample_url, $swresample_name)
 
     $swscale_name = "C:\Program Files\Fractal\swscale-5.dll"
-    $sws_scale_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/swscale-5.dll"
+    $swscale_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/swscale-5.dll"
     $webClient.DownloadFile($swscale_url, $swscale_name)
 }
 
 function Install-NvidiaTeslaPublicDrivers {
     Write-Output "Installing Nvidia Public Driver (GRID already installed at deployment through Azure)"
-    $driver_file = "441.22-tesla-desktop-win10-64bit-international.exe"
+    $driver_file = "$PSScriptRoot\441.22-tesla-desktop-win10-64bit-international.exe"
     $version = "441.22"
     $url = "http://us.download.nvidia.com/tesla/441.22/441.22-tesla-desktop-win10-64bit-international.exe"
     
     Write-Output "Downloading Nvidia M60 driver from URL $url"
-    $webClient.DownloadFile($url, "$PSScriptRoot\$driver_file")
+    $webClient.DownloadFile($url, $driver_file)
 
     Write-Output "Installing Nvidia M60 driver from file $PSScriptRoot\$driver_file"
     Start-Process -FilePath "$PSScriptRoot\$driver_file" -ArgumentList "-s", "-noreboot" -Wait
@@ -432,8 +432,8 @@ function Install-NvidiaTeslaPublicDrivers {
 
 function Set-OptimalGPUSettings {
     Write-Output "Setting Optimal Tesla M60 GPU Settings"
-    .\C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi --auto-boost-default=0
-    .\C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi -ac "2505,1177"
+    .\C:\'Program Files'\NVIDIA Corporation\NVSMI\nvidia-smi --auto-boost-default=0
+    .\C:\'Program Files'\NVIDIA Corporation\NVSMI\nvidia-smi -ac "2505,1177"
 }
 
 function Install-DirectX {
