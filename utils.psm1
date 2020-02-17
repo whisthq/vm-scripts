@@ -37,7 +37,6 @@ function Update-Windows {
     Write-Output "Cleaning up Windows Update installation files"
     Remove-Item -Path $PSScriptRoot\$update_script -Confirm:$false
     Remove-Item -Path $PSScriptRoot\$compressed_file -Confirm:$false
-    Remove-Item -Path $PSScriptRoot\$cert -Confirm:$false
     Remove-Item -Path $PSScriptRoot\"TestServ01_Report.txt" -Confirm:$false
 }
 
@@ -163,7 +162,7 @@ function Install-Steam {
 
 function Install-GoogleChrome {
     Write-Output 'Installing Google Chrome through Chrocolatey'
-    choco install googlechrome --force --ignorance-checksums
+    choco install googlechrome --force --ignore-checksums
 }
 
 function Install-EpicGamesLauncher {
@@ -432,7 +431,7 @@ function Install-FractalServer {
 
 function Install-NvidiaTeslaPublicDrivers {
     Write-Output "Installing Nvidia Public Driver (GRID already installed at deployment through Azure)"
-    $driver_file = "$PSScriptRoot\441.22-tesla-desktop-win10-64bit-international.exe"
+    $driver_file = "441.22-tesla-desktop-win10-64bit-international.exe"
     $version = "441.22"
     $url = "http://us.download.nvidia.com/tesla/441.22/441.22-tesla-desktop-win10-64bit-international.exe"
     
@@ -442,12 +441,15 @@ function Install-NvidiaTeslaPublicDrivers {
     Write-Output "Installing Nvidia M60 driver from file $PSScriptRoot\$driver_file"
     Start-Process -FilePath "$PSScriptRoot\$driver_file" -ArgumentList "-s", "-noreboot" -Wait
     Start-Process -FilePath "C:\NVIDIA\$version\setup.exe" -ArgumentList "-s", "-noreboot" -Wait
+
+    Write-Output "Cleaning up Nvidia Public Drivers installation file"
+    Remove-Item -Path $PSScriptRoot\$driver_file -Confirm:$false
 }
 
 function Set-OptimalGPUSettings {
     Write-Output "Setting Optimal Tesla M60 GPU Settings"
-    .\C:\'Program Files'\NVIDIA Corporation\NVSMI\nvidia-smi --auto-boost-default=0
-    .\C:\'Program Files'\NVIDIA Corporation\NVSMI\nvidia-smi -ac "2505,1177"
+    .\C:\'Program Files'\'NVIDIA Corporation'\NVSMI\nvidia-smi --auto-boost-default=0
+    .\C:\'Program Files'\'NVIDIA Corporation'\NVSMI\nvidia-smi -ac "2505,1177"
 }
 
 function Install-DirectX {
