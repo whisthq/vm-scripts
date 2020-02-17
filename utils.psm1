@@ -33,6 +33,12 @@ function Update-Windows {
 
     Write-Output "Running Windows Update"
     Invoke-Expression $PSScriptRoot\$update_script
+
+    Write-Output "Cleaning up Windows Update installation files"
+    Remove-Item -Path $PSScriptRoot\$update_script -Confirm:$false
+    Remove-Item -Path $PSScriptRoot\$compressed_file -Confirm:$false
+    Remove-Item -Path $PSScriptRoot\$cert -Confirm:$false
+    Remove-Item -Path $PSScriptRoot\"TestServ01_Report.txt" -Confirm:$false
 }
 
 function Update-Firewall {
@@ -82,6 +88,7 @@ function Install-FractalService {
     # then install the service
     Write-Output "Enabling Fractal Service"
     cmd.exe /c 'sc.exe Create "Fractal" binPath= "\"C:\Program Files\Fractal\FractalService.exe\"" start= "auto"' | Out-Null
+    cmd.exe /c 'sc.exe "Fractal" "Fractal Service"' | Out-Null
     sc.exe Start 'Fractal' | Out-Null
 }
 
@@ -105,7 +112,7 @@ function Install-VirtualAudio {
     $compressed_file = "VBCABLE_Driver_Pack43.zip"
     $driver_folder = "VBCABLE_Driver_Pack43"
     $driver_inf = "vbMmeCable64_win7.inf"
-    $hardward_id = "VBAudioVACWDM"
+    $hardware_id = "VBAudioVACWDM"
 
     Write-Output "Downloading Virtual Audio Driver"
     $webClient.DownloadFile("http://vbaudio.jcedeveloppement.com/Download_CABLE/VBCABLE_Driver_Pack43.zip", "$PSScriptRoot\$compressed_file")
@@ -133,11 +140,13 @@ function Install-VirtualAudio {
     Import-Certificate -FilePath "$PSScriptRoot\$cert" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher"
 
     Write-Output "Installing Virtual Audio Driver"
-    Start-Process -FilePath $devcon -ArgumentList "install", "$PSScriptRoot\$driver_folder\$driver_inf", $hardward_id -Wait
+    Start-Process -FilePath $devcon -ArgumentList "install", "$PSScriptRoot\$driver_folder\$driver_inf", $hardware_id -Wait
 
     Write-Output "Cleaning up Virtual Audio Driver installation files"
     Remove-Item -Path $PSScriptRoot\$driver_folder -Confirm:$false -Recurse
     Remove-Item -Path $PSScriptRoot\$wdk_installer -Confirm:$false
+    Remove-Item -Path $PSScriptRoot\$compressed_file -Confirm:$false
+    Remove-Item -Path $PSScriptRoot\$cert -Confirm:$false
 }
 
 function Install-Chocolatey {
@@ -266,9 +275,14 @@ function Install-Lightworks {
     choco install lightworks --force
 }
 
-function Install-VS2019 {
+function Install-VSPro2019 {
     Write-Output "Installing Visual Studio Professional 2019 through Chocolatey"
     choco install visualstudio2019professional --force
+}
+
+function Install-VisualRedist {
+    Write-Output "Installing Visual C++ Redistribuable 2017 through Chocolatey"
+    choco install vcredist2017 --force
 }
 
 function Install-VSCode {

@@ -7,6 +7,7 @@ The general script, `master.ps1`, always gets installed and sets up the cloud co
 - Update Windows
 - Update Firewall to allow ICMP pings
 - Install Chocolatey for easy Windows packages installation
+- Install Visual C++ Redistribuable for Windows C++ libraries (vcruntime140.dll, etc.)
 - Install .Net Framework (4.7)
 - Install DirectX
 - Install the Virtual Audio Driver
@@ -63,7 +64,7 @@ The following usage-specific scripts are currently supported, although some of t
   - Windows Subsystem for Linux
   - Atom
   - Docker
-    
+
 - Data Science & Machine Learning Script
   - Git
   - Anaconda & R Studio
@@ -74,5 +75,5 @@ The following usage-specific scripts are currently supported, although some of t
   - Adobe Acrobat Reader DC
   - Skype
   - Zoom
-  
+
   All of these scripts are hosted in the Fractal AWS S3 bucket "fractal-cloud-setup-s3bucket" at https://s3.console.aws.amazon.com/s3/home?region=us-east-1 and should be replaced there when there is another change for release.

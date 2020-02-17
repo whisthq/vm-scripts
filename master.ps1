@@ -30,6 +30,7 @@ Update-Firewall
 Install-Chocolatey
 Install-DotNetFramework
 Install-DirectX
+Install-VisualRedist
 Install-VirtualAudio
 Enable-Audio
 Enable-MouseKeys
