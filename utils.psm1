@@ -87,7 +87,7 @@ function Install-FractalService {
 
 function Enable-FractalFirewallRule {
     Write-host "Creating Fractal Firewall Rule"
-    New-NetFirewallRule -DisplayName "Fractal" -Direction Inbound -Program "C:\Program Files\Fractal\Fractal.exe" -Profile Private, Public -Action Allow -Enabled True | Out-Null
+    New-NetFirewallRule -DisplayName "Fractal" -Direction Inbound -Program "C:\Program Files\Fractal\FractalServer.exe" -Profile Private, Public -Action Allow -Enabled True | Out-Null
 }
 
 function Enable-DeveloperMode {
@@ -377,9 +377,43 @@ function Disable-HyperV {
 function Install-FractalServer {
     # only download, server will get started by service
     Write-Output "Downloading Fractal Server"
-    $fractalserver_name = "C:\Program Files\Fractal\fractalserver.exe"
-    $fractalserver_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/fractalserver.exe"
+    $fractalserver_name = "C:\Program Files\Fractal\FractalServer.exe"
+    $fractalserver_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/FractalServer.exe"
     $webClient.DownloadFile($fractalserver_url, $fractalserver_name)
+
+    # download the .dlls
+    Write-Output "Downloading FFmpeg DLLs"
+    $avcodec_name = "C:\Program Files\Fractal\avcodec-58.dll"
+    $avcodec_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/avcodec-58.dll"
+    $webClient.DownloadFile($avcodec_url, $avcodec_name)
+
+    $avdevice_name = "C:\Program Files\Fractal\avdevice-58.dll"
+    $avdevice_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/avdevice-58.dll"
+    $webClient.DownloadFile($avdevice_url, $avdevice_name)
+
+    $avfilter_name = "C:\Program Files\Fractal\avfilter-7.dll"
+    $avfilter_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/avfilter-7.dll"
+    $webClient.DownloadFile($avfilter_url, $avfilter_name)
+
+    $avformat_name = "C:\Program Files\Fractal\avformat-58.dll"
+    $avformat_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/avformat-58.dll"
+    $webClient.DownloadFile($avformat_url, $avformat_name)
+
+    $avutil_name = "C:\Program Files\Fractal\avutil-56.dll"
+    $avutil_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/avutil-56.dll"
+    $webClient.DownloadFile($avutil_url, $avutil_name)
+
+    $postproc_name = "C:\Program Files\Fractal\postproc-55.dll"
+    $postproc_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/postproc-55.dll"
+    $webClient.DownloadFile($fractalserver_url, $fractalserver_name)
+
+    $swresample_name = "C:\Program Files\Fractal\swresample-3.dll"
+    $swresample_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/swresample-3.dll"
+    $webClient.DownloadFile($swresample_url, $swresample_name)
+
+    $swscale_name = "C:\Program Files\Fractal\swscale-5.dll"
+    $sws_scale_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/swscale-5.dll"
+    $webClient.DownloadFile($swscale_url, $swscale_name)
 }
 
 function Install-NvidiaTeslaPublicDrivers {

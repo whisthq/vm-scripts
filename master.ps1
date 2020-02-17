@@ -49,9 +49,9 @@ Install-FractalService
 Install-FractalServer
 Install-FractalWallpaper
 Enable-FractalFirewallRule
-Disable-Lock
-Disable-Logout
-Disable-Shutdown
+#Disable-Lock
+#Disable-Logout
+#Disable-Shutdown
 Add-AutoLogin $admin_username $admin_password
 
 # Install creative packages
