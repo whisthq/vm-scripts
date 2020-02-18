@@ -32,7 +32,7 @@ The general script, `master.ps1`, always gets installed and sets up the cloud co
 - Disable Shutdown, Logout and Sleep in Start Menu
 - Set Auto-Login
 
-The following usage-specific scripts are currently supported, although some of the softwares listed here cannot actually be installed through PowerShell, but are listed for potential manual-install:
+The following usage-specific scripts are currently supported, although some of the softwares listed here cannot actually be installed through PowerShell, but are listed for potential manual install:
 
 - PC Gaming Script
   - Nvidia GeForce
