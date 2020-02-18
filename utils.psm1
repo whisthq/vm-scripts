@@ -37,7 +37,8 @@ function Update-Windows {
     Write-Output "Cleaning up Windows Update installation files"
     Remove-Item -Path $PSScriptRoot\$update_script -Confirm:$false
     Remove-Item -Path $PSScriptRoot\$compressed_file -Confirm:$false
-    Remove-Item -Path $PSScriptRoot\"'$env:COMPUTERNAME'_Report.txt" -Confirm:$false
+    Remove-Item -Path "C:\TestServ01_Report.txt" -Confirm:$false
+    Remove-Item -Path "C:\Users\Fractal\$($env:COMPUTERNAME)_Report.txt" -Confirm:$false
 }
 
 function Update-Firewall {
@@ -46,6 +47,7 @@ function Update-Firewall {
 }
 
 function Disable-TCC {
+    Write-Output "Disable TCC Mode on Nvidia Tesla GPU"
     $nvsmi = "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe"
     $gpu = & $nvsmi --format=csv,noheader --query-gpu=pci.bus_id
     & $nvsmi -g $gpu -fdm 0
@@ -148,8 +150,8 @@ function Install-VirtualAudio {
     Remove-Item -Path $PSScriptRoot\$cert -Confirm:$false
 
     Write-Output "Removing WDK Desktop shortcuts"
-    Remove-Item -Path C:\Users\Fractal\Desktop\'Windows TShell'.lnk –Force
-    Remove-Item -Path C:\Users\Fractal\Desktop\WPCups.lnk –Force
+    Remove-Item -Path "C:\Users\Public\Desktop\Windows TShell.lnk" -Confirm:$false
+    Remove-Item -Path "C:\Users\Public\Desktop\WPCups.lnk" -Confirm:$false
 }
 
 function Install-Chocolatey {
@@ -440,20 +442,19 @@ function Install-NvidiaTeslaPublicDrivers {
     $url = "http://us.download.nvidia.com/tesla/441.22/441.22-tesla-desktop-win10-64bit-international.exe"
     
     Write-Output "Downloading Nvidia M60 driver from URL $url"
-    $webClient.DownloadFile($url, $driver_file)
+    $webClient.DownloadFile($url, "$PSScriptRoot\$driver_file")
 
-    Write-Output "Installing Nvidia M60 driver from file $PSScriptRoot\$driver_file"
-    Start-Process -FilePath "C:\Users\Fractal\$driver_file" -ArgumentList "-s", "-noreboot" -Wait
-    Start-Process -FilePath "C:\NVIDIA\DisplayDriver\$version\Win10_64\International\setup.exe" -ArgumentList "-s", "-noreboot" -Wait
+    Write-Output "Installing Nvidia M60 driver from file $driver_file"
+    Start-Process -FilePath "$PSScriptRoot\$driver_file" -ArgumentList "-s", "-noreboot" -Wait
 
     Write-Output "Cleaning up Nvidia Public Drivers installation file"
-    Remove-Item -Path $PSScriptRoot\$driver_file -Confirm:$false
+    Remove-Item -Path "$PSScriptRoot\$driver_file" -Confirm:$false
 }
 
 function Set-OptimalGPUSettings {
     Write-Output "Setting Optimal Tesla M60 GPU Settings"
-    .\C:\'Program Files'\'NVIDIA Corporation'\NVSMI\nvidia-smi --auto-boost-default=0
-    .\C:\'Program Files'\'NVIDIA Corporation'\NVSMI\nvidia-smi -ac "2505,1177"
+    C:\'Program Files'\'NVIDIA Corporation'\NVSMI\.\nvidia-smi --auto-boost-default=0
+    C:\'Program Files'\'NVIDIA Corporation'\NVSMI\.\nvidia-smi -ac "2505,1177"
 }
 
 function Install-DirectX {

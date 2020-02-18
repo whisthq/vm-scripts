@@ -28,7 +28,7 @@ Import-Module "$utils_script_name"
 Update-Windows
 Update-Firewall
 Install-Chocolatey
-Install-DotNetFramework
+Install-DotNetFramework # Requires a reboot otherwise dotnetfx will fail
 Install-DirectX
 Install-VisualRedist
 Install-VirtualAudio
@@ -127,7 +127,7 @@ if ($productivity_install) {
     Remove-Item -Path $productivity_script_name -Confirm:$false
 }
 
-# # Clean PowerShell install script
+# Clean PowerShell install script
 Write-Output "Cleaning up Utils script"
 Remove-Item -Path $utils_script_name -Confirm:$false
 
