@@ -467,7 +467,7 @@ function Install-FractalExitScript {
 
     # create desktop shortcut
     Write-Output "Creating Exit Fractal Desktop Shortcut"
-    $WshShell New-Object -comObject WScript.Shell
+    $WshShell = New-Object -comObject WScript.Shell
     $Shortcut = $WshShell.CreateShortcut("$Home\Desktop\Exit Fractal.lnk")
     $Shortcut.TargetPath = "C:\Program Files\Fractal\Exit\Exit.vbs"
     $Shortcut.IconLocation="C:\Program Files\Fractal\Assets\logo.ico"
@@ -475,7 +475,7 @@ function Install-FractalExitScript {
 
     # create start menu shortcut
     Write-Output "Creating Exit Fractal Start Menu Shortcut"
-    $WshShell New-Object -comObject WScript.Shell
+    $WshShell = New-Object -comObject WScript.Shell
     $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\_Exit Fractal_.lnk")
     $Shortcut.TargetPath = "C:\Program Files\Fractal\Exit\Exit.vbs"
     $Shortcut.IconLocation="C:\Program Files\Fractal\Assets\logo.ico"
