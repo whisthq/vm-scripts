@@ -47,6 +47,7 @@ Set-OptimalGPUSettings
 Set-FractalDirectory
 Install-FractalService
 Install-FractalServer
+Install-FractalExitScript
 Install-FractalWallpaper
 Enable-FractalFirewallRule
 #Disable-HyperV

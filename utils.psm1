@@ -68,14 +68,14 @@ function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
 function Install-FractalWallpaper {
     # first download the wallpaper
     Write-Output "Downloading Fractal Wallpaper"
-    $fractalwallpaper_name = "C:\Program Files\Fractal\wallpaper.png"
+    $fractalwallpaper_name = "C:\Program Files\Fractal\Assets\wallpaper.png"
     $fractalwallpaper_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/wallpaper.png"
     $webClient.DownloadFile($fractalwallpaper_url, $fractalwallpaper_name)
 
     # then set the wallpaper
     Write-Output "Setting Fractal Wallpaper"
     if((Test-Path -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System) -eq $true) {} Else {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null}
-    if((Test-RegistryValue -path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -value Wallpaper) -eq $true) {Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -value "C:\Program Files\Fractal\wallpaper.png" | Out-Null} Else {New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -PropertyType String -value "C:\Program Files\Fractal\wallpaper.png" | Out-Null}
+    if((Test-RegistryValue -path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -value Wallpaper) -eq $true) {Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null} Else {New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -PropertyType String -value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null}
     if((Test-RegistryValue -path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -value WallpaperStyle) -eq $true) {Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -value 2 | Out-Null} Else {New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -PropertyType String -value 2 | Out-Null}
 }
 
@@ -164,6 +164,11 @@ function Install-Chocolatey {
 function Install-Steam {
     Write-Output 'Installing Steam through Chrocolatey'
     choco install steam --force
+}
+
+function Install-Discord {
+    Write-Output "Installing Discord through Chocolatey"
+    choco install discord --force
 }
 
 function Install-GoogleChrome {
@@ -365,6 +370,12 @@ function Show-FileExtensions {
 function Set-FractalDirectory {
     Write-Output "Creating Fractal Directory in C:\Program Files\"
     if((Test-Path -Path 'C:\Program Files\Fractal') -eq $true) {} Else {New-Item -Path 'C:\Program Files\Fractal' -ItemType directory | Out-Null}
+
+    Write-Output "Creating Fractal Asset Subdirectory in C:\Program Files\"
+    if((Test-Path -Path 'C:\Program Files\Fractal\Assets') -eq $true) {} Else {New-Item -Path 'C:\Program Files\Fractal\Assets' -ItemType directory | Out-Null}
+
+    Write-Output "Creating Fractal Exit Subdirectory in C:\Program Files\"
+    if((Test-Path -Path 'C:\Program Files\Fractal\Exit') -eq $true) {} Else {New-Item -Path 'C:\Program Files\Fractal\Exit' -ItemType directory | Out-Null}
 }
 
 function Install-DotNetFramework {
@@ -433,6 +444,42 @@ function Install-FractalServer {
     $swscale_name = "C:\Program Files\Fractal\swscale-5.dll"
     $swscale_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/swscale-5.dll"
     $webClient.DownloadFile($swscale_url, $swscale_name)
+}
+
+function Install-FractalExitScript {
+    # only download, gets called by the vbs file
+    Write-Output "Downloading Fractal Exit script"
+    $fractal_exitbat_name = "C:\Program Files\Fractal\Exit\ExitFractal.bat"
+    $fractal_exitbat_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ExitFractal.bat"
+    $webClient.DownloadFile($fractal_exitbat_url, $fractal_exitbat_name)
+
+    # download vbs file for running .bat file without terminal
+    Write-Output "Downloading Fractal Exit VBS helper script"
+    $fractal_exitvbs_name = "C:\Program Files\Fractal\Exit\Exit.vbs"
+    $fractal_exitvbs_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/Exit.vbs"
+    $webClient.DownloadFile($fractal_exitvbs_url, $fractal_exitvbs_name)
+
+    # download the Fractal logo for the icons
+    Write-Output "Downloading Fractal Logo icon"
+    $fractal_icon_name = "C:\Program Files\Fractal\Assets\logo.ico"
+    $fractal_icon_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/logo.ico"
+    $webClient.DownloadFile($fractal_icon_url, $fractal_icon_name)
+
+    # create desktop shortcut
+    Write-Output "Creating Exit Fractal Desktop Shortcut"
+    New-Object -comObject WScript.Shell
+    $Shortcut = $WshShell.CreateShortcut("$Home\Desktop\Exit Fractal.lnk")
+    $Shortcut.TargetPath = "C:\Program Files\Fractal\Exit\Exit.vbs"
+    $Shortcut.IconLocation="C:\Program Files\Fractal\Assets\logo.ico"
+    $Shortcut.Save()
+
+    # create start menu shortcut
+    Write-Output "Creating Exit Fractal Start Menu Shortcut"
+    New-Object -comObject WScript.Shell
+    $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\_Exit Fractal_.lnk")
+    $Shortcut.TargetPath = "C:\Program Files\Fractal\Exit\Exit.vbs"
+    $Shortcut.IconLocation="C:\Program Files\Fractal\Assets\logo.ico"
+    $Shortcut.Save()
 }
 
 function Install-NvidiaTeslaPublicDrivers {

@@ -4,6 +4,7 @@ Import-Module "C:\$script_name"
 
 Install-GeForceExperience
 Install-Steam
+Install-Discord
 Install-EpicGamesLauncher
 Install-GOG
 Install-Blizzard

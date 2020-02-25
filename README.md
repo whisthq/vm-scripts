@@ -27,16 +27,22 @@ The general script, `master.ps1`, always gets installed and sets up the cloud co
 - Create Fractal Directory in Program Files
 - Download & Enable the Fractal service
 - Download the Fractal server executable
+- Download the Fractal Exit script
 - Download & Set the Fractal wallpaper
 - Enable Fractal Firewall Rules
 - Disable Shutdown, Logout and Sleep in Start Menu
 - Set Auto-Login
+
+After running `master.ps1`, dotnetfx won't be fully installed (1 package will be missing) and the Fractal disconnect button won't be pinned to the Start Menu, only at the top of the items list. If you want (these are not necessary) to have those features, you need to log back on the cloud computer and do:
+- Open PowerShell and run "choco install dotnetfx --force
+- Open Start Menu, right-click "_Exit Fractal_" and select "Pin to Start"
 
 The following usage-specific scripts are currently supported, although some of the softwares listed here cannot actually be installed through PowerShell, but are listed for potential manual install:
 
 - PC Gaming Script
   - Nvidia GeForce
   - Steam
+  - Discord
   - Epic Games Launcher
   - GOG
   - Blizzard
