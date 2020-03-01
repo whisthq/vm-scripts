@@ -28,6 +28,7 @@ The general script, `master.ps1`, always gets installed and sets up the cloud co
 - Download & Enable the Fractal service
 - Download the Fractal server executable
 - Download the Fractal Exit script
+- Download the Fractal auto update script
 - Download & Set the Fractal wallpaper
 - Enable Fractal Firewall Rules
 - Disable Shutdown, Logout and Sleep in Start Menu

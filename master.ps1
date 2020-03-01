@@ -48,6 +48,7 @@ Set-FractalDirectory
 Install-FractalService
 Install-FractalServer
 Install-FractalExitScript
+Install-FractalAutoUpdate
 Install-FractalWallpaper
 Enable-FractalFirewallRule
 #Disable-HyperV
