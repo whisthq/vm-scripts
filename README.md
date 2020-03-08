@@ -37,6 +37,7 @@ The general script, `master.ps1`, always gets installed and sets up the cloud co
 After running `master.ps1`, dotnetfx won't be fully installed (1 package will be missing) and the Fractal disconnect button won't be pinned to the Start Menu, only at the top of the items list. If you want (these are not necessary) to have those features, you need to log back on the cloud computer and do:
 - Open PowerShell and run "choco install dotnetfx --force
 - Open Start Menu, right-click "_Exit Fractal_" and select "Pin to Start"
+- Open "Local Group Policy Editor", naviguate to \User Configuration\Administrative Tools\Control Panel\Display and set both the settings listed there (Disable the Display Control Panel, Hide Settings tab) to "Enabled"
 
 The following usage-specific scripts are currently supported, although some of the softwares listed here cannot actually be installed through PowerShell, but are listed for potential manual install:
 
