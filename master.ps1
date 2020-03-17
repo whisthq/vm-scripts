@@ -1,4 +1,7 @@
 # This script should be run (as Administrator) first before any application-installer script
+Set-ExecutionPolicy RemoteSigned -Force
+
+# Parameters for the install
 param (
     [string]        $admin_username = "Fractal",
     [SecureString]  $admin_password = (convertto-securestring "password1234567." -asplaintext -force),
