@@ -1,7 +1,4 @@
 # This script should be run (as Administrator) first before any application-installer script
-Set-ExecutionPolicy RemoteSigned -Force
-
-# Parameters for the install
 param (
     [string]        $admin_username = "Fractal",
     [SecureString]  $admin_password = (convertto-securestring "password1234567." -asplaintext -force),
@@ -12,6 +9,9 @@ param (
     [switch]        $softwaredev_install    = $false,
     [switch]        $engineering_install    = $false
 )
+
+# Set the execution policy to enable running Powershell modules and scripts
+Set-ExecutionPolicy RemoteSigned -Force
 
 # Helper function to download the PowerShell scripts from S3 buckets
 function GetPowerShellScript ($script_name, $script_url) {
