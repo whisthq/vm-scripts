@@ -42,7 +42,7 @@ Set-Time
 Disable-NetworkWindow
 Show-FileExtensions
 Install-7Zip
-Install-Spotify
+#Install-Spotify
 Install-GoogleChrome
 Install-NvidiaTeslaPublicDrivers
 Disable-TCC
