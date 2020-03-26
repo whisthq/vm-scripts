@@ -31,7 +31,7 @@ Import-Module "$utils_script_name"
 Update-Windows
 Update-Firewall
 Install-Chocolatey
-Install-DotNetFramework # Requires a reboot otherwise dotnetfx will fail
+Install-DotNetFramework # Requires a reboot to finish install
 Install-DirectX
 Install-VisualRedist
 Install-VirtualAudio
@@ -50,10 +50,13 @@ Set-OptimalGPUSettings
 Set-FractalDirectory
 Install-FractalService
 Install-FractalServer
+Install-Unison
 Install-FractalExitScript
 Install-FractalAutoUpdate
 Install-FractalWallpaper
 Enable-FractalFirewallRule
+Install-Unison
+Enable-SSHServer
 #Disable-HyperV
 #Disable-Lock
 #Disable-Logout

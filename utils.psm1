@@ -527,3 +527,43 @@ function Install-DirectX {
     Remove-Item -Path $PSScriptRoot\$directx_exe -Confirm:$false
     Remove-Item -Path $PSScriptRoot\DirectX -Confirm:$false -Recurse
 }
+
+function Install-Unison {
+    Write-Output "Downloading Unsion Fily Sync from S3 Bucket" 
+    $unison_name = "C:\Program Files\Fractal\unison.exe"
+    $unison_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/unison.exe"
+    $webClient.DownloadFile($unison_url, $unison_name)
+}
+
+function Enable-SSHServer {
+    Write-Output "Adding OpenSSH Server Capability"
+    Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+    if (-not $?) {
+        Write-Output "Add-WindowsCapability Failed, Trying DISM"
+        dism /online /Add-Capability /CapabilityName:OpenSSH.Server~~~~0.0.1.0
+        # both failed, need to contact support
+        if (-not $?) {
+            Write-Output "OpenSSH Server Failed to Install -- Contact support@fractalcomputers.com for Help"
+        }
+    }
+
+    Write-Output "Downloading new OpenSSH Server Config"     
+    $webClient.DownloadFile("https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_config", "$env:ProgramData\ssh\sshd_config")
+        
+    Write-Output "Generate SSH Key"     
+    ssh-keygen -f sshkey -q -N """"
+    copy sshkey.pub $env:ProgramData\ssh\administrators_authorized_keys
+
+    Write-Output "Remove Inheritance and All Authorized Users for the Authorized Keys"
+    icacls $env:ProgramData\ssh\administrators_authorized_keys /inheritance:r
+    icacls $env:ProgramData\ssh\administrators_authorized_keys /remove:g "Authorized Users" # apparently necessary to remove Authorized Users from file permissions, unclear if this works/is needed
+
+    Write-Output "Start the SSH Server"
+    Start-Service sshd
+    Set-Service -Name sshd -StartupType 'Automatic'
+    Get-NetFirewallRule -Name *ssh* # didn't seem needed, but just in case
+    New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22 # didn't seem needed, but just in case
+
+    Write-Output "Add Unison Executable Path"
+    [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine) + ";C:\Program Files\Fractal", [EnvironmentVariableTarget]::Machine)
+}
