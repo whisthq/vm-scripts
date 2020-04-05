@@ -6,3 +6,4 @@ Enable-DeveloperMode
 Install-Git
 Install-Anaconda
 Install-OpenCV
+Install-Curl

@@ -9,3 +9,4 @@ Install-Git
 Install-WSL
 Install-Atom
 Install-Docker
+Install-Curl

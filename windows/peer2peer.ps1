@@ -29,4 +29,8 @@ Enable-FractalFirewallRule
 Install-Unison
 Enable-SSHServer
 
+# Clean PowerShell install script
+Write-Output "Cleaning up Utils script"
+Remove-Item -Path $utils_script_name -Confirm:$false
+
 # The computer then needs to be restarted before being streamed from

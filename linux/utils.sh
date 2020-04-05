@@ -1,9 +1,94 @@
 # This file contains the functions called in the Bash scripts
 
+
+
+
+
+Install-AutodeskMaya
+Install-ZBrush
+Install-Cinema4D
+Install-3DSMaxDesign
+Install-DaVinciResolve
+Install-Lightworks
+Install-VSPro2019
+Install-Anaconda
+Install-Fusion360
+Install-Matlab
+
+
+
+
+
+
+
+function Install-GOG {
+    echo "GOG does not run on Linux and thus cannot be installed"
+}
+
+
+function Install-Blizzard {
+    echo "Blizzard Battle.net does not run on Linux and thus cannot be installed"
+}
+
+
+function Install-EpicGamesLauncher {
+    echo "Epic Games Launcher does not run on Linux and thus cannot be installed"
+}
+
+
+function Install-GeForceExperience {
+    echo "GeForce Experience does not run on Linux and thus cannot be installed"
+}
+
+
+function Install-AdobeAcrobat {
+    echo "Installing Adobe Acrobat Reader"
+
+
+
+}
+
+
+function Install-Solidworks {
+    # Solidworks does not run on Linux and thus cannot be installed
+}
+
+function Install-AdobeCreativeCloud {
+    # Adobe Creative Cloud does not run on Linux and thus cannot be installed
+}
+
+function Install-Office {
+    # Microsoft Office does not run on Linux and thus cannot be installed
+}
+
+function Install-Zoom {
+    echo "Installing Zoom"
+    wget "https://zoom.us/client/latest/zoom_amd64.deb"
+    sudo apt-get install ./zoom_amd64.deb
+
+
+}
+
+function Install-Skype {
+    echo "Installing Skype through Snap"
+    sudo snap install skype --classic
+}
+
+
+function Set-Wallpaper {
+
+
+gsettings set org.gnome.desktop.background picture-uri file:///home/jintain/Pictures/WallPapers/images/2017_03_29.jpg
+
+}
+
+
+
 function UpdateLinux {
     echo "Updating Linux Ubuntu"
+    sudo apt-get install wget
     sudo apt-get update
-    sudo apt-get upgade
+    sudo apt-get upgrade
 }
 
 function Install-Unison {
@@ -36,6 +121,10 @@ function Install-Git {
     sudo apt-get install git
 }
 
+function Install-Slack {
+    echo "Installing Slack through Snap"
+    sudo snap install slack --classic
+}
 
 function Install-AutodeskMaya {
 

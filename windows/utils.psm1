@@ -250,6 +250,11 @@ function Install-Zoom {
     choco install zoom --force
 }
 
+function Install-Curl {
+    Write-Output "Installing Curl through Chocolatey"
+    choco install curl --force
+}
+
 function Install-Office {
     Write-Output "Installing Microsoft Office Suite through Chocolatey"
     choco install microsoft-office-deployment --force
