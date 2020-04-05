@@ -83,6 +83,7 @@ The following usage-specific scripts are currently supported, although some of t
   - OpenCV
 
 - Productivity Script
+  - Slack
   - Microsoft Office Suite
   - Adobe Acrobat Reader DC
   - Skype

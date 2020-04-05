@@ -26,13 +26,13 @@ function Update-Windows {
 
     Write-Output "Downloading Windows Update Powershell Script from $url"
     $webClient.DownloadFile($url, "$PSScriptRoot\$compressed_file")
-    Unblock-File -Path "$PSScriptRoot\$compressed_file"
+    Unblock-File -Path "$PSScriptRoot\$compressed_file" -Force
 
     Write-Output "Extracting Windows Update Powershell Script"
     Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\" -Force
 
     Write-Output "Running Windows Update"
-    Invoke-Expression $PSScriptRoot\$update_script
+    Invoke-Expression $PSScriptRoot\$update_script -Force
 
     Write-Output "Cleaning up Windows Update installation files"
     Remove-Item -Path $PSScriptRoot\$update_script -Confirm:$false
@@ -43,7 +43,7 @@ function Update-Windows {
 
 function Update-Firewall {
     Write-Output "Enable ICMP Ping in Firewall"
-    Set-NetFirewallRule -DisplayName "File and Printer Sharing (Echo Request - ICMPv4-In)" -Enabled True
+    Set-NetFirewallRule -DisplayName "File and Printer Sharing (Echo Request - ICMPv4-In)" -Enabled True -Force
 }
 
 function Disable-TCC {
@@ -55,14 +55,14 @@ function Disable-TCC {
 
 function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
     Write-Output "Make the password and account of admin user never expire"
-    Set-LocalUser -Name $admin_username -PasswordNeverExpires $true -AccountNeverExpires
+    Set-LocalUser -Name $admin_username -PasswordNeverExpires $true -AccountNeverExpires -Force
 
     Write-Output "Make the admin login at startup"
     $registry = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
-    Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String
-    Set-ItemProperty $registry "DefaultDomainName" -Value "$env:computername" -type String
-    Set-ItemProperty $registry "DefaultUsername" -Value $admin_username -type String
-    Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -type String
+    Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String -Force
+    Set-ItemProperty $registry "DefaultDomainName" -Value "$env:computername" -type String -Force
+    Set-ItemProperty $registry "DefaultUsername" -Value $admin_username -type String -Force
+    Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -type String -Force
 }
 
 function Install-FractalWallpaper {
@@ -74,9 +74,9 @@ function Install-FractalWallpaper {
 
     # then set the wallpaper
     Write-Output "Setting Fractal Wallpaper"
-    if((Test-Path -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System) -eq $true) {} Else {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null}
-    if((Test-RegistryValue -path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -value Wallpaper) -eq $true) {Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null} Else {New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -PropertyType String -value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null}
-    if((Test-RegistryValue -path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -value WallpaperStyle) -eq $true) {Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -value 2 | Out-Null} Else {New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -PropertyType String -value 2 | Out-Null}
+    if((Test-Path -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System) -eq $true) {} Else {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" -Force | Out-Null}
+    if((Test-RegistryValue -path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -value Wallpaper) -eq $true) {Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -value "C:\Program Files\Fractal\Assets\wallpaper.png" -Force | Out-Null} Else {New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -PropertyType String -value "C:\Program Files\Fractal\Assets\wallpaper.png" -Force | Out-Null}
+    if((Test-RegistryValue -path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -value WallpaperStyle) -eq $true) {Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -value 2 -Force | Out-Null} Else {New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -PropertyType String -value 2 -Force | Out-Null}
 }
 
 function Install-FractalService {
@@ -95,7 +95,7 @@ function Install-FractalService {
 
 function Enable-FractalFirewallRule {
     Write-host "Creating Fractal Firewall Rule"
-    New-NetFirewallRule -DisplayName "Fractal" -Direction Inbound -Program "C:\Program Files\Fractal\FractalServer.exe" -Profile Private, Public -Action Allow -Enabled True | Out-Null
+    New-NetFirewallRule -DisplayName "Fractal" -Direction Inbound -Program "C:\Program Files\Fractal\FractalServer.exe" -Profile Private, Public -Action Allow -Enabled True -Force | Out-Null
 }
 
 function Enable-DeveloperMode {
@@ -105,8 +105,8 @@ function Enable-DeveloperMode {
 
 function Enable-Audio {
     Write-Output "Enabling Audio Service"
-    Set-Service -Name "Audiosrv" -StartupType Automatic
-    Start-Service Audiosrv
+    Set-Service -Name "Audiosrv" -StartupType Automatic -Force
+    Start-Service Audiosrv -Force
 }
 
 function Install-VirtualAudio {
@@ -129,7 +129,7 @@ function Install-VirtualAudio {
     $webClient.DownloadFile("http://go.microsoft.com/fwlink/p/?LinkId=526733", "$PSScriptRoot\$wdk_installer")
 
     Write-Output "Downloading and installing Windows Development Kit"
-    Start-Process -FilePath "$PSScriptRoot\$wdk_installer" -ArgumentList "/S" -Wait
+    Start-Process -FilePath "$PSScriptRoot\$wdk_installer" -ArgumentList "/S" -Wait -Force
 
     $cert = "vb_cert.cer"
     $url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/vb_cert.cer"
@@ -138,10 +138,10 @@ function Install-VirtualAudio {
     $webClient.DownloadFile($url, "$PSScriptRoot\$cert")
 
     Write-Output "Importing VB certificate"
-    Import-Certificate -FilePath "$PSScriptRoot\$cert" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher"
+    Import-Certificate -FilePath "$PSScriptRoot\$cert" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher" -Force
 
     Write-Output "Installing Virtual Audio Driver"
-    Start-Process -FilePath $devcon -ArgumentList "install", "$PSScriptRoot\$driver_folder\$driver_inf", $hardware_id -Wait
+    Start-Process -FilePath $devcon -ArgumentList "install", "$PSScriptRoot\$driver_folder\$driver_inf", $hardware_id -Wait -Force
 
     Write-Output "Cleaning up Virtual Audio Driver installation files"
     Remove-Item -Path $PSScriptRoot\$driver_folder -Confirm:$false -Recurse
@@ -186,7 +186,7 @@ function Install-Blizzard {
     Write-Output "Downloading Blizzard Battle.Net Launcher into path $PSScriptRoot\$blizzard_exe"
     $webClient.DownloadFile("https://www.battle.net/download/getInstallerForGame?os=win&locale=enUS&version=LIVE&gameProgram=BATTLENET_APP&id=634826696.1580926426", "$PSScriptRoot\$blizzard_exe")    
     Write-Output "Installing Blizzard Battle.Net Launcher"
-    Start-Process -FilePath "$PSScriptRoot\$blizzard_exe" -ArgumentList "/q" -Wait
+    Start-Process -FilePath "$PSScriptRoot\$blizzard_exe" -ArgumentList "/q" -Wait -Force
 
     Write-Output "Cleaning up Blizzard Battle.Net Launcher installation file"
     Remove-Item -Path $PSScriptRoot\$blizzard_exe -Confirm:$false
@@ -320,6 +320,11 @@ function Install-7Zip {
     choco install 7zip --force
 }
 
+function Install-Slack {
+    Write-Output "Installing Slack through Chocolatey"
+    choco install slack --force
+}
+
 function Install-WSL {
     Write-Output "Installing Windows Subsystem for Linux through Chocolatey"
     choco install wsl --force
@@ -327,44 +332,44 @@ function Install-WSL {
 
 function Set-Time {
     Write-Output "Setting Time & Timezone to Automatic"
-    Set-ItemProperty -path HKLM:\SYSTEM\CurrentControlSet\Services\W32Time\Parameters -Name Type -Value NTP | Out-Null
-    Set-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Services\tzautoupdate -Name Start -Value 00000003 | Out-Null
+    Set-ItemProperty -path HKLM:\SYSTEM\CurrentControlSet\Services\W32Time\Parameters -Name Type -Value NTP -Force | Out-Null
+    Set-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Services\tzautoupdate -Name Start -Value 00000003 -Froce | Out-Null
 }
 
 function Disable-NetworkWindow {
     Write-Output "Disabling New Network Window"
-    if((Test-RegistryValue -path HKLM:\SYSTEM\CurrentControlSet\Control\Network -Value NewNetworkWindowOff)-eq $true) {} Else {new-itemproperty -path HKLM:\SYSTEM\CurrentControlSet\Control\Network -name "NewNetworkWindowOff" | Out-Null}
+    if((Test-RegistryValue -path HKLM:\SYSTEM\CurrentControlSet\Control\Network -Value NewNetworkWindowOff) -eq $true) {} Else {new-itemproperty -path HKLM:\SYSTEM\CurrentControlSet\Control\Network -name "NewNetworkWindowOff" -Force | Out-Null}
 }
 
 function Set-MousePrecision {
     Write-Output "Enabling Enhanced Pointer Precision"
-    Set-Itemproperty -Path 'HKCU:\Control Panel\Mouse' -Name MouseSpeed -Value 1 | Out-Null
+    Set-Itemproperty -Path 'HKCU:\Control Panel\Mouse' -Name MouseSpeed -Value 1 -Force | Out-Null
 }
     
 function Enable-MouseKeys {
     Write-Output "Enabling Mouse Keys"
-    set-Itemproperty -Path 'HKCU:\Control Panel\Accessibility\MouseKeys' -Name Flags -Value 63 | Out-Null
+    set-Itemproperty -Path 'HKCU:\Control Panel\Accessibility\MouseKeys' -Name Flags -Value 63 -Force | Out-Null
 }
 
 function Disable-Logout {
     Write-Output "Disabling Logout Option in Start Menu"
-    if((Test-RegistryValue -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer -Value StartMenuLogOff )-eq $true) {Set-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer -Name StartMenuLogOff -Value 1 | Out-Null} Else {New-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer -Name StartMenuLogOff -Value 1 | Out-Null}
+    if((Test-RegistryValue -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer -Value StartMenuLogOff) -eq $true) {Set-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer -Name StartMenuLogOff -Value 1 -Force | Out-Null} Else {New-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer -Name StartMenuLogOff -Value 1 -Force | Out-Null}
 }
     
 function Disable-Lock {
     Write-Output "Disable Lock Option in Start Menu"
-    if((Test-Path -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System) -eq $true) {} Else {New-Item -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies -Name Software | Out-Null}
-    if((Test-RegistryValue -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Value DisableLockWorkstation) -eq $true) {Set-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Name DisableLockWorkstation -Value 1 | Out-Null } Else {New-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Name DisableLockWorkstation -Value 1 | Out-Null}
+    if((Test-Path -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System) -eq $true) {} Else {New-Item -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies -Name Software -Force | Out-Null}
+    if((Test-RegistryValue -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Value DisableLockWorkstation) -eq $true) {Set-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Name DisableLockWorkstation -Value 1 -Force | Out-Null } Else {New-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Name DisableLockWorkstation -Value 1 -Force | Out-Null}
 }
 
 function Disable-Shutdown {
     Write-Output "Disabling Shutdown Option in Start Menu"
-    New-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer -Name NoClose -Value 1 | Out-Null
+    New-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer -Name NoClose -Value 1 -Force | Out-Null
 }
     
 function Show-FileExtensions {
     Write-Output "Showing File Extensions"
-    Set-itemproperty -path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -name HideFileExt -Value 0 | Out-Null
+    Set-itemproperty -path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -name HideFileExt -Value 0 -Force | Out-Null
 }
   
 function Set-FractalDirectory {
@@ -393,14 +398,14 @@ function Disable-HyperV {
 
     Write-Output "Downloading Device Management Powershell Script from $url"
     $webClient.DownloadFile($url, "$PSScriptRoot\$compressed_file")
-    Unblock-File -Path "$PSScriptRoot\$compressed_file"
+    Unblock-File -Path "$PSScriptRoot\$compressed_file" -Force
 
     Write-Output "Extracting Device Management Powershell Script"
     Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\$extract_folder" -Force
 
     Write-Output "Disabling Hyper-V Video"
     Import-Module "$PSScriptRoot\$extract_folder\DeviceManagement.psd1"
-    Get-Device | Where-Object -Property Name -Like "Microsoft Hyper-V Video" | Disable-Device -Confirm:$false
+    Get-Device | Where-Object -Property Name -Like "Microsoft Hyper-V Video" -Force | Disable-Device -Confirm:$false
 
     Write-Output "Cleaning up Hyper-V Video disabling file"
     Remove-Item -Path $PSScriptRoot\$compressed_file -Confirm:$false
@@ -503,7 +508,7 @@ function Install-NvidiaTeslaPublicDrivers {
     $webClient.DownloadFile($url, "$PSScriptRoot\$driver_file")
 
     Write-Output "Installing Nvidia M60 driver from file $driver_file"
-    Start-Process -FilePath "$PSScriptRoot\$driver_file" -ArgumentList "-s", "-noreboot" -Wait
+    Start-Process -FilePath "$PSScriptRoot\$driver_file" -ArgumentList "-s", "-noreboot" -Wait -Force
 
     Write-Output "Cleaning up Nvidia Public Drivers installation file"
     Remove-Item -Path "$PSScriptRoot\$driver_file" -Confirm:$false
@@ -540,7 +545,7 @@ function Install-Unison {
 
 function Enable-SSHServer {
     Write-Output "Adding OpenSSH Server Capability"
-    Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+    Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0 -Force
     if (-not $?) {
         Write-Output "Add-WindowsCapability Failed, Trying DISM"
         dism /online /Add-Capability /CapabilityName:OpenSSH.Server~~~~0.0.1.0
