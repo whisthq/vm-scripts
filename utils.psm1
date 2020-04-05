@@ -371,14 +371,11 @@ function Set-FractalDirectory {
     Write-Output "Creating Fractal Directory in C:\Program Files\"
     if((Test-Path -Path 'C:\Program Files\Fractal') -eq $true) {} Else {New-Item -Path 'C:\Program Files\Fractal' -ItemType directory | Out-Null}
 
-    Write-Output "Creating Fractal Asset Subdirectory in C:\Program Files\Fractal"
+    Write-Output "Creating Fractal Asset Subdirectory in C:\Program Files\"
     if((Test-Path -Path 'C:\Program Files\Fractal\Assets') -eq $true) {} Else {New-Item -Path 'C:\Program Files\Fractal\Assets' -ItemType directory | Out-Null}
 
-    Write-Output "Creating Fractal Exit Subdirectory in C:\Program Files\Fractal"
+    Write-Output "Creating Fractal Exit Subdirectory in C:\Program Files\"
     if((Test-Path -Path 'C:\Program Files\Fractal\Exit') -eq $true) {} Else {New-Item -Path 'C:\Program Files\Fractal\Exit' -ItemType directory | Out-Null}
-
-    Write-Output "Creating Fractal Sync Subdirectory in C:\Program Files\Fractal"
-    if((Test-Path -Path 'C:\Program Files\Fractal\Sync') -eq $true) {} Else {New-Item -Path 'C:\Program Files\Fractal\Sync' -ItemType directory | Out-Null}
 }
 
 function Install-DotNetFramework {
@@ -533,7 +530,7 @@ function Install-DirectX {
 
 function Install-Unison {
     Write-Output "Downloading Unsion Fily Sync from S3 Bucket" 
-    $unison_name = "C:\Program Files\Fractal\Sync\unison.exe"
+    $unison_name = "C:\Program Files\Fractal\unison.exe"
     $unison_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/unison.exe"
     $webClient.DownloadFile($unison_url, $unison_name)
 }
@@ -568,5 +565,5 @@ function Enable-SSHServer {
     New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22 # didn't seem needed, but just in case
 
     Write-Output "Add Unison Executable Path"
-    [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine) + ";C:\Program Files\Fractal\Sync", [EnvironmentVariableTarget]::Machine)
+    [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine) + ";C:\Program Files\Fractal", [EnvironmentVariableTarget]::Machine)
 }
