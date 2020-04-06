@@ -7,3 +7,5 @@ Install-Git
 Install-Atom
 Install-Docker
 Install-Curl
+Install-Make
+Install-GCC

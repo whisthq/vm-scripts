@@ -1,11 +1,12 @@
 # Fractal Computers Setup Scripts
 
-This repository contains the Fractal PowerShell scripts that get launched at creation of a cloud computer to set it up in a specific configuration, or when a user sets up their personal computer for peer-to-peer streaming. The cloud scripts can be toggled from a selection on the Fractal website in the cloud computer creation page, and are then fed to the Azure SDK when the VM gets created. A combination of many scripts can be selected.
+This repository contains the Fractal PowerShell and Bash scripts that get launched at creation of a cloud computer to set it up in a specific configuration, or when a user sets up their personal computer for peer-to-peer streaming. The cloud scripts can be toggled from a selection on the Fractal website in the cloud computer creation page, and are then fed to the Azure SDK when the VM gets created. A combination of many scripts can be selected.
 
 ## Cloud Setup Scripts
 
-The general script, `cloud.ps1`, always gets installed and sets up the cloud computer for optimal general usage with Fractal. The following tasks are performed by the general script:
+The general cloud scripts, `cloud.ps1` and `cloud.sh`, always gets installed and sets up the cloud computer for optimal general usage with Fractal. The following tasks are performed by the general scripts:
 
+### Windows Cloud Computers
 - Update Windows
 - Update Firewall to allow ICMP pings
 - Install Chocolatey for easy Windows packages installation
@@ -38,10 +39,54 @@ The general script, `cloud.ps1`, always gets installed and sets up the cloud com
 - Disable Shutdown, Logout and Sleep in Start Menu
 - Set Auto-Login
 
-After running `cloud.ps1`, dotnetfx won't be fully installed (1 package will be missing), the Fractal disconnect button won't be pinned to the Start Menu and the Display settings won't be greyed-out. To have those features, you need to log back on the cloud computer via RDP and do:
+After running `cloud.ps1`, dotnetfx won't be fully installed (1 package will be missing), the Fractal disconnect button won't be pinned to the Start Menu and the Display settings won't be greyed-out. To have those features, you need to log back on the cloud computer via RDP and do the following:
 - Open PowerShell and run "choco install dotnetfx --force
 - Open Start Menu, right-click "_Exit Fractal_" and select "Pin to Start"
 - Open "Local Group Policy Editor", naviguate to \User Configuration\Administrative Tools\Control Panel\Display and set both the settings listed there (Disable the Display Control Panel, Hide Settings tab) to "Enabled"
+
+### Linux Ubuntu Cloud Computers
+- Update Linux
+
+
+
+
+- Update Firewall to allow ICMP pings
+- Install Chocolatey for easy Windows packages installation
+- Install Visual C++ Redistribuable for Windows C++ libraries (vcruntime140.dll, etc.)
+- Install .Net Framework (4.7)
+- Install DirectX
+- Install the Virtual Audio Driver
+- Enable Audio by Autostarting the Audio service
+- Enable Accessibility Mouse Keys
+- Set Mouse Pointer Precision
+- Set Automatic Time & Timezone
+- Disable Network Window since always connected via Ethernet
+- Show File Extensions
+- Install 7-Zip
+- Install Spotify
+- Install Google Chrome
+- Install Nvidia Tesla Public Drivers (in addition to GRID drivers, includes Cuda Toolkit 10.2)
+- Disable Tesla TCC mode to enable Tesla Graphics (WDM mode)
+- Set Optimal Tesla M60 GPU Settings
+- Disable Hyper-V Video (to use the GPU instead, will fail if you're using RDP when running the script)
+- Create Fractal Directory in Program Files
+- Download and Enable the Fractal service
+- Download the Fractal server executable
+- Enable Fractal Firewall Rules
+- Download the Fractal Exit script
+- Download the Fractal auto update script
+- Download & Set the Fractal wallpaper
+- Download the Unison File Sync executable
+- Enable the OpenSSH Server for File Sync
+- Disable Shutdown, Logout and Sleep in Start Menu
+- Set Auto-Login
+
+
+
+
+
+
+
 
 The following usage-specific scripts are currently supported, although some of the softwares listed here cannot actually be installed through PowerShell, but are listed for potential manual install:
 
@@ -91,7 +136,7 @@ The following usage-specific scripts are currently supported, although some of t
 
 ## Peer-to-Peer Setup Scripts
 
-The general script, `peer2peer.ps1`, always gets installed and sets up a user's local computer for streaming with Fractal. The following tasks are performed by the general script:
+The general peer-to-peer scripts, `peer2peer.ps1` and `peer2peer.sh`, always gets installed and sets up a user's local computer for streaming with Fractal. The following tasks are performed by the general script:
 
 - Update Firewall to allow ICMP pings
 - Download and Enable the Fractal service
@@ -103,3 +148,12 @@ The general script, `peer2peer.ps1`, always gets installed and sets up a user's 
 - Enable the OpenSSH Server for File Sync
 
 All of these scripts are hosted in the Fractal AWS S3 bucket "fractal-cloud-setup-s3bucket" at https://s3.console.aws.amazon.com/s3/home?region=us-east-1 and should be replaced there when there is another change for release.
+
+
+
+
+
+
+
+
+

@@ -5,3 +5,5 @@ Install-Git
 Install-Anaconda
 Install-OpenCV
 Install-Curl
+Install-Make
+Install-GCC

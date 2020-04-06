@@ -1,4 +1,5 @@
-# This script should be run (as Administrator) first before any application-installer script
+# This script gets run (as Administrator) by a Fractal Cloud Computer to enable Cloud streaming
+# This script should only get run on Windows computers
 param (
     [string]        $admin_username = "Fractal",
     [SecureString]  $admin_password = (convertto-securestring "password1234567." -asplaintext -force),
@@ -21,7 +22,7 @@ function GetPowerShellScript ($script_name, $script_url) {
     $webClient.DownloadFile($script_url, $script_name)
 }
 
-# Download utils PowerShell script with helper functions
+# Download utils PowerShell script with helper functions and import it
 $utils_script_name = "C:\utils.psm1"
 $utils_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/utils.psm1"
 GetPowerShellScript $utils_script_name $utils_script_url
@@ -135,8 +136,7 @@ if ($productivity_install) {
     Remove-Item -Path $productivity_script_name -Confirm:$false
 }
 
-# Clean PowerShell install script
+# Clean PowerShell install script and restart
 Write-Output "Cleaning up Utils script"
 Remove-Item -Path $utils_script_name -Confirm:$false
-
 Restart-Computer -Force

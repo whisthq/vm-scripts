@@ -218,31 +218,31 @@ function Install-Skype {
 }
 
 function Install-AdobeCreativeCloud {
-    # Not downloadable without a Adobe subscription
+    Write-Output "Adobe Creative Cloud is not downloadable without an Adobe subscription and thus cannot be installed"
 }
 
 function Install-DaVinciResolve {
-    # Not downloadable without a DaVinci Resolve subscription
+    Write-Output "DaVinci Resolve is not downloadable without an Adobe subscription and thus cannot be installed"
 }
 
 function Install-ZBrush {
-    # Not downloadable without a ZBrush subscription
+    Write-Output "ZBrush is not downloadable without an Adobe subscription and thus cannot be installed"
 }
 
 function Install-AutodeskMaya {
-    # Not downloadable without an Autodesk subscription
+    Write-Output "Autodesk Maya is not downloadable without an Adobe subscription and thus cannot be installed"
 }
 
 function Install-3DSMaxDesign {
-    # Not downloadable without an Autodesk subscription
+    Write-Output "Autodesk 3DS Max Design is not downloadable without an Adobe subscription and thus cannot be installed"
 }
 
 function Install-Solidworks {
-    # Not downloadable without a Dassault Systemes subscription
+    Write-Output "Solidworks is not downloadable without an Adobe subscription and thus cannot be installed"
 }
 
 function Install-Matlab {
-    # Not downloadable without a Mathworks subscription
+    Write-Output "Matlab is not downloadable without an Adobe subscription and thus cannot be installed"
 }
 
 function Install-Zoom {
