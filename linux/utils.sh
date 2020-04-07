@@ -39,17 +39,10 @@ function Install-FractalLinuxInputDriver {
     sudo ln -sf $(readlink -f fractal-input.rules) /etc/udev/rules.d/90-fractal-input.rules
 }
 
-
-
-
-    
-
-    
-
-
 function Disable-Shutdown {
-    Write-Output "Disabling Shutdown Option in Start Menu"
-    New-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer -Name NoClose -Value 1 -Force | Out-Null
+    # based on: https://askubuntu.com/questions/453479/how-to-disable-shutdown-reboot-from-lightdm-in-14-04
+    echo "Disabling Shutdown Option in Start Menu"
+    sudo wget -O /etc/polkit-1/localauthority/50-local.d/restrict-login-powermgmt.pkla "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/restrict-login-powermgmt.pkla"
 }
     
   
@@ -60,40 +53,7 @@ function Disable-Shutdown {
 
 
 
-function Install-FractalExitScript {
-    # download exit Bash script
-    echo "Downloading Fractal Exit script"
-    sudo wget -O /usr/share/fractal/exit.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/exit.sh"
 
-    # download the Fractal logo for the icons
-    echo "Downloading Fractal Logo icon"
-    sudo wget -O /usr/share/fractal/assets/logo.png "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/logo.png"
-
-    # download the desktop shortcut and make it executable
-    echo "Downloading Exit Fractal Desktop Shortcut"
-    sudo wget -O "~/Desktop/Exit Fractal.desktop" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/Exit Fractal.desktop"
-    chmod a+x "Exit Fractal.desktop" # make shortcut executable
-
-
-
-
-
-
-
-    # create start menu shortcut
-    Write-Output "Creating Exit Fractal Start Menu Shortcut"
-    $WshShell = New-Object -comObject WScript.Shell
-    $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\_Exit Fractal_.lnk")
-    $Shortcut.TargetPath = "C:\Program Files\Fractal\Exit\Exit.vbs"
-    $Shortcut.IconLocation="C:\Program Files\Fractal\Assets\logo.ico"
-    $Shortcut.Save()
-
-
-
-
-
-
-}
 
 
 
@@ -177,7 +137,25 @@ function Install-AutodeskMaya {
 
 
 
+function Install-FractalExitScript {
+    # download exit Bash script
+    echo "Downloading Fractal Exit script"
+    sudo wget -O /usr/share/fractal/exit.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/exit.sh"
 
+    # download the Fractal logo for the icons
+    echo "Downloading Fractal Logo icon"
+    sudo wget -O /usr/share/fractal/assets/logo.png "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/logo.png"
+
+    # download the desktop shortcut and make it executable
+    echo "Downloading Exit Fractal Desktop Shortcut"
+    sudo wget -O "~/Desktop/Exit Fractal.desktop" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/Exit Fractal.desktop"
+    chmod a+x "Exit Fractal.desktop" # make shortcut executable
+
+    # create favorites bar shortcut
+    echo "Creating Exit Fractal Favorites Bar Shortcut"
+    FAVORITES = "$(sudo dconf read /org/gnome/shell/favorite-apps)"
+    sudo dconf write /org/gnome/shell/favorite-apps "${FAVORITES%?}, 'Exit Fractal.desktop']"
+}
 
 function Install-FractalAutoUpdate {
     # no need to download version, update.sh will download it

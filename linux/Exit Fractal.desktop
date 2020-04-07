@@ -7,3 +7,4 @@ Exec=/usr/share/fractal/exit/exit.sh
 Name=Exit Fractal
 Comment=Exit Fractal
 Icon=/usr/share/fractal/assets/logo.png
+Categories=Utility;Application;
