@@ -62,45 +62,23 @@ After running `cloud.ps1`, dotnetfx won't be fully installed (1 package will be 
 - Download & Set the Fractal wallpaper
 - Download the Unison File Sync executable
 - Download & Enable the Fractal Input Driver
-- Enable the SSH Server for File Sync
+- Enable the SSH Server for File Sync # SSH Automatically Enabled on Linux
 - Disable Shutdown in Start Menu
 - Set Auto-Login
 
+After running `cloud.sh`, auto-login won't be set. To have this feature, you need to log onto the cloud computer via Fractal and do the following:
+- Click on the down arrow in the top-right corner -> Click "Fractal" (the user) -> Select "Account Settings"
+- Click "Unlock" in the top-right of the window that opened, and enter the VM password (`password1234567.`) -> Set Automatic Login toggle to "On"
 
-
-
-
-After running `cloud.sh`, auto-login won't be set 
-
-
-
-
-
-
-
-
-dotnetfx won't be fully installed (1 package will be missing), the Fractal disconnect button won't be pinned to the Start Menu and the Display settings won't be greyed-out. To have those features, you need to log back on the cloud computer via RDP and do the following:
-- Open PowerShell and run "choco install dotnetfx --force
-- Open Start Menu, right-click "_Exit Fractal_" and select "Pin to Start"
-- Open "Local Group Policy Editor", naviguate to \User Configuration\Administrative Tools\Control Panel\Display and set both the settings listed there (Disable the Display Control Panel, Hide Settings tab) to "Enabled"
-
-
-
-
-
-
-
-
-
-The following usage-specific scripts are currently supported, although some of the softwares listed here cannot actually be installed through PowerShell, but are listed for potential manual install:
+The following usage-specific scripts are currently supported, although some of the softwares listed here cannot actually be installed through PowerShell/Bash, but are listed for potential manual install:
 
 - PC Gaming Script
-  - Nvidia GeForce
-  - Steam
+  - Nvidia GeForce (Windows only)
+  - Steam 
   - Discord
-  - Epic Games Launcher
-  - GOG
-  - Blizzard
+  - Epic Games Launcher (Windows only)
+  - GOG (Windows only)
+  - Blizzard (Windows only)
 
 - Creative Script
   - Blender
@@ -114,15 +92,15 @@ The following usage-specific scripts are currently supported, although some of t
 
 - Engineering Script
   - Solidworks (can't be installed without a subscription)
-  - Autodesk Fusion 360
+  - Autodesk Fusion 360 (Windows only)
   - Matlab (can't be installed without a subscription)
 
 - Software Development Script
-  - Windows Developer Mode Activated
-  - Visual Studio Community 2019
+  - Windows Developer Mode Activated (Windows only)
+  - Visual Studio Professional 2019 (Windows Only)
   - Visual Studio Code
   - Git
-  - Windows Subsystem for Linux
+  - Windows Subsystem for Linux (Windows only)
   - Atom
   - Docker
 
@@ -133,7 +111,7 @@ The following usage-specific scripts are currently supported, although some of t
 
 - Productivity Script
   - Slack
-  - Microsoft Office Suite
+  - Microsoft Office Suite (Windows Only)
   - Adobe Acrobat Reader DC
   - Skype
   - Zoom
@@ -141,6 +119,8 @@ The following usage-specific scripts are currently supported, although some of t
 ## Peer-to-Peer Setup Scripts
 
 The general peer-to-peer scripts, `peer2peer.ps1` and `peer2peer.sh`, always gets installed and sets up a user's local computer for streaming with Fractal. The following tasks are performed by the general script:
+
+### Windows Computers
 
 - Update Firewall to allow ICMP pings
 - Download and Enable the Fractal service
@@ -150,6 +130,18 @@ The general peer-to-peer scripts, `peer2peer.ps1` and `peer2peer.sh`, always get
 - Enable Fractal Firewall Rules
 - Download the Unison File Sync executable
 - Enable the OpenSSH Server for File Sync
+
+### Linux Ubuntu Computers
+
+- Create Fractal Directory in /usr/share/
+- Download and Enable the Immortal Process Manager
+- Download the Fractal server executable
+- Enable Fractal Firewall Rules
+- Download the Fractal Exit script
+- Download the Fractal auto update script
+- Download the Unison File Sync executable
+- Download & Enable the Fractal Input Driver
+- Enable the SSH Server for File Sync # SSH Automatically Enabled on Linux
 
 All of these scripts are hosted in the Fractal AWS S3 bucket "fractal-cloud-setup-s3bucket" at https://s3.console.aws.amazon.com/s3/home?region=us-east-1 and should be replaced there when there is another change for release.
 

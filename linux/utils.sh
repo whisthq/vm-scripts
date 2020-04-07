@@ -2,7 +2,7 @@
 
 function UpdateLinux {
     echo "Updating Linux Ubuntu"
-    yes | printf "password1234567." | sudo apt-get install wget
+    yes | printf "password1234567." | sudo apt-get install wget python python3
     yes | sudo apt-get update
     yes | sudo apt-get upgrade
 }
@@ -45,97 +45,69 @@ function Disable-Shutdown {
     sudo wget -O /etc/polkit-1/localauthority/50-local.d/restrict-login-powermgmt.pkla "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/restrict-login-powermgmt.pkla"
 }
     
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function Install-AutodeskMaya {
-
-
-
     echo "Installing Autodesk Maya"
-    echo "Installing Dependencies"
+    # Create Download Directory
+    mkdir -p maya2017Install
+    cd maya2017Install
 
+    # Download Maya Install Files
+    wget http://edutrial.autodesk.com/NET17SWDLD/2017/MAYA/ESD/Autodesk_Maya_2017_EN_JP_ZH_Linux_64bit.tgz
+    sudo tar xvf Autodesk_Maya_2017_EN_JP_ZH_Linux_64bit.tgz
 
-    sudo apt-get install alien dpkg-dev debhelper build-essential
-    sudo apt-get ./libxp6_1.0.2-2_amd64.deb
+    # Install Dependencies
+    yes | sudo apt-get install -y libssl1.0.0 gcc  libssl-dev libjpeg62 alien csh tcsh libaudiofile-dev libglw1-mesa elfutils libglw1-mesa-dev mesa-utils xfstt xfonts-100dpi xfonts-75dpi ttf-mscorefonts-installer libfam0 libfam-dev libcurl4-openssl-dev libtbb-dev
+    yes | sudo apt-get install -y libtbb-dev 
+    sudo wget http://launchpadlibrarian.net/183708483/libxp6_1.0.2-2_amd64.deb
+    sudo wget http://mirrors.kernel.org/ubuntu/pool/main/libp/libpng/libpng12-0_1.2.54-1ubuntu1_amd64.deb
 
-
-
-    echo 'deb http://archive.ubuntu.com/ubuntu xenial main restricted universe multiverse' | sudo tee /etc/apt/sources.list.d/xenial.list    sudo apt-get update
-    sudo apt-get install -y libtbb-dev libtiff5-dev libssl-dev libpng12-dev libssl1.0.0 gcc libjpeg62 libcurl4
-    sudo apt-get install -y alien elfutils
-    sudo apt-get install -y libaudiofile-dev libgstreamer-plugins-base0.10-0
-    sudo apt-get install -y libglw1-mesa libglw1-mesa-dev mesa-utils
-    sudo apt-get install -y xfonts-100dpi xfonts-75dpi ttf-mscorefonts-installer fonts-liberation
-    sudo apt-get install -y csh tcsh libfam0 libfam-dev xfstt
-    cd /tmp
-
-
-    wget "http://launchpadlibrarian.net/183708483/libxp6_1.0.2-2_amd64.deb"
-    sudo dpkg --force-all -i libxp6_1.0.2-2_amd64.deb
-    sudo rm -f libxp6_1.0.2-2_amd64.deb
-
-    echo "Download Maya and Converting to .deb"
-
-    cd ~/Downloads
-    wget "http://edutrial.autodesk.com/NET17SWDLD/2017/MAYA/ESD/Autodesk_Maya_2017_EN_JP_ZH_Linux_64bit.tgz"
-    mkdir mayadir
-    tar xvzf Autodesk_Maya_2017_EN_JP_ZH_Linux_64bit.tgz -C mayadir
-    cd mayadir
+    # Install Maya 
     sudo alien -cv *.rpm
     sudo dpkg -i *.deb
-
     echo "int main (void) {return 0;}" > mayainstall.c
-    gcc mayainstall.c
-    sudo cp -v a.out /usr/bin/rpm
+    sudo gcc mayainstall.c
+    sudo mv /usr/bin/rpm /usr/bin/rpm_backup
+    sudo cp a.out /usr/bin/rpm
+    sudo chmod +x ./setup
+    sudo ./setup --noui
+    sudo mv /usr/bin/rpm_backup /usr/bin/rpm
+    sudo rm /usr/bin/rpm
 
+    # Copy lib*.so
+    sudo cp libQt* /usr/autodesk/maya2017/lib/
+    sudo cp libadlm* /usr/lib/x86_64-linux-gnu/
 
-    sudo ln -s /usr/lib/x86_64-linux-gnu/libtbb.so /usr/lib/x86_64-linux-gnu/libtbb_preview.so.2
-    sudo ln -s /usr/lib/x86_64-linux-gnu/libtiff.so /usr/lib/libtiff.so.3
-    sudo ln -s /usr/lib/x86_64-linux-gnu/libssl.so /usr/autodesk/maya2017/lib/libssl.so.10
+    # Fix Startup Errors
+    sudo ln -s /usr/lib/x86_64-linux-gnu/libtiff.so.5.3.0 /usr/lib/libtiff.so.3
+    sudo ln -s /usr/lib/x86_64-linux-gnu/libssl.so.1.0.0 /usr/autodesk/maya2017/lib/libssl.so.10
     sudo ln -s /usr/lib/x86_64-linux-gnu/libcrypto.so /usr/autodesk/maya2017/lib/libcrypto.so.10
+    sudo ln -s /usr/lib/x86_64-linux-gnu/libtbb.so.2 /usr/lib/x86_64-linux-gnu/libtbb_preview.so.2
+    sudo mkdir -p /usr/tmp
+    sudo chmod 777 /usr/tmp
+    sudo mkdir -p ~/maya/2017/
+    sudo chmod 777 ~/maya/2017/
 
+    # Fix Segmentation Fault Error
+    echo "MAYA_DISABLE_CIP=1" >> ~/maya/2017/Maya.env
 
-    chmod +x setup
-    sudo ./setup
+    # Fix Color Managment Errors
+    echo "LC_ALL=C" >> ~/maya/2017/Maya.env
+    sudo chmod 777 ~/maya/2017/Maya.env
 
+    # Maya Camera Modifier Key
+    sudo gsettings set org.gnome.desktop.wm.preferences mouse-button-modifier "<Super>"
+
+    # Ensure that Fonts are Loaded
+    sudo xset +fp /usr/share/fonts/X11/100dpi/
+    sudo xset +fp /usr/share/fonts/X11/75dpi/
+    sudo xset fp rehash
+
+    # Cleanup
+    echo "Maya was installed successfully"
+    cd ..
+    sudo rm -f -r maya2017Install
+    cd ~
 }
-
-
-
-
-
-
-
-
-
-
-
 
 function Install-FractalExitScript {
     # download exit Bash script
