@@ -1,7 +1,5 @@
 # This script gets run by a Fractal Cloud Computer to enable Cloud streaming
 # This script should only get run on Linux Ubuntu computers
-admin_username = "Fractal"
-admin_password = "password1234567."
 creative_install        = false
 datascience_install     = false
 gaming_install          = false
@@ -32,38 +30,14 @@ Set-FractalDirectory
 Install-FractalServer
 Install-ProcessManager
 Install-Unison
-
-
-
-
-
 Install-FractalExitScript
-
-
-
-
 Install-FractalAutoUpdate
+Install-FractalLinuxInputDriver
 Install-FractalWallpaper
-
-
 Enable-FractalFirewallRule
 Install-Unison # SSH Automatically Enabled on Linux
-
-
-#Disable-Lock
-#Disable-Logout
 #Disable-Shutdown
-Add-AutoLogin $admin_username $admin_password
-
-
-
-
-
-
-
-
-
-
+Add-AutoLogin # Needs to be done manually via GUI
 
 # Install creative packages
 if [ "$creative_install" = true ] ; then

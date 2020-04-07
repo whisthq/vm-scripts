@@ -15,22 +15,10 @@ source ./utils.sh
 Set-FractalDirectory
 Install-ProcessManager
 Install-FractalServer
-
-
-
-
-
-
 Install-FractalExitScript
 Install-FractalAutoUpdate
+Install-FractalLinuxInputDriver
 Enable-FractalFirewallRule
-
-
-
-
-
-
-
 Install-Unison # SSH Automatically Enabled on Linux
 
 # Clean Bash install script

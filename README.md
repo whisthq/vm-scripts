@@ -46,40 +46,44 @@ After running `cloud.ps1`, dotnetfx won't be fully installed (1 package will be 
 
 ### Linux Ubuntu Cloud Computers
 - Update Linux
-
-
-
-
-- Update Firewall to allow ICMP pings
-- Install Chocolatey for easy Windows packages installation
-- Install Visual C++ Redistribuable for Windows C++ libraries (vcruntime140.dll, etc.)
-- Install .Net Framework (4.7)
-- Install DirectX
-- Install the Virtual Audio Driver
-- Enable Audio by Autostarting the Audio service
-- Enable Accessibility Mouse Keys
-- Set Mouse Pointer Precision
 - Set Automatic Time & Timezone
-- Disable Network Window since always connected via Ethernet
-- Show File Extensions
 - Install 7-Zip
 - Install Spotify
 - Install Google Chrome
 - Install Nvidia Tesla Public Drivers (in addition to GRID drivers, includes Cuda Toolkit 10.2)
 - Disable Tesla TCC mode to enable Tesla Graphics (WDM mode)
 - Set Optimal Tesla M60 GPU Settings
-- Disable Hyper-V Video (to use the GPU instead, will fail if you're using RDP when running the script)
-- Create Fractal Directory in Program Files
-- Download and Enable the Fractal service
+- Create Fractal Directory in /usr/share/
+- Download and Enable the Immortal Process Manager
 - Download the Fractal server executable
 - Enable Fractal Firewall Rules
 - Download the Fractal Exit script
 - Download the Fractal auto update script
 - Download & Set the Fractal wallpaper
 - Download the Unison File Sync executable
-- Enable the OpenSSH Server for File Sync
-- Disable Shutdown, Logout and Sleep in Start Menu
+- Download & Enable the Fractal Input Driver
+- Enable the SSH Server for File Sync
+- Disable Shutdown in Start Menu
 - Set Auto-Login
+
+
+
+
+
+After running `cloud.sh`, auto-login won't be set 
+
+
+
+
+
+
+
+
+dotnetfx won't be fully installed (1 package will be missing), the Fractal disconnect button won't be pinned to the Start Menu and the Display settings won't be greyed-out. To have those features, you need to log back on the cloud computer via RDP and do the following:
+- Open PowerShell and run "choco install dotnetfx --force
+- Open Start Menu, right-click "_Exit Fractal_" and select "Pin to Start"
+- Open "Local Group Policy Editor", naviguate to \User Configuration\Administrative Tools\Control Panel\Display and set both the settings listed there (Disable the Display Control Panel, Hide Settings tab) to "Enabled"
+
 
 
 

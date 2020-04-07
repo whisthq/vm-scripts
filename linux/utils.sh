@@ -12,50 +12,32 @@ function Set-Time {
     yes | sudo apt-get install gnome-clocks
 }
 
-
-
-
-
-
-
-
-
-
-function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
-    Write-Output "Make the password and account of admin user never expire"
-    Set-LocalUser -Name $admin_username -PasswordNeverExpires $true -AccountNeverExpires -Force
-
-    Write-Output "Make the admin login at startup"
-    $registry = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
-    Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String -Force
-    Set-ItemProperty $registry "DefaultDomainName" -Value "$env:computername" -type String -Force
-    Set-ItemProperty $registry "DefaultUsername" -Value $admin_username -type String -Force
-    Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -type String -Force
+function Add-AutoLogin {
+    echo "Automatic Login on Linux should be done manually via GUI"
 }
-
-
-
-
-
-
-
-
-
-
-
 
 function Enable-FractalFirewallRule {
-    Write-host "Creating Fractal Firewall Rule"
-    New-NetFirewallRule -DisplayName "Fractal" -Direction Inbound -Program "C:\Program Files\Fractal\FractalServer.exe" -Profile Private, Public -Action Allow -Enabled True -Force | Out-Null
+    echo "Creating Fractal Firewall Rule"
+    sudo ufw enable
+    sudo ufw allow 22 # SSH
+    sudo ufw allow 80 # HTTP
+    sudo ufw allow 443 # HTTPS
+    sudo ufw allow 32262 # Fractal Port Client->Server
+    sudo ufw allow 32263 # Fractal Port Server->Client 
+    sudo ufw allow 32264 # Fractal Port Shared-TCP
 }
 
+function Install-FractalLinuxInputDriver {
+    # first download the driver symlink file
+    echo "Install Fractal Linux Input Driver"
+    sudo wget -O /usr/share/fractal/fractal-input.rules "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/fractal-input.rules"
 
-
-
-
-
-
-
+    # symlink file
+    # do this as root AFTER fractal-input.rules has been moved to the final install directory
+    sudo groupadd fractal
+    sudo usermod -a -G fractal Fractal # (the -a is VERY important, else you overwrite a user's groups)
+    sudo ln -sf $(readlink -f fractal-input.rules) /etc/udev/rules.d/90-fractal-input.rules
+}
 
 
 
@@ -64,16 +46,6 @@ function Enable-FractalFirewallRule {
 
     
 
-function Disable-Logout {
-    Write-Output "Disabling Logout Option in Start Menu"
-    if((Test-RegistryValue -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer -Value StartMenuLogOff) -eq $true) {Set-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer -Name StartMenuLogOff -Value 1 -Force | Out-Null} Else {New-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer -Name StartMenuLogOff -Value 1 -Force | Out-Null}
-}
-    
-function Disable-Lock {
-    Write-Output "Disable Lock Option in Start Menu"
-    if((Test-Path -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System) -eq $true) {} Else {New-Item -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies -Name Software -Force | Out-Null}
-    if((Test-RegistryValue -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Value DisableLockWorkstation) -eq $true) {Set-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Name DisableLockWorkstation -Value 1 -Force | Out-Null } Else {New-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Name DisableLockWorkstation -Value 1 -Force | Out-Null}
-}
 
 function Disable-Shutdown {
     Write-Output "Disabling Shutdown Option in Start Menu"
@@ -88,49 +60,25 @@ function Disable-Shutdown {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function Install-FractalExitScript {
-    # only download, gets called by the vbs file
-    Write-Output "Downloading Fractal Exit script"
-    $fractal_exitbat_name = "C:\Program Files\Fractal\Exit\ExitFractal.bat"
-    $fractal_exitbat_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ExitFractal.bat"
-    $webClient.DownloadFile($fractal_exitbat_url, $fractal_exitbat_name)
-
-    # download vbs file for running .bat file without terminal
-    Write-Output "Downloading Fractal Exit VBS helper script"
-    $fractal_exitvbs_name = "C:\Program Files\Fractal\Exit\Exit.vbs"
-    $fractal_exitvbs_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/Exit.vbs"
-    $webClient.DownloadFile($fractal_exitvbs_url, $fractal_exitvbs_name)
+    # download exit Bash script
+    echo "Downloading Fractal Exit script"
+    sudo wget -O /usr/share/fractal/exit.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/exit.sh"
 
     # download the Fractal logo for the icons
-    Write-Output "Downloading Fractal Logo icon"
-    $fractal_icon_name = "C:\Program Files\Fractal\Assets\logo.ico"
-    $fractal_icon_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/logo.ico"
-    $webClient.DownloadFile($fractal_icon_url, $fractal_icon_name)
+    echo "Downloading Fractal Logo icon"
+    sudo wget -O /usr/share/fractal/assets/logo.png "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/logo.png"
 
-    # create desktop shortcut
-    Write-Output "Creating Exit Fractal Desktop Shortcut"
-    $WshShell = New-Object -comObject WScript.Shell
-    $Shortcut = $WshShell.CreateShortcut("$Home\Desktop\Exit Fractal.lnk")
-    $Shortcut.TargetPath = "C:\Program Files\Fractal\Exit\Exit.vbs"
-    $Shortcut.IconLocation="C:\Program Files\Fractal\Assets\logo.ico"
-    $Shortcut.Save()
+    # download the desktop shortcut and make it executable
+    echo "Downloading Exit Fractal Desktop Shortcut"
+    sudo wget -O "~/Desktop/Exit Fractal.desktop" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/Exit Fractal.desktop"
+    chmod a+x "Exit Fractal.desktop" # make shortcut executable
+
+
+
+
+
+
 
     # create start menu shortcut
     Write-Output "Creating Exit Fractal Start Menu Shortcut"
@@ -139,6 +87,12 @@ function Install-FractalExitScript {
     $Shortcut.TargetPath = "C:\Program Files\Fractal\Exit\Exit.vbs"
     $Shortcut.IconLocation="C:\Program Files\Fractal\Assets\logo.ico"
     $Shortcut.Save()
+
+
+
+
+
+
 }
 
 
@@ -211,6 +165,12 @@ function Install-AutodeskMaya {
     sudo ./setup
 
 }
+
+
+
+
+
+
 
 
 
