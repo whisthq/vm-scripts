@@ -1,7 +1,2 @@
-
-
-
-
-# TODO
-
-# copy NUL "C:\Program Files\Fractal\Exit\exit"
+#!/bin/bash
+touch /usr/share/fractal/exit
