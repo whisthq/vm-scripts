@@ -62,7 +62,7 @@ After running `cloud.ps1`, dotnetfx won't be fully installed (1 package will be 
 - Download & Set the Fractal wallpaper
 - Download the Unison File Sync executable
 - Download & Enable the Fractal Input Driver
-- Enable the SSH Server for File Sync # SSH Automatically Enabled on Linux
+- Enable the SSH Server for File Sync (SSH Automatically Enabled on Linux)
 - Disable Shutdown in Start Menu
 - Set Auto-Login
 
@@ -141,6 +141,6 @@ The general peer-to-peer scripts, `peer2peer.ps1` and `peer2peer.sh`, always get
 - Download the Fractal auto update script
 - Download the Unison File Sync executable
 - Download & Enable the Fractal Input Driver
-- Enable the SSH Server for File Sync # SSH Automatically Enabled on Linux
+- Enable the SSH Server for File Sync (SSH Automatically Enabled on Linux)
 
 All of these scripts are hosted in the Fractal AWS S3 bucket "fractal-cloud-setup-s3bucket" at https://s3.console.aws.amazon.com/s3/home?region=us-east-1 and should be replaced there when there is another change for release.
