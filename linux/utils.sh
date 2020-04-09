@@ -167,7 +167,7 @@ function Install-ProcessManager {
 
     # then start Fractal with Immortal for auto-restart
     echo "Start FractalServer with Immortal"
-    immortal /usr/share/fractal/./FractalServer
+    immortal /usr/share/fractal/./FractalServer Fractal
 }
 
 function Install-FractalServer {

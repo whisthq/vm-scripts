@@ -1,2 +1,2 @@
 #!/bin/bash
-touch /usr/share/fractal/exit
+touch /usr/share/fractal/exit/exit

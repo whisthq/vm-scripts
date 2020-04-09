@@ -1,35 +1,26 @@
+cd /tmp
+rm -rf fractal-protocol 2> /dev/null
+mkdir fractal-protocol
+cd fractal-protocol
 
+wget -O version https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/version
 
+if cmp -s version "/usr/share/fractal/version"
+then
+	:
+else
+	mv -f version "/usr/share/fractal/"
+	wget -O FractalServer https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/FractalServer
 
+	if cmp -s FractalServer "/usr/share/fractal/FractalServer"
+	then
+		:
+	else
+		immortalctl -k Fractal
+		killall FractalServer
+		mv -f FractalServer "/usr/share/fractal/"
+        immortal /usr/share/fractal/./FractalServer Fractal
+	fi
+fi
 
-
-
-# TODO
-
-
-# cd %temp%
-# rmdir /S/Q fractal-protocol
-# mkdir fractal-protocol
-# cd fractal-protocol
-
-# powershell -command "iwr -outf version https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/version"
-# fc /b version "C:\Program Files\Fractal\version" > nul
-
-# if errorlevel 1 (
-#   move /Y version "C:\Program Files\Fractal"
-
-#   powershell -command "iwr -outf FractalServer.exe https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/FractalServer.exe"
-
-#   fc /b FractalServer.exe "C:\Program Files\Fractal\FractalServer.exe" > nul
-
-#   if errorlevel 1 (
-#     net stop Fractal
-#     taskkill /IM "FractalService.exe" /F
-#     taskkill /IM "FractalServer.exe" /F
-#     timeout /t 1
-#     move /Y FractalServer.exe "C:\Program Files\Fractal"
-#     net start Fractal
-#   )
-# )
-
-# cd C:\Program Files\Fractal
+cd /usr/share/fractal
