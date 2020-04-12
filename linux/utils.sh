@@ -29,12 +29,12 @@ function Enable-FractalFirewallRule {
 
 function Install-CustomGDMConfiguration {
    echo "Installing Custom Gnome Display Manager Configuration"
-    sudo wget -O /etc/gdm3/custom.conf "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/custom.conf"
+   sudo wget -O /etc/gdm3/custom.conf "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/custom.conf"
 }
 
 function Install-CustomX11Configuration {
    echo "Installing Custom X11 Configuration"
-    sudo wget -O /usr/share/X11/xorg.conf.d/01-dummy.conf "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/usr/share/X11/xorg.conf.d/01-dummy.conf"
+   sudo wget -O /usr/share/X11/xorg.conf.d/01-dummy.conf "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/usr/share/X11/xorg.conf.d/01-dummy.conf"
 }
 
 function Install-FractalLinuxInputDriver {
