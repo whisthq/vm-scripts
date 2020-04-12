@@ -51,7 +51,6 @@ Set-OptimalGPUSettings
 Set-FractalDirectory
 Install-FractalService
 Install-FractalServer
-Install-Unison
 Install-FractalExitScript $false # false -> hardcoded paths (only works on Fractal VMs)
 Install-FractalAutoUpdate
 Install-FractalWallpaper
