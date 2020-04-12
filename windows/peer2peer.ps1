@@ -23,7 +23,7 @@ Update-Firewall
 Set-FractalDirectory
 Install-FractalService
 Install-FractalServer
-Install-FractalExitScript
+Install-FractalExitScript $true # true -> dynamic paths (does not work on Fractal VMs via webserver)
 Install-FractalAutoUpdate
 Enable-FractalFirewallRule
 Install-Unison
