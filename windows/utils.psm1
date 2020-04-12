@@ -537,7 +537,7 @@ function Install-DirectX {
 }
 
 function Install-Unison {
-    Write-Output "Downloading Unsion Fily Sync from S3 Bucket" 
+    Write-Output "Downloading Unison File Sync from S3 Bucket" 
     $unison_name = "C:\Program Files\Fractal\unison.exe"
     $unison_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/unison.exe"
     $webClient.DownloadFile($unison_url, $unison_name)
