@@ -162,7 +162,7 @@ function Install-Chocolatey {
     Invoke-Expression ($webClient.DownloadString('https://chocolatey.org/install.ps1'))
     # $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
     chocolatey feature enable -n allowGlobalConfirmation
-}∂
+}
 
 function Install-Steam {
     Write-Output 'Installing Steam through Chrocolatey'
