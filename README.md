@@ -53,6 +53,8 @@ After running `cloud.ps1`, dotnetfx won't be fully installed (1 package will be 
 - Install Nvidia Tesla Public Drivers (in addition to GRID drivers, includes Cuda Toolkit 10.2)
 - Disable Tesla TCC mode to enable Tesla Graphics (WDM mode)
 - Set Optimal Tesla M60 GPU Settings
+- Set Custom Gnome Display Manager Configuration
+- Set Custom X11 Resolution Configuration
 - Create Fractal Directory in /usr/share/
 - Download and Enable the Immortal Process Manager
 - Download the Fractal server executable
@@ -133,6 +135,8 @@ The general peer-to-peer scripts, `peer2peer.ps1` and `peer2peer.sh`, always get
 
 ### Linux Ubuntu Computers
 
+- Set Custom Gnome Display Manager Configuration
+- Set Custom X11 Resolution Configuration
 - Create Fractal Directory in /usr/share/
 - Download and Enable the Immortal Process Manager
 - Download the Fractal server executable

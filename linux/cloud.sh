@@ -26,6 +26,8 @@ Install-GoogleChrome
 Install-NvidiaTeslaPublicDrivers
 Disable-TCC
 Set-OptimalGPUSettings
+Install-CustomGDMConfiguration
+Install-CustomX11Configuration
 Set-FractalDirectory
 Install-FractalServer
 Install-ProcessManager

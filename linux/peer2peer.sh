@@ -12,6 +12,8 @@ GetBashScript "utils.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/
 source ./utils.sh
 
 # Run all the basic commands to setup Fractal for Peer-to-Peer streaming
+Install-CustomGDMConfiguration
+Install-CustomX11Configuration
 Set-FractalDirectory
 Install-ProcessManager
 Install-FractalServer
