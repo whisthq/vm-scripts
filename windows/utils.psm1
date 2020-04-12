@@ -154,7 +154,7 @@ function Install-VirtualAudio {
 
     Write-Output "Removing WDK Desktop shortcuts"
     Remove-Item -Path "C:\Users\Public\Desktop\Windows TShell.lnk" -Confirm:$false
-    Remove-Item -Path "C:\Users\Public\Desktop\WPCups.lnk" -Confirm:$false
+    # Remove-Item -Path "C:\Users\Public\Desktop\WPCups.lnk" -Confirm:$false
 }
 
 function Install-Chocolatey {
