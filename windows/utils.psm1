@@ -20,28 +20,25 @@ function Test-RegistryValue {
 }
     
 function Update-Windows {
-    [Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
-    $webClient = new-object System.Net.WebClient
-
     $url = "https://gallery.technet.microsoft.com/scriptcenter/Execute-Windows-Update-fc6acb16/file/144365/1/PS_WinUpdate.zip"
     $compressed_file = "PS_WinUpdate.zip"
     $update_script = "PS_WinUpdate.ps1"
 
     Write-Output "Downloading Windows Update Powershell Script from $url"
-    $webClient.DownloadFile($url, "C:\Users\Fractal\$compressed_file")
-    Unblock-File -Path "C:\Users\Fractal\$compressed_file"
+    $webClient.DownloadFile($url, "C:\$compressed_file")
+    Unblock-File -Path "C:\$compressed_file"
 
     Write-Output "Extracting Windows Update Powershell Script"
-    Expand-Archive "C:\Users\Fractal\$compressed_file" -DestinationPath "C:\Users\Fractal" -Force
+    Expand-Archive "C:\$compressed_file" -DestinationPath "C:\" -Force
 
     Write-Output "Running Windows Update"
-    Invoke-Expression "C:\Users\Fractal\$update_script"
+    Invoke-Expression "C:\$update_script"
 
     Write-Output "Cleaning up Windows Update installation files"
-    Remove-Item -Path "C:\Users\Fractal\$update_script" -Confirm:$false
-    Remove-Item -Path "C:\Users\Fractal\$compressed_file" -Confirm:$false
-    Remove-Item -Path "C:\Users\Fractal\TestServ01_Report.txt" -Confirm:$false
-    # Remove-Item -Path "C:\Users\Fractal\$($env:COMPUTERNAME)_Report.txt" -Confirm:$false
+    Remove-Item -Path "C:\$update_script" -Confirm:$false
+    Remove-Item -Path "C:\$compressed_file" -Confirm:$false
+    Remove-Item -Path "C:\TestServ01_Report.txt" -Confirm:$false
+    Remove-Item -Path "C:\$($env:COMPUTERNAME)_Report.txt" -Confirm:$false
 }
 
 function Update-Firewall {
@@ -63,7 +60,7 @@ function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
     Write-Output "Make the admin login at startup"
     $registry = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
     Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String
-    # Set-ItemProperty $registry "DefaultDomainName" -Value "$env:COMPUTERNAME" -type String 
+    Set-ItemProperty $registry "DefaultDomainName" -Value "$env:COMPUTERNAME" -type String 
     Set-ItemProperty $registry "DefaultUsername" -Value $admin_username -type String
     Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -type String
 }
@@ -77,9 +74,25 @@ function Install-FractalWallpaper {
 
     # then set the wallpaper
     Write-Output "Setting Fractal Wallpaper"
-    if((Test-Path -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System") -eq $true) {} Else {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null}
-    if((Test-RegistryValue -path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -value Wallpaper) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -PropertyType String -value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null}
-    if((Test-RegistryValue -path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -value WallpaperStyle) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -value 2 | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -PropertyType String -value 2 | Out-Null}
+
+    # get the IPv4 address and all the other SSH parameters
+    $Password = "password1234567."
+    $User = "Fractal"
+    $IPv4 = (Invoke-WebRequest -UseBasicParsing -uri "https://api.ipify.org/").Content
+
+    # PowerShell commands, can't be run through webserver - kept here for reference
+    # if((Test-Path -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System") -eq $true) {} Else {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null}
+    # if((Test-RegistryValue -path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -value Wallpaper) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -PropertyType String -value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null}
+    # if((Test-RegistryValue -path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -value WallpaperStyle) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -value 2 | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -PropertyType String -value 2 | Out-Null}
+
+    # command to show file extensions from registry
+    $Command = 'reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d "C:\Program Files\Fractal\Assets\wallpaper.png" /f'
+
+    # invoke command over SSH
+    $secpasswd = ConvertTo-SecureString $Password -AsPlainText -Force
+    $Credentials = New-Object System.Management.Automation.PSCredential($User, $secpasswd)
+    $SessionID = New-SSHSession -ComputerName $IPv4 -Credential $Credentials # Connect Over SSH
+    Invoke-SSHCommand -Index $sessionid.sessionid -Command $Command # Invoke Command Over SSH
 }
 
 function Install-FractalService {
@@ -119,42 +132,42 @@ function Install-VirtualAudio {
     $hardware_id = "VBAudioVACWDM"
 
     Write-Output "Downloading Virtual Audio Driver"
-    $webClient.DownloadFile("http://vbaudio.jcedeveloppement.com/Download_CABLE/VBCABLE_Driver_Pack43.zip", "C:\Users\Fractal\$compressed_file")
-    Unblock-File -Path "C:\Users\Fractal\$compressed_file"
+    $webClient.DownloadFile("http://vbaudio.jcedeveloppement.com/Download_CABLE/VBCABLE_Driver_Pack43.zip", "C:\$compressed_file")
+    Unblock-File -Path "C:\$compressed_file"
 
     Write-Output "Extracting Virtual Audio Driver"
-    Expand-Archive "C:\Users\Fractal\$compressed_file" -DestinationPath "C:\Users\Fractal\$driver_folder" -Force
+    Expand-Archive "C:\$compressed_file" -DestinationPath "C:\$driver_folder" -Force
 
     $wdk_installer = "wdksetup.exe"
     $devcon = "C:\Program Files (x86)\Windows Kits\10\Tools\x64\devcon.exe"
 
     Write-Output "Downloading Windows Development Kit installer"
-    $webClient.DownloadFile("http://go.microsoft.com/fwlink/p/?LinkId=526733", "C:\Users\Fractal\$wdk_installer")
+    $webClient.DownloadFile("http://go.microsoft.com/fwlink/p/?LinkId=526733", "C:\$wdk_installer")
 
     Write-Output "Downloading and installing Windows Development Kit"
-    Start-Process -FilePath "C:\Users\Fractal\$wdk_installer" -ArgumentList "/S" -Wait
+    Start-Process -FilePath "C:\$wdk_installer" -ArgumentList "/S" -Wait
 
     $cert = "vb_cert.cer"
     $url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/vb_cert.cer"
 
     Write-Output "Downloading VB certificate from $url"
-    $webClient.DownloadFile($url, "C:\Users\Fractal\$cert")
+    $webClient.DownloadFile($url, "C:\$cert")
 
     Write-Output "Importing VB certificate"
-    Import-Certificate -FilePath "C:\Users\Fractal\$cert" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher"
+    Import-Certificate -FilePath "C:\$cert" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher"
 
     Write-Output "Installing Virtual Audio Driver"
-    Start-Process -FilePath $devcon -ArgumentList "install", "C:\Users\Fractal\$driver_folder\$driver_inf", $hardware_id -Wait
+    Start-Process -FilePath $devcon -ArgumentList "install", "C:\$driver_folder\$driver_inf", $hardware_id -Wait
 
     Write-Output "Cleaning up Virtual Audio Driver installation files"
-    Remove-Item -Path "C:\Users\Fractal\$driver_folder" -Confirm:$false -Recurse
-    Remove-Item -Path "C:\Users\Fractal\$wdk_installer" -Confirm:$false
-    Remove-Item -Path "C:\Users\Fractal\$compressed_file" -Confirm:$false
-    Remove-Item -Path "C:\Users\Fractal\$cert" -Confirm:$false
+    Remove-Item -Path "C:\$driver_folder" -Confirm:$false -Recurse
+    Remove-Item -Path "C:\$wdk_installer" -Confirm:$false
+    Remove-Item -Path "C:\$compressed_file" -Confirm:$false
+    Remove-Item -Path "C:\$cert" -Confirm:$false
 
     Write-Output "Removing WDK Desktop shortcuts"
     Remove-Item -Path "C:\Users\Public\Desktop\Windows TShell.lnk" -Confirm:$false
-    # Remove-Item -Path "C:\Users\Public\Desktop\WPCups.lnk" -Confirm:$false
+    Remove-Item -Path "C:\Users\Public\Desktop\WPCups.lnk" -Confirm:$false
 }
 
 function Install-Chocolatey {
@@ -186,13 +199,13 @@ function Install-EpicGamesLauncher {
 
 function Install-Blizzard {
     $blizzard_exe = "Battle.net-Setup.exe"
-    Write-Output "Downloading Blizzard Battle.Net Launcher into path C:\Users\Fractal\$blizzard_exe"
-    $webClient.DownloadFile("https://www.battle.net/download/getInstallerForGame?os=win&locale=enUS&version=LIVE&gameProgram=BATTLENET_APP&id=634826696.1580926426", "C:\Users\Fractal\$blizzard_exe")    
+    Write-Output "Downloading Blizzard Battle.Net Launcher into path C:\$blizzard_exe"
+    $webClient.DownloadFile("https://www.battle.net/download/getInstallerForGame?os=win&locale=enUS&version=LIVE&gameProgram=BATTLENET_APP&id=634826696.1580926426", "C:\$blizzard_exe")    
     Write-Output "Installing Blizzard Battle.Net Launcher"
-    Start-Process -FilePath "C:\Users\Fractal\$blizzard_exe" -ArgumentList "/q" -Wait
+    Start-Process -FilePath "C:\$blizzard_exe" -ArgumentList "/q" -Wait
 
     Write-Output "Cleaning up Blizzard Battle.Net Launcher installation file"
-    Remove-Item -Path "C:\Users\Fractal\$blizzard_exe" -Confirm:$false
+    Remove-Item -Path "C:\$blizzard_exe" -Confirm:$false
 }
 
 function Install-Git {
@@ -336,7 +349,7 @@ function Set-Time {
 
 function Disable-NetworkWindow {
     Write-Output "Disabling New Network Window"
-    if((Test-RegistryValue -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Network" -Value NewNetworkWindowOff) -eq $true) {} Else {New-ItemProperty -path "HKLM:\SYSTEM\CurrentControlSet\Control\Network" -name "NewNetworkWindowOff" | Out-Null}
+    if((Test-RegistryValue -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Network" -Value NewNetworkWindowOff) -eq $true) {} Else {New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Network" -Name "NewNetworkWindowOff" | Out-Null}
 }
 
 function Set-MousePrecision {
@@ -351,7 +364,7 @@ function Enable-MouseKeys {
 
 function Disable-Logout {
     Write-Output "Disabling Logout Option in Start Menu"
-    if((Test-RegistryValue -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Value StartMenuLogOff )-eq $true) {Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name StartMenuLogOff -Value 1 | Out-Null} Else {New-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name StartMenuLogOff -Value 1 | Out-Null}
+    if((Test-RegistryValue -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Value StartMenuLogOff ) -eq $true) {Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name StartMenuLogOff -Value 1 | Out-Null} Else {New-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name StartMenuLogOff -Value 1 | Out-Null}
 }
     
 function Disable-Lock {
@@ -364,10 +377,28 @@ function Disable-Shutdown {
     Write-Output "Disabling Shutdown Option in Start Menu"
     New-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name NoClose -Value 1 | Out-Null
 }
-    
+
+function Install-PoshSSH {
+    Write-Output "Install Posh-SSH via PowerShell"
+    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force # NuGet needed first
+    Install-Module -Name Posh-SSH -Confirm:$False -Force
+}
+
 function Show-FileExtensions {
     Write-Output "Showing File Extensions"
-    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name HideFileExt -Value 0 | Out-Null
+    # get the IPv4 address and all the other SSH parameters
+    $Password = "password1234567."
+    $User = "Fractal"
+    $IPv4 = (Invoke-WebRequest -UseBasicParsing -uri "https://api.ipify.org/").Content
+
+    # command to show file extensions from registry
+    $Command = 'reg add "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /t REG_DWORD /f /v "HideFileExt" /d "0"'
+
+    # invoke command over SSH
+    $secpasswd = ConvertTo-SecureString $Password -AsPlainText -Force
+    $Credentials = New-Object System.Management.Automation.PSCredential($User, $secpasswd)
+    $SessionID = New-SSHSession -ComputerName $IPv4 -Credential $Credentials # Connect Over SSH
+    Invoke-SSHCommand -Index $sessionid.sessionid -Command $Command # Invoke Command Over SSH
 }
   
 function Set-FractalDirectory {
@@ -392,19 +423,19 @@ function Disable-HyperV {
     $extract_folder = "DeviceManagement"
 
     Write-Output "Downloading Device Management Powershell Script from $url"
-    $webClient.DownloadFile($url, "C:\Users\Fractal\$compressed_file")
-    Unblock-File -Path "C:\Users\Fractal\$compressed_file"
+    $webClient.DownloadFile($url, "C:\$compressed_file")
+    Unblock-File -Path "C:\$compressed_file" -Wait
 
     Write-Output "Extracting Device Management Powershell Script"
-    Expand-Archive "C:\Users\Fractal\$compressed_file" -DestinationPath "C:\Users\Fractal\$extract_folder" -Force
+    Expand-Archive "C:\$compressed_file" -DestinationPath "C:\$extract_folder" -Force -Wait
 
     Write-Output "Disabling Hyper-V Video"
-    Import-Module "C:\Users\Fractal\$extract_folder\DeviceManagement.psd1"
+    Import-Module "C:\$extract_folder\DeviceManagement.psd1" -Wait
     Get-Device | Where-Object -Property Name -Like "Microsoft Hyper-V Video" | Disable-Device -Confirm:$false
 
     Write-Output "Cleaning up Hyper-V Video disabling file"
-    Remove-Item -Path "C:\Users\Fractal\$compressed_file" -Confirm:$false
-    Remove-Item -Path "C:\Users\Fractal\$extract_folder" -Confirm:$false -Recurse
+    Remove-Item -Path "C:\$compressed_file" -Confirm:$false
+    Remove-Item -Path "C:\$extract_folder" -Confirm:$false -Recurse
 }
 
 function Install-FractalServer {
@@ -457,7 +488,7 @@ function Install-FractalAutoUpdate {
     $webClient.DownloadFile($fractal_update_url, $fractal_update_name)
 }
 
-function Install-FractalExitScript ($use_environment_vars) {
+function Install-FractalExitScript {
     # only download, gets called by the vbs file
     Write-Output "Downloading Fractal Exit script"
     $fractal_exitbat_name = "C:\Program Files\Fractal\Exit\ExitFractal.bat"
@@ -476,15 +507,10 @@ function Install-FractalExitScript ($use_environment_vars) {
     $fractal_icon_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/logo.ico"
     $webClient.DownloadFile($fractal_icon_url, $fractal_icon_name)
 
-    # create desktop shortcut (hardcode C:\Users\Fractal for VMs, use $Home for peer-to-peer)
+    # create desktop shortcut 
     Write-Output "Creating Exit Fractal Desktop Shortcut"
     $WshShell = New-Object -comObject WScript.Shell
-    if ($use_environment_vars) {
-        $Shortcut = $WshShell.CreateShortcut("$Home\Desktop\Exit Fractal.lnk")
-    }
-    else {
-        $Shortcut = $WshShell.CreateShortcut("C:\Users\Fractal\Desktop\Exit Fractal.lnk")
-    }
+    $Shortcut = $WshShell.CreateShortcut("$env:Public\Desktop\Exit Fractal.lnk")
     $Shortcut.TargetPath = "C:\Program Files\Fractal\Exit\Exit.vbs"
     $Shortcut.IconLocation="C:\Program Files\Fractal\Assets\logo.ico"
     $Shortcut.Save()
@@ -494,7 +520,7 @@ function Install-FractalExitScript ($use_environment_vars) {
     $WshShell = New-Object -comObject WScript.Shell
     $Shortcut = $WshShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\_Exit Fractal_.lnk")
     $Shortcut.TargetPath = "C:\Program Files\Fractal\Exit\Exit.vbs"
-    $Shortcut.IconLocation="C:\Program Files\Fractal\Assets\logo.ico"
+    $Shortcut.IconLocation = "C:\Program Files\Fractal\Assets\logo.ico"
     $Shortcut.Save()
 }
 
@@ -505,13 +531,13 @@ function Install-NvidiaTeslaPublicDrivers {
     $url = "http://us.download.nvidia.com/tesla/441.22/441.22-tesla-desktop-win10-64bit-international.exe"
     
     Write-Output "Downloading Nvidia M60 driver from URL $url"
-    $webClient.DownloadFile($url, "C:\Users\Fractal\$driver_file")
+    $webClient.DownloadFile($url, "C:\$driver_file")
 
     Write-Output "Installing Nvidia M60 driver from file $driver_file"
-    Start-Process -FilePath "C:\Users\Fractal\$driver_file" -ArgumentList "-s", "-noreboot" -Wait
+    Start-Process -FilePath "C:\$driver_file" -ArgumentList "-s", "-noreboot" -Wait
 
     Write-Output "Cleaning up Nvidia Public Drivers installation file"
-    Remove-Item -Path "C:\Users\Fractal\$driver_file" -Confirm:$false
+    Remove-Item -Path "C:\$driver_file" -Confirm:$false
 }
 
 function Set-OptimalGPUSettings {
@@ -522,18 +548,18 @@ function Set-OptimalGPUSettings {
 
 function Install-DirectX {
     $directx_exe = "directx_Jun2010_redist.exe"
-    Write-Output "Downloading DirectX into path C:\Users\Fractal\$direct_exe"
-    $webClient.DownloadFile("https://download.microsoft.com/download/8/4/A/84A35BF1-DAFE-4AE8-82AF-AD2AE20B6B14/directx_Jun2010_redist.exe", "C:\Users\Fractal\$directx_exe")
+    Write-Output "Downloading DirectX into path C:\$direct_exe"
+    $webClient.DownloadFile("https://download.microsoft.com/download/8/4/A/84A35BF1-DAFE-4AE8-82AF-AD2AE20B6B14/directx_Jun2010_redist.exe", "C:\$directx_exe")
     
-    Write-Output "Creating temporary DirectX directory in $PSScriptRoot/"
-    if((Test-Path -Path '/DirectX') -eq $true) {} Else {New-Item -Path '/DirectX' -ItemType directory | Out-Null}
+    Write-Output "Creating temporary DirectX directory in C:\"
+    if((Test-Path -Path '\DirectX') -eq $true) {} Else {New-Item -Path '\DirectX' -ItemType directory | Out-Null}
 
     Write-Output "Installing DirectX"
-    Start-Process -FilePath "C:\Users\Fractal\$directx_exe" "/T:$PSScriptRoot/DirectX /Q" -Wait
+    Start-Process -FilePath "C:\$directx_exe" "/T:C:\DirectX /Q" -Wait
 
     Write-Output "Cleaning up DirectX installation file"
-    Remove-Item -Path "C:\Users\Fractal\$directx_exe" -Confirm:$false
-    Remove-Item -Path "C:\Users\Fractal\DirectX" -Confirm:$false -Recurse
+    Remove-Item -Path "C:\$directx_exe" -Confirm:$false
+    Remove-Item -Path "C:\DirectX" -Confirm:$false -Recurse
 }
 
 function Install-Unison {
@@ -556,7 +582,7 @@ function Enable-SSHServer {
     }
 
     Write-Output "Downloading new OpenSSH Server Config"     
-    $webClient.DownloadFile("https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_config", "C:\ProgramData\ssh\sshd_config")
+    $webClient.DownloadFile("https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/sshd_config", "C:\ProgramData\ssh\sshd_config")
         
     Write-Output "Generate SSH Key"     
     ssh-keygen -f sshkey -q -N """"
