@@ -26,6 +26,7 @@ The general cloud scripts, `cloud.ps1` and `cloud.sh`, always gets installed and
 - Install Nvidia Tesla Public Drivers (in addition to GRID drivers, includes Cuda Toolkit 10.2)
 - Disable Tesla TCC mode to enable Tesla Graphics (WDM mode)
 - Set Optimal Tesla M60 GPU Settings
+- Install Posh-SSH to SSH via PowerShell
 - Disable Hyper-V Video (to use the GPU instead, will fail if you're using RDP when running the script)
 - Create Fractal Directory in Program Files
 - Download and Enable the Fractal service
@@ -53,6 +54,7 @@ After running `cloud.ps1`, dotnetfx won't be fully installed (1 package will be 
 - Install Nvidia Tesla Public Drivers (in addition to GRID drivers, includes Cuda Toolkit 10.2)
 - Disable Tesla TCC mode to enable Tesla Graphics (WDM mode)
 - Set Optimal Tesla M60 GPU Settings
+- Install Gnome and Dummy Virtual Display
 - Set Custom Gnome Display Manager Configuration
 - Set Custom X11 Resolution Configuration
 - Create Fractal Directory in /usr/share/
@@ -68,7 +70,7 @@ After running `cloud.ps1`, dotnetfx won't be fully installed (1 package will be 
 - Disable Shutdown in Start Menu
 - Set Auto-Login
 
-After running `cloud.sh`, auto-login won't be set. To have this feature, you need to log onto the cloud computer via Fractal and do the following:
+There are two scripts to run, `cloud-0.sh` and `cloud-1.sh`, since installing Gnome requires a reboot. After running `cloud-0.sh` and `cloud-1.sh`, auto-login won't be set. To have this feature, you need to log onto the cloud computer via Fractal and do the following:
 - Click on the down arrow in the top-right corner -> Click "Fractal" (the user) -> Select "Account Settings"
 - Click "Unlock" in the top-right of the window that opened, and enter the VM password (`password1234567.`) -> Set Automatic Login toggle to "On"
 
