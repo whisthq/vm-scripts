@@ -1,11 +1,15 @@
+#!/bin/bash
 # This script gets run by a Fractal Cloud Computer to enable Cloud streaming
 # This script should only get run on Linux Ubuntu computers
-creative_install        = false
-datascience_install     = false
-gaming_install          = false
-productivity_install    = false
-softwaredev_install     = false
-engineering_install     = false
+# This script is part 2 of 2 scripts needed to enable Cloud steaming
+
+# variable blocks for optional installs
+creative_install=false
+datascience_install=false
+gaming_install=false
+productivity_install=false
+softwaredev_install=false
+engineering_install=false
 
 # Helper function to download Bash scripts from S3 buckets
 function GetBashScript {
@@ -17,6 +21,9 @@ function GetBashScript {
 GetBashScript "utils.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/utils.sh"
 source ./utils.sh
 
+# Run sudo so it's not prompted in the following commands and install basic packages
+yes | printf "password1234567." | sudo apt-get install wget python python3
+
 # Run all the basic commands to setup a Fractal cloud computer
 Update-Linux
 Set-Time
@@ -26,18 +33,19 @@ Install-GoogleChrome
 Install-NvidiaTeslaPublicDrivers
 Disable-TCC
 Set-OptimalGPUSettings
+#Install-VirtualDisplay # Installed in script cloud-0.sh since it requires rebooting
 Install-CustomGDMConfiguration
 Install-CustomX11Configuration
 Set-FractalDirectory
 Install-FractalServer
 Install-ProcessManager
-Install-Unison
 Install-FractalExitScript
 Install-FractalAutoUpdate
 Install-FractalLinuxInputDriver
 Install-FractalWallpaper
 Enable-FractalFirewallRule
 Install-Unison # SSH Automatically Enabled on Linux
+Enable-SSHKey
 #Disable-Shutdown
 Add-AutoLogin # Needs to be done manually via GUI
 

@@ -1,3 +1,4 @@
+#!/bin/bash
 # This script gets called by 'cloud.sh'
 source ./utils.sh
 

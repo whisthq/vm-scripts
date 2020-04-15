@@ -1,3 +1,4 @@
+#!/bin/bash
 # This script gets run by the Fractal Electron app to enable Peer-to-Peer streaming
 # This script should only get run on Linux Ubuntu computers
 

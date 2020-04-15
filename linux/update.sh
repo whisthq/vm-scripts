@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cd /tmp
 rm -rf fractal-protocol 2> /dev/null
 mkdir fractal-protocol
@@ -16,10 +18,11 @@ else
 	then
 		:
 	else
-		immortalctl -k Fractal
+		sudo rm -r $HOME/.immortal
 		killall FractalServer
 		mv -f FractalServer "/usr/share/fractal/"
-        immortal /usr/share/fractal/./FractalServer Fractal
+    	sudo chmod +x /usr/share/fractal/FractalServer
+        immortal /usr/share/fractal/FractalServer
 	fi
 fi
 

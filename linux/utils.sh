@@ -1,10 +1,11 @@
+#!/bin/bash
 # This file contains the functions called in the Bash scripts
 
-function UpdateLinux {
+function Update-Linux {
     echo "Updating Linux Ubuntu"
-    yes | printf "password1234567." | sudo apt-get install wget python python3
     yes | sudo apt-get update
     yes | sudo apt-get upgrade
+    yes | sudo apt-get autoremove
 }
 
 function Set-Time {
@@ -18,13 +19,18 @@ function Add-AutoLogin {
 
 function Enable-FractalFirewallRule {
     echo "Creating Fractal Firewall Rule"
-    sudo ufw enable
-    sudo ufw allow 22 # SSH
-    sudo ufw allow 80 # HTTP
-    sudo ufw allow 443 # HTTPS
-    sudo ufw allow 32262 # Fractal Port Client->Server
-    sudo ufw allow 32263 # Fractal Port Server->Client 
-    sudo ufw allow 32264 # Fractal Port Shared-TCP
+    yes | sudo ufw enable
+    yes | sudo ufw allow 22 # SSH
+    yes | sudo ufw allow 80 # HTTP
+    yes | sudo ufw allow 443 # HTTPS
+    yes | sudo ufw allow 32262 # Fractal Port Client->Server
+    yes | sudo ufw allow 32263 # Fractal Port Server->Client 
+    yes | sudo ufw allow 32264 # Fractal Port Shared-TCP
+}
+
+function Install-VirtualDisplay {
+    echo "Installing Gnome and Virtual Display Dummy"
+    yes | sudo apt-get install gnome xserver-xorg-video-dummy ubuntu-gnome-desktop
 }
 
 function Install-CustomGDMConfiguration {
@@ -34,12 +40,12 @@ function Install-CustomGDMConfiguration {
 
 function Install-CustomX11Configuration {
    echo "Installing Custom X11 Configuration"
-   sudo wget -O /usr/share/X11/xorg.conf.d/01-dummy.conf "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/usr/share/X11/xorg.conf.d/01-dummy.conf"
+   sudo wget -O /usr/share/X11/xorg.conf.d/01-dummy.conf "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/01-dummy.conf"
 }
 
 function Install-FractalLinuxInputDriver {
     # first download the driver symlink file
-    echo "Install Fractal Linux Input Driver"
+    echo "Installing Fractal Linux Input Driver"
     sudo wget -O /usr/share/fractal/fractal-input.rules "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/fractal-input.rules"
 
     # symlink file
@@ -122,7 +128,7 @@ function Install-AutodeskMaya {
 function Install-FractalExitScript {
     # download exit Bash script
     echo "Downloading Fractal Exit script"
-    sudo wget -O /usr/share/fractal/exit.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/exit.sh"
+    sudo wget -O /usr/share/fractal/exit/exit.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/exit.sh"
 
     # download the Fractal logo for the icons
     echo "Downloading Fractal Logo icon"
@@ -130,13 +136,13 @@ function Install-FractalExitScript {
 
     # download the desktop shortcut and make it executable
     echo "Downloading Exit Fractal Desktop Shortcut"
-    sudo wget -O "~/Desktop/Exit Fractal.desktop" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/Exit Fractal.desktop"
-    chmod a+x "Exit Fractal.desktop" # make shortcut executable
+    sudo wget -O "$HOME/Desktop/Exit Fractal.desktop" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/Exit Fractal.desktop"
+    sudo chmod a+x "$HOME/Desktop/Exit Fractal.desktop" # make shortcut executable
 
     # create favorites bar shortcut
+    # can read the desktop favorites with: gsettings get org.gnome.shell favorite-apps
     echo "Creating Exit Fractal Favorites Bar Shortcut"
-    FAVORITES = "$(sudo dconf read /org/gnome/shell/favorite-apps)"
-    sudo dconf write /org/gnome/shell/favorite-apps "${FAVORITES%?}, 'Exit Fractal.desktop']"
+    gsettings set org.gnome.shell favorite-apps "$(gsettings get org.gnome.shell favorite-apps | sed s/.$//), 'Exit Fractal.desktop']"
 }
 
 function Install-FractalAutoUpdate {
@@ -147,6 +153,9 @@ function Install-FractalAutoUpdate {
 
 function Install-NvidiaTeslaPublicDrivers {
     echo "Installing Nvidia Public Driver (GRID already installed at deployment through Azure)"
+    echo "Installing Nvidia CUDA GPG Key"
+    sudo apt-key add /var/nvidia-driver-local-repo-440.64.00/7fa2af80.pub
+
     echo "Downloading Nvidia M60 Driver from Nvidia Website"
     sudo wget http://us.download.nvidia.com/tesla/440.64.00/nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb
     
@@ -154,40 +163,41 @@ function Install-NvidiaTeslaPublicDrivers {
     sudo apt-key add /var/nvidia-driver-local-repo-440.64.00/7fa2af80.pub
     sudo dpkg -i nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb
 
-    echo "Ceaning up Nvidia Public Drivers Installation"
+    echo "Cleaning up Nvidia Public Drivers Installation"
     sudo rm -f nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb
 }
 
 function Set-OptimalGPUSettings {
     echo "Setting Optimal Tesla M60 GPU Settings"
-    nvidia-smi --auto-boost-default=0
-    nvidia-smi -ac "2505,1177"
+    sudo nvidia-smi --auto-boost-default=0
+    sudo nvidia-smi -ac "2505,1177"
 }
 
 function Disable-TCC {
-    echo "Disable TCC Mode on Nvidia Tesla GPU"
-    nvidia-smi -g -fdm 0 --format=csv,noheader --query-gpu=pci.bus_id
+    echo "Disabling TCC Mode on Nvidia Tesla GPU"
+    sudo nvidia-smi -g 0 -fdm 0 
 }
 
 function Install-ProcessManager {
     # first download and install Immortal
-    echo "Install Immortal Process Manager"
+    echo "Installing Immortal Process Manager"
     curl -s https://packagecloud.io/install/repositories/immortal/immortal/script.deb.sh | sudo bash
     yes | sudo apt-get install immortal
 
     # then start Fractal with Immortal for auto-restart
-    echo "Start FractalServer with Immortal"
-    immortal /usr/share/fractal/./FractalServer Fractal
+    echo "Starting FractalServer with Immortal"
+    immortal /usr/share/fractal/FractalServer
 }
 
 function Install-FractalServer {
     # only download, server will get started by process manager
     echo "Downloading Fractal Server"
     sudo wget -O /usr/share/fractal/FractalServer "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/FractalServer"
+    sudo chmod +x /usr/share/fractal/FractalServer # make FractalServer executable
 
     # download the libraries
-    echo "Downloading FFmpeg Libraries"
-    sudo apt-get install libavcodec-dev libavdevice-dev libx11-dev libxtst-dev libxdamage-dev libasound2-dev xclip -y
+    echo "Downloading FFmpeg Libraries and Dependencies"
+    sudo apt-get install libavcodec-dev libavdevice-dev libx11-dev libxtst-dev libxdamage-dev libasound2-dev xclip xrandr -y
 }
 
 function Install-7Zip {
@@ -211,7 +221,14 @@ function Set-FractalDirectory {
 
 function Install-Unison {
     echo "Downloading Unison File Sync from S3 Bucket"
-    sudo wget -O /usr/share/fractal/unison "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/unison"
+    sudo wget -O /usr/share/fractal/linux_unison "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/linux_unison"
+    sudo ln -s /usr/share/fractal/linux_unison /usr/bin/unison
+}
+
+function Enable-SSHKey {
+    echo "Generate SSH Key"     
+    yes | ssh-keygen -f sshkey -q -N """"
+    cp sshkey.pub "$HOME/.ssh/authorized_keys"
 }
 
 function Install-FractalWallpaper {
@@ -220,7 +237,7 @@ function Install-FractalWallpaper {
     sudo wget -O /usr/share/fractal/assets/wallpaper.png "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/wallpaper.png"
 
     # then set the wallpaper
-    echo "Setting Fractal Paper"
+    echo "Setting Fractal Wallpaper"
     gsettings set org.gnome.desktop.background picture-uri /usr/share/fractal/assets/wallpaper.png
 }
 
@@ -341,6 +358,7 @@ function Install-Cinema4D {
 }
 
 function Install-Lightworks {
+    echo "Installing Lightworks"
     sudo wget "https://downloads.lwks.com/v14-5/lightworks-14.5.0-amd64.deb"
     sudo dpkg -i "lightworks-14.5.0-amd64.deb"
     yes | sudo apt-get -f install
