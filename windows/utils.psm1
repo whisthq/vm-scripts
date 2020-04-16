@@ -92,7 +92,8 @@ function Install-FractalWallpaper {
     $secpasswd = ConvertTo-SecureString $Password -AsPlainText -Force
     $Credentials = New-Object System.Management.Automation.PSCredential($User, $secpasswd)
     $SessionID = New-SSHSession -ComputerName $IPv4 -Credential $Credentials # Connect Over SSH
-    Invoke-SSHCommand -Index $sessionid.sessionid -Command $Command # Invoke Command Over SSH
+    Invoke-SSHCommand -SessionId $SessionID.SessionId -Command $Command # Invoke Command Over SSH
+    Remove-SSHSession -SessionId $SessionID.SessionId | Out-Null # Stop SSH Session
 }
 
 function Install-FractalService {

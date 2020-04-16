@@ -23,4 +23,3 @@ if errorlevel 1 (
 )
 
 cd C:\Program Files\Fractal
-
