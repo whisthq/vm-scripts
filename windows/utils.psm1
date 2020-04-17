@@ -18,7 +18,18 @@ function Test-RegistryValue {
         return $false
     }
 }
-    
+
+function Set-FilePermission ($file_path) {
+    # helper function for setting permissiosn of a file
+    $acl = Get-Acl $file_path
+    $acl.SetAccessRuleProtection($true, $false)
+    $administratorsRule = New-Object system.security.accesscontrol.filesystemaccessrule("Administrators", "FullControl", "Allow")
+    $systemRule = New-Object system.security.accesscontrol.filesystemaccessrule("SYSTEM", "FullControl", "Allow")
+    $acl.SetAccessRule($administratorsRule)
+    $acl.SetAccessRule($systemRule)
+    $acl | Set-Acl
+}
+
 function Update-Windows {
     $url = "https://gallery.technet.microsoft.com/scriptcenter/Execute-Windows-Update-fc6acb16/file/144365/1/PS_WinUpdate.zip"
     $compressed_file = "PS_WinUpdate.zip"
@@ -74,26 +85,8 @@ function Install-FractalWallpaper {
 
     # then set the wallpaper
     Write-Output "Setting Fractal Wallpaper"
-
-    # get the IPv4 address and all the other SSH parameters
-    $Password = "password1234567."
-    $User = "Fractal"
-    $IPv4 = (Invoke-WebRequest -UseBasicParsing -uri "https://api.ipify.org/").Content
-
-    # PowerShell commands, can't be run through webserver - kept here for reference
-    # if((Test-Path -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System") -eq $true) {} Else {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null}
-    # if((Test-RegistryValue -path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -value Wallpaper) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -PropertyType String -value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null}
-    # if((Test-RegistryValue -path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -value WallpaperStyle) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -value 2 | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -PropertyType String -value 2 | Out-Null}
-
-    # command to show file extensions from registry
-    $Command = 'reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d "C:\Program Files\Fractal\Assets\wallpaper.png" /f'
-
-    # invoke command over SSH
-    $secpasswd = ConvertTo-SecureString $Password -AsPlainText -Force
-    $Credentials = New-Object System.Management.Automation.PSCredential($User, $secpasswd)
-    $SessionID = New-SSHSession -ComputerName $IPv4 -Credential $Credentials # Connect Over SSH
-    Invoke-SSHCommand -SessionId $SessionID.SessionId -Command $Command # Invoke Command Over SSH
-    Remove-SSHSession -SessionId $SessionID.SessionId | Out-Null # Stop SSH Session
+    $file = "C:\cloud-1.ps1"
+    Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-File $file")
 }
 
 function Install-FractalService {
@@ -126,7 +119,7 @@ function Enable-Audio {
     Start-Service Audiosrv
 }
 
-function Install-VirtualAudio {
+function Install-VirtualAudio ($credentials) {
     $compressed_file = "VBCABLE_Driver_Pack43.zip"
     $driver_folder = "VBCABLE_Driver_Pack43"
     $driver_inf = "vbMmeCable64_win7.inf"
@@ -145,8 +138,9 @@ function Install-VirtualAudio {
     Write-Output "Downloading Windows Development Kit installer"
     $webClient.DownloadFile("http://go.microsoft.com/fwlink/p/?LinkId=526733", "C:\$wdk_installer")
 
+    # installing in user session via $credentials
     Write-Output "Downloading and installing Windows Development Kit"
-    Start-Process -FilePath "C:\$wdk_installer" -ArgumentList "/S" -Wait
+    Start-Process -FilePath "C:\$wdk_installer" -Credential $credentials -ArgumentList "/S" -Wait
 
     $cert = "vb_cert.cer"
     $url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/vb_cert.cer"
@@ -157,8 +151,9 @@ function Install-VirtualAudio {
     Write-Output "Importing VB certificate"
     Import-Certificate -FilePath "C:\$cert" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher"
 
+    # installing in user session via $credentials
     Write-Output "Installing Virtual Audio Driver"
-    Start-Process -FilePath $devcon -ArgumentList "install", "C:\$driver_folder\$driver_inf", $hardware_id -Wait
+    Start-Process -FilePath $devcon -Credential $credentials -ArgumentList "install", "C:\$driver_folder\$driver_inf", $hardware_id -Wait
 
     Write-Output "Cleaning up Virtual Audio Driver installation files"
     Remove-Item -Path "C:\$driver_folder" -Confirm:$false -Recurse
@@ -385,21 +380,11 @@ function Install-PoshSSH {
     Install-Module -Name Posh-SSH -Confirm:$False -Force
 }
 
-function Show-FileExtensions {
-    Write-Output "Showing File Extensions"
-    # get the IPv4 address and all the other SSH parameters
-    $Password = "password1234567."
-    $User = "Fractal"
-    $IPv4 = (Invoke-WebRequest -UseBasicParsing -uri "https://api.ipify.org/").Content
-
-    # command to show file extensions from registry
-    $Command = 'reg add "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /t REG_DWORD /f /v "HideFileExt" /d "0"'
-
-    # invoke command over SSH
-    $secpasswd = ConvertTo-SecureString $Password -AsPlainText -Force
-    $Credentials = New-Object System.Management.Automation.PSCredential($User, $secpasswd)
-    $SessionID = New-SSHSession -ComputerName $IPv4 -Credential $Credentials # Connect Over SSH
-    Invoke-SSHCommand -Index $sessionid.sessionid -Command $Command # Invoke Command Over SSH
+function Show-FileExtensions ($credentials) {
+    Write-Output "Setting File Extensions"
+    # This script also handles setting the wallpaper, it is run in "Install-FractalWallpaper"
+    # $file = "C:\cloud-1.ps1"
+    # Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-File $file")
 }
   
 function Set-FractalDirectory {
@@ -582,23 +567,31 @@ function Enable-SSHServer {
         }
     }
 
-    Write-Output "Downloading new OpenSSH Server Config"     
+    # TODO: for later, when we update the webserver
+    # Write-Output "Generating SSH Key"     
+    # ssh-keygen -f sshkey -q -N """"
+    # $From = Get-Content -Path sshkey.pub
+    # Add-Content -Path C:\ProgramData\ssh\administrators_authorized_keys -Value $From
+    # Get-Content -Path C:\ProgramData\ssh\administrators_authorized_keys    
+
+    Write-Output "Downloading new OpenSSH Server Config and SSH Keys"     
     $webClient.DownloadFile("https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/sshd_config", "C:\ProgramData\ssh\sshd_config")
-        
-    Write-Output "Generate SSH Key"     
-    ssh-keygen -f sshkey -q -N """"
-    copy sshkey.pub "C:\ProgramData\ssh\administrators_authorized_keys"
+    $webClient.DownloadFile("https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key.pub", "C:\ProgramData\ssh\ssh_host_ecdsa_key.pub")
+    $webClient.DownloadFile("https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key", "C:\ProgramData\ssh_host_ecdsa_key")
+    $webClient.DownloadFile("https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/administrator_authorized_keys", "C:\ProgramData\ssh\administrator_authorized_keys")
 
-    Write-Output "Remove Inheritance and All Authorized Users for the Authorized Keys"
-    icacls "C:\ProgramData\ssh\administrators_authorized_keys" /inheritance:r
-    icacls "C:\ProgramData\ssh\administrators_authorized_keys" /remove:g "Authorized Users" # apparently necessary to remove Authorized Users from file permissions, unclear if this works/is needed
+    Write-Output "Enable Permissions on OpenSSH Config and SSH Keys Files"
+    Set-FilePermission "C:\ProgramData\ssh\sshd_config"
+    Set-FilePermission "C:\ProgramData\ssh\ssh_host_ecdsa_key.pub"
+    Set-FilePermission "C:\ProgramData\ssh_host_ecdsa_key"
+    Set-FilePermission "C:\ProgramData\ssh\administrator_authorized_keys"
 
-    Write-Output "Start the SSH Server"
+    Write-Output "Starting the SSH Server"
     Start-Service sshd
     Set-Service -Name sshd -StartupType 'Automatic'
     Get-NetFirewallRule -Name *ssh* # didn't seem needed, but just in case
     New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22 # didn't seem needed, but just in case
 
-    Write-Output "Add Unison Executable Path"
+    Write-Output "Adding Unison Executable Path"
     [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine) + ";C:\Program Files\Fractal", [EnvironmentVariableTarget]::Machine)
 }

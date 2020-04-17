@@ -40,7 +40,7 @@ The general cloud scripts, `cloud.ps1` and `cloud.sh`, always gets installed and
 - Disable Shutdown, Logout and Sleep in Start Menu
 - Set Auto-Login
 
-After running `cloud.ps1`, dotnetfx won't be fully installed (1 package will be missing), the Fractal disconnect button won't be pinned to the Start Menu and the Display settings won't be greyed-out. To have those features, you need to log back on the cloud computer via RDP and do the following:
+There are two scripts, `cloud-0.ps1` and `cloud-1.ps`, with `cloud-1.ps1` being run by `cloud-0.ps1`. After running `cloud-0.ps1`, dotnetfx won't be fully installed (1 package will be missing), the Fractal disconnect button won't be pinned to the Start Menu and the Display settings won't be greyed-out. To have those features, you need to log back on the cloud computer via RDP and do the following:
 - Open PowerShell and run "choco install dotnetfx --force
 - Open Start Menu, right-click "_Exit Fractal_" and select "Pin to Start"
 - Open "Local Group Policy Editor", naviguate to \User Configuration\Administrative Tools\Control Panel\Display and set both the settings listed there (Disable the Display Control Panel, Hide Settings tab) to "Enabled"

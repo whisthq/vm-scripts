@@ -226,9 +226,23 @@ function Install-Unison {
 }
 
 function Enable-SSHKey {
-    echo "Generate SSH Key"     
-    yes | ssh-keygen -f sshkey -q -N """"
-    cp sshkey.pub "$HOME/.ssh/authorized_keys"
+    # TODO: Needed for later, when we update webserver
+    # echo "Generating SSH Key"     
+    # yes | ssh-keygen -f sshkey -q -N """"
+    # cp sshkey.pub "$HOME/.ssh/authorized_keys"
+
+    echo "Download SSH Administrator Authorized Key"
+    sudo wget -O /tmp "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/administrator_authorized_keys"
+    sudo cp /tmp/administrator_authorized_keys "$HOME/.ssh/authorized_keys"
+    sudo chmod 600 "$HOME/.ssh/authorized_keys" # activate
+
+    echo "Downloading SSH ECDSA Keys"
+    sudo wget -O /tmp/ssh_host_ecdsa_key "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key"
+    sudo wget -O /tmp/ssh_host_ecdsa_key.pub "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key.pub"
+    sudo cp /tmp/ssh_host_ecdsa_key "/etc/ssh/ssh_host_ecdsa_key"
+    sudo cp /tmp/ssh_host_ecdsa_key.pub "/etc/ssh/ssh_host_ecdsa_key.pub"
+    sudo chmod 600 "/etc/ssh/ssh_host_ecdsa_key" # activate
+    sudo chmod 600 "/etc/ssh/ssh_host_ecdsa_key.pub" # activate
 }
 
 function Install-FractalWallpaper {
