@@ -80,7 +80,7 @@ if ($creative_install) {
     $creative_script_name = "C:\creative.ps1"
     $creative_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/creative.ps1"
     GetPowerShellScript $creative_script_name $creative_script_url
-    Start-Process powershell.exe -verb RunAs -argument "-file $creative_script_name" -Wait
+    Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-file $creative_script_name") -Wait
     Write-Output "Cleaning up Creative Install script"
     Remove-Item -Path $creative_script_name -Confirm:$false
 }
@@ -92,7 +92,7 @@ if ($datascience_install) {
     $datascience_script_name = "C:\datascience.ps1"
     $datascience_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/datascience.ps1"
     GetPowerShellScript $datascience_script_name $datascience_script_url
-    Start-Process powershell.exe -verb RunAs -argument "-file $datascience_script_name" -Wait
+    Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-file $datascience_script_name") -Wait
     Write-Output "Cleaning up Data Science Install script"
     Remove-Item -Path $datascience_script_name -Confirm:$false
 }
@@ -104,7 +104,7 @@ if ($gaming_install) {
     $gaming_script_name = "C:\gaming.ps1"
     $gaming_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/gaming.ps1"
     GetPowerShellScript $gaming_script_name $gaming_script_url
-    Start-Process powershell.exe -verb RunAs -argument "-file $gaming_script_name" -Wait
+    Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-file $gaming_script_name") -Wait
     Write-Output "Cleaning up Gaming Install script"
     Remove-Item -Path $gaming_script_name -Confirm:$false
 }
@@ -116,7 +116,7 @@ if ($softwaredev_install) {
     $softwaredev_script_name = "C:\softwaredev.ps1"
     $softwaredev_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/softwaredev.ps1"
     GetPowerShellScript $softwaredev_script_name $softwaredev_script_url
-    Start-Process powershell.exe -verb RunAs -argument "-file $softwaredev_script_name" -Wait
+    Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-file $softwaredev_script_name") -Wait
     Write-Output "Cleaning up Software Development Install script"
     Remove-Item -Path $softwaredev_script_name -Confirm:$false
 }
@@ -128,7 +128,7 @@ if ($engineering_install) {
     $engineering_script_name = "C:\engineering.ps1"
     $engineering_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/engineering.ps1"
     GetPowerShellScript $engineering_script_name $engineering_script_url
-    Start-Process powershell.exe -verb RunAs -argument "-file $engineering_script_name" -Wait
+    Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-file $engineering_script_name") -Wait
     Write-Output "Cleaning up Engineering Install script"
     Remove-Item -Path $engineering_script_name -Confirm:$false
 }
@@ -140,7 +140,7 @@ if ($productivity_install) {
     $productivity_script_name = "C:\productivity.ps1"
     $productivity_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/productivity.ps1"
     GetPowerShellScript $productivity_script_name $productivity_script_url
-    Start-Process powershell.exe -verb RunAs -argument "-file $productivity_script_name" -Wait
+    Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-file $productivity_script_name") -Wait
     Write-Output "Cleaning up Productivity Install script"
     Remove-Item -Path $productivity_script_name -Confirm:$false
 }

@@ -2,6 +2,10 @@
 
 This repository contains the Fractal PowerShell and Bash scripts that get launched at creation of a cloud computer to set it up in a specific configuration, or when a user sets up their personal computer for peer-to-peer streaming. The cloud scripts can be toggled from a selection on the Fractal website in the cloud computer creation page, and are then fed to the Azure SDK when the VM gets created. A combination of many scripts can be selected.
 
+## Windows DPI Scripts
+
+The DPI scripts, `dpi96.ps1` and `dpi144.ps1`, get run by calling `run-dpi.ps1` by the webserver, along with the argument `96` or `144` depending on the respective DPI to set. All they perform is changing the DPI of the windows VM they are run on.
+
 ## Cloud Setup Scripts
 
 The general cloud scripts, `cloud.ps1` and `cloud.sh`, always gets installed and sets up the cloud computer for optimal general usage with Fractal. The following tasks are performed by the general scripts:
