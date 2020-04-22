@@ -6,7 +6,7 @@ This repository contains the Fractal PowerShell and Bash scripts that get launch
 
 The DPI scripts, `dpi96.ps1` and `dpi144.ps1`, get run by calling `run-dpi.ps1` by the webserver, along with the argument `96` or `144` depending on the respective DPI to set. All they perform is changing the DPI of the windows VM they are run on.
 
-Usage: ```run-dpi.ps1` "96"``` or ```run-dpi.ps1 "144"```
+Usage: ```run-dpi.ps1 "96"``` or ```run-dpi.ps1 "144"```
 
 ## Cloud Setup Scripts
 
