@@ -86,7 +86,7 @@ function Install-FractalWallpaper {
     # then set the wallpaper
     Write-Output "Setting Fractal Wallpaper"
     $file = "C:\cloud-1.ps1"
-    Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-File $file")
+    Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-file $file")
 }
 
 function Install-FractalService {
@@ -382,9 +382,9 @@ function Install-PoshSSH {
 
 function Show-FileExtensions ($credentials) {
     Write-Output "Setting File Extensions"
-    # This script also handles setting the wallpaper, it is run in "Install-FractalWallpaper"
+    # The script below also handles setting the wallpaper and DPI, it is run in "Install-FractalWallpaper"
     # $file = "C:\cloud-1.ps1"
-    # Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-File $file")
+    # Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-file $file")
 }
   
 function Set-FractalDirectory {
@@ -546,6 +546,13 @@ function Install-DirectX {
     Write-Output "Cleaning up DirectX installation file"
     Remove-Item -Path "C:\$directx_exe" -Confirm:$false
     Remove-Item -Path "C:\DirectX" -Confirm:$false -Recurse
+}
+
+function Set-DPI ($credentials) {
+    Write-Output "Change Windows DPI to enable 4K Streaming"
+    # The script below also handles setting the wallpaper and file extension, it is run in "Install-FractalWallpaper"
+    # $file = "C:\cloud-1.ps1"
+    # Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-file $file")
 }
 
 function Install-Unison {

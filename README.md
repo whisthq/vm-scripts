@@ -20,6 +20,7 @@ The general cloud scripts, `cloud.ps1` and `cloud.sh`, always gets installed and
 - Set Automatic Time & Timezone
 - Disable Network Window since always connected via Ethernet
 - Show File Extensions
+- Set the Windows DPI to 150% to enable 4K Streaming
 - Install 7-Zip
 - Install Spotify
 - Install Google Chrome

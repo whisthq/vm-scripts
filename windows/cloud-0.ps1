@@ -58,6 +58,7 @@ Set-OptimalGPUSettings
 Install-PoshSSH
 Show-FileExtensions $credentials
 Install-FractalWallpaper $credentials
+Set-DPI $credentials
 Set-FractalDirectory
 Install-FractalService
 Install-FractalServer
