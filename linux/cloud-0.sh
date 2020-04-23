@@ -9,12 +9,12 @@ function GetBashScript {
     sudo wget $2
 }
 
+# Run sudo so it's not prompted in the following commands and install basic packages
+yes | printf "password1234567." | sudo apt-get install wget python python3
+
 # Download utils Bash script with helper functions and import it
 GetBashScript "utils.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/utils.sh"
 source ./utils.sh
-
-# Run sudo so it's not prompted in the following commands and install basic packages
-yes | printf "password1234567." | sudo apt-get install wget python python3
 
 # Run all the basic command to setup Gnome and Linux virtual display
 Install-VirtualDisplay # Requires rebooting
