@@ -73,6 +73,20 @@ Enable-SSHServer
 #Disable-Shutdown
 Add-AutoLogin $admin_username $admin_password
 
+# Config ssh to force public key and disable password log in. This change also makes openssh look for the key in $user\.ssh/authorized_keys
+$FilePath = "C:\ProgramData\ssh\sshd_config"
+
+(Get-Content ($FilePath)) |
+ Foreach-Object {$_ -replace '^Match Group administrators', (" ")} | Set-Content  ($Filepath)
+
+(Get-Content ($FilePath)) |
+ Foreach-Object {$_ -replace '^       AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys', (" ")} | Set-Content  ($Filepath)
+
+ 
+(Get-Content ($FilePath)) |
+ Foreach-Object {$_ -replace '^PasswordAuthentication yes', ("PasswordAuthentication no")} | Set-Content  ($Filepath)
+ Add-Content $FilePath "`nAuthenticationMethods publickey"
+
 # Install creative packages
 if ($creative_install) {
     # fetch the script, run it and clean
