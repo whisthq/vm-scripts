@@ -410,13 +410,13 @@ function Disable-HyperV {
 
     Write-Output "Downloading Device Management Powershell Script from $url"
     $webClient.DownloadFile($url, "C:\$compressed_file")
-    Unblock-File -Path "C:\$compressed_file" -Wait
+    Unblock-File -Path "C:\$compressed_file"
 
     Write-Output "Extracting Device Management Powershell Script"
-    Expand-Archive "C:\$compressed_file" -DestinationPath "C:\$extract_folder" -Force -Wait
+    Expand-Archive "C:\$compressed_file" -DestinationPath "C:\$extract_folder" -Force
 
     Write-Output "Disabling Hyper-V Video"
-    Import-Module "C:\$extract_folder\DeviceManagement.psd1" -Wait
+    Import-Module "C:\$extract_folder\DeviceManagement.psd1"
     Get-Device | Where-Object -Property Name -Like "Microsoft Hyper-V Video" | Disable-Device -Confirm:$false
 
     Write-Output "Cleaning up Hyper-V Video disabling file"
