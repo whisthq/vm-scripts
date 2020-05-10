@@ -30,7 +30,7 @@ function Set-FilePermission ($file_path) {
     $acl | Set-Acl
 }
 
-function Launch-RemotePowerShellCommand ($credentials, $command_as_a_string) {
+function Invoke-RemotePowerShellCommand ($credentials, $command_as_a_string) {
     # this helper scripts authenticates to the Fractal user via Remote-PowerShell, and runs the specified command in userspace
     Write-Output "Get Public IPv4"
     $IPv4 = (Invoke-WebRequest -UseBasicParsing -uri "https://api.ipify.org/").Content
@@ -150,6 +150,9 @@ function Enable-RemotePowerShell ($certificate_password) {
 }
 
 function Install-FractalWallpaper ($run_on_local, $credentials) {
+    # sleep for 15 seconds to make sure previous operations completed
+    Start-Sleep -s 15
+
     # first download the wallpaper
     Write-Output "Downloading Fractal Wallpaper"
     $fractalwallpaper_name = "C:\Program Files\Fractal\Assets\wallpaper.png"
@@ -168,7 +171,7 @@ function Install-FractalWallpaper ($run_on_local, $credentials) {
         $command = 'if((Test-Path -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System") -eq $true) {} Else {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null}
         if((Test-RegistryValue -path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -value Wallpaper) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -PropertyType String -value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null}
         if((Test-RegistryValue -path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -value WallpaperStyle) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -value 2 | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -PropertyType String -value 2 | Out-Null}'
-        Launch-RemotePowerShellCommand $credentials $command        
+        Invoke-RemotePowerShellCommand $credentials $command        
     }
 }
 
@@ -358,6 +361,11 @@ function Install-Docker {
     choco install docker --force
 }
 
+function Install-Curl {
+    Write-Output "Installing Curl through Chocolatey"
+    choco install curl --force
+}
+
 function Install-Atom {
     Write-Output "Installing Atom through Chocolatey"
     choco install atom --force
@@ -437,7 +445,7 @@ function Set-MousePrecision ($run_on_local, $credentials) {
     }
     # else we run via Remote-PS (to run from a webserver)
     else {
-        Launch-RemotePowerShellCommand $credentials 'Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name MouseSpeed -Value 1 | Out-Null'
+        Invoke-RemotePowerShellCommand $credentials 'Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name MouseSpeed -Value 1 | Out-Null'
     }
 }
     
@@ -449,7 +457,7 @@ function Enable-MouseKeys ($run_on_local, $credentials) {
     }
     # else we run via Remote-PS (to run from a webserver)
     else {
-        Launch-RemotePowerShellCommand $credentials 'Set-ItemProperty -Path "HKCU:\Control Panel\Accessibility\MouseKeys" -Name Flags -Value 63 | Out-Null'
+        Invoke-RemotePowerShellCommand $credentials 'Set-ItemProperty -Path "HKCU:\Control Panel\Accessibility\MouseKeys" -Name Flags -Value 63 | Out-Null'
     }
 }
 
@@ -483,7 +491,7 @@ function Show-FileExtensions ($run_on_local, $credentials) {
     }
     # else we run via Remote-PS (to run from a webserver)
     else {
-        Launch-RemotePowerShellCommand $credentials 'Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name HideFileExt -Value 0 | Out-Null'
+        Invoke-RemotePowerShellCommand $credentials 'Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name HideFileExt -Value 0 | Out-Null'
     }
 }
   

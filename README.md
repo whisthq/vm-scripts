@@ -1,16 +1,17 @@
 # Fractal Computers Setup Scripts
 
-This repository contains the Fractal PowerShell and Bash scripts that get launched at creation of a cloud computer to set it up in a specific configuration, or when a user sets up their personal computer for peer-to-peer streaming. The cloud scripts can be toggled from a selection on the Fractal website in the cloud computer creation page, and are then fed to the Azure SDK when the VM gets created. A combination of many scripts can be selected.
+This repository contains the Fractal PowerShell and Bash scripts that get launched at creation of a cloud computer to set it up in a specific configuration, or when a user sets up their personal computer for peer-to-peer streaming. The cloud scripts can be toggled from a selection on the Fractal website in the cloud computer creation page, and are then fed to the Azure SDK when the VM gets created. A combination of many scripts can be run.
 
-## Windows DPI Scripts
 
-The DPI scripts, `dpi96.ps1` and `dpi144.ps1`, get run by calling `run-dpi.ps1` by the webserver, along with the argument `96` or `144` depending on the respective DPI to set. All they perform is changing the DPI of the windows VM they are run on.
 
-Usage: ```run-dpi.ps1 "96"``` or ```run-dpi.ps1 "144"```
+
+
+
+
 
 ## Cloud Setup Scripts
 
-The general cloud scripts, `cloud.ps1` and `cloud.sh`, always gets installed and sets up the cloud computer for optimal general usage with Fractal. The following tasks are performed by the general scripts:
+The general cloud scripts, `cloud.ps1`, for Windows, and `cloud-0.sh` and `cloud-1.sh`, always gets installed and sets up the cloud computer for optimal general usage with Fractal. The following tasks are performed by the general scripts:
 
 ### Windows Cloud Computers
 - Update Windows
@@ -47,10 +48,11 @@ The general cloud scripts, `cloud.ps1` and `cloud.sh`, always gets installed and
 - Disable Shutdown, Logout and Sleep in Start Menu
 - Set Auto-Login
 
-There are two scripts, `cloud-0.ps1` and `cloud-1.ps`, with `cloud-1.ps1` being run by `cloud-0.ps1`. After running `cloud-0.ps1`, dotnetfx won't be fully installed (1 package will be missing), the Fractal disconnect button won't be pinned to the Start Menu and the Display settings won't be greyed-out. To have those features, you need to log back on the cloud computer via RDP and do the following:
-- Open PowerShell and run "choco install dotnetfx --force
-- Open Start Menu, right-click "_Exit Fractal_" and select "Pin to Start"
-- Open "Local Group Policy Editor", naviguate to \User Configuration\Administrative Tools\Control Panel\Display and set both the settings listed there (Disable the Display Control Panel, Hide Settings tab) to "Enabled"
+
+
+
+
+
 
 ### Linux Ubuntu Cloud Computers
 - Update Linux
