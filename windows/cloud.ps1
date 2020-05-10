@@ -4,6 +4,7 @@
 param (
     [string]        $admin_username = "Fractal",
     [SecureString]  $admin_password = (ConvertTo-SecureString "password1234567." -AsPlainText -Force),
+    [switch]        $run_on_local           = $true, # if true, this script won't use PS-Remoting and needs to be run locally via RDP, else it uses PS-Remoting to work from a webserver
     [switch]        $creative_install       = $false,
     [switch]        $datascience_install    = $false,
     [switch]        $gaming_install         = $false,
@@ -26,10 +27,7 @@ function GetPowerShellScript ($script_name, $script_url) {
 # Download utils PowerShell script with helper functions and import it, and download cloud-1.ps1
 $utils_script_name = "C:\utils.psm1"
 $utils_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/utils.psm1"
-$cloud1_name = "C:\cloud-1.ps1"
-$cloud1_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/cloud-1.ps1"
 GetPowerShellScript $utils_script_name $utils_script_url
-GetPowerShellScript $cloud1_name $cloud1_url
 Import-Module "$utils_script_name"
 
 # Make sure we're in the proper directory (mostly for running from webservers) and define credentials for user
@@ -40,25 +38,24 @@ $credentials = New-Object System.Management.Automation.PSCredential $admin_usern
 Update-Windows
 Update-Firewall
 Install-Chocolatey
-Install-DotNetFramework # Requires a reboot to finish install
+Install-DotNetFramework # Installs 3/4 packages, reboot required for fourth package (not necessary)
 Install-DirectX
 Install-VisualRedist
-Install-VirtualAudio $credentials
+Install-VirtualAudio
 Enable-Audio
-Enable-MouseKeys
-Set-MousePrecision
+Enable-MouseKeys $run_on_local $credentials
+Set-MousePrecision $run_on_local $credentials
 Set-Time
 Disable-NetworkWindow
 Install-7Zip
-#Install-Spotify
 Install-GoogleChrome
 Install-NvidiaTeslaPublicDrivers
 Disable-TCC
 Set-OptimalGPUSettings
+Install-Curl
 Install-PoshSSH
-Show-FileExtensions $credentials
-Install-FractalWallpaper $credentials
-Set-DPI $credentials
+Show-FileExtensions $run_on_local $credentials
+Install-FractalWallpaper $run_on_local $credentials
 Set-FractalDirectory
 Install-FractalService
 Install-FractalServer
@@ -67,10 +64,10 @@ Install-FractalAutoUpdate
 Enable-FractalFirewallRule
 Install-Unison
 Enable-SSHServer
-#Disable-HyperV
-#Disable-Lock
-#Disable-Logout
-#Disable-Shutdown
+Disable-HyperV
+Disable-Lock
+Disable-Logout
+Disable-Shutdown
 Add-AutoLogin $admin_username $admin_password
 
 # Install creative packages
@@ -146,7 +143,6 @@ if ($productivity_install) {
 }
 
 # Clean PowerShell install script and restart
-Write-Output "Cleaning up Utils script and Cloud-1.ps1 script"
+Write-Output "Cleaning up Utils script script"
 Remove-Item -Path $utils_script_name -Confirm:$false
-Remove-Item -Path $cloud1_name -Confirm:$false
 Restart-Computer -Force

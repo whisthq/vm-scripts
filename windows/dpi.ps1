@@ -26,6 +26,27 @@ if ($dpi == "96") {
     Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-file $script_name") -Wait
     Write-Output "Cleaning up DPI script"
     Remove-Item -Path $script_name -Confirm:$false
+
+
+
+# This script gets run (as Administrator) by a webserver to change the DPI on a Windows cloud computer
+
+# Set DPI to 96
+Write-Output "Change Windows DPI to enable 4K Streaming"
+cd 'HKCU:\Control Panel\Desktop'
+$val = Get-ItemProperty -Path . -Name "LogPixels"
+Write-Host 'Change to 100% / 96 dpi'
+Set-ItemProperty -Path . -Name LogPixels -Value 96
+Set-ItemProperty -Path . -Name Win8DpiScaling 0
+cd 'C:\Users\Fractal' # cd back
+
+# All set
+
+
+
+
+
+
 }
 # set dpi to 144
 else if ($dpi == "144") {
@@ -37,6 +58,25 @@ else if ($dpi == "144") {
     Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-file $script_name") -Wait
     Write-Output "Cleaning up DPI script"
     Remove-Item -Path $script_name -Confirm:$false
+
+
+# This script gets run (as Administrator) by a webserver to change the DPI on a Windows cloud computer
+
+# Set DPI to 144
+Write-Output "Change Windows DPI to enable 4K Streaming"
+cd 'HKCU:\Control Panel\Desktop'
+$val = Get-ItemProperty -Path . -Name "LogPixels"
+Write-Host 'Change to 150% / 144 dpi'
+Set-ItemProperty -Path . -Name LogPixels -Value 144
+Set-ItemProperty -Path . -Name Win8DpiScaling 1
+cd 'C:\Users\Fractal' # cd back
+
+# All set
+
+
+
+
+
 }
 
 # All set

@@ -226,7 +226,7 @@ function Install-Unison {
 }
 
 function Enable-SSHKey {
-    # TODO: Needed for later, when we update webserver
+    # NOTE: needed for later, when we update webserver to exchange SSH keys
     # echo "Generating SSH Key"     
     # yes | ssh-keygen -f sshkey -q -N """"
     # cp sshkey.pub "$HOME/.ssh/authorized_keys"

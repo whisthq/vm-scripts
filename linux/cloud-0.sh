@@ -1,7 +1,7 @@
 #!/bin/bash
 # This script gets run by a Fractal Cloud Computer to enable Cloud streaming
 # This script should only get run on Linux Ubuntu computers
-# This script is part 1 of 2 scripts needed to enable Cloud steaming
+# This script is part 1 of 2 scripts needed to enable Cloud streaming
 
 # Helper function to download Bash scripts from S3 buckets
 function GetBashScript {
