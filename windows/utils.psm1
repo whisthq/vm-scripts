@@ -2,7 +2,6 @@
 [Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
 $webClient = New-Object System.Net.WebClient
 
-#### Helper functions ####
 function Test-RegistryValue {
     # https://www.jonathanmedd.net/2014/02/testing-for-the-presence-of-a-registry-key-and-value.html
     param (
@@ -31,197 +30,19 @@ function Set-FilePermission ($file_path) {
     $acl | Set-Acl
 }
 
-function Launch-RemotePowerShellCommand ($command_as_a_string) {
-
-
-
-
-
-
-
-   
-
-
-
-
-
-
-    
-
-    Set-NetFirewallRule -Name "WINRM-HTTP-In-TCP-PUBLIC" -RemoteAddress Any
-    Set-NetFirewallRule -Name "WINRM-HTTPS-In-TCP-PUBLIC" -RemoteAddress Any
-
-
-
-
-    Set-NetFirewallRule -Name "WINRM-HTTP-In-TCP-PUBLIC" -RemoteAddress Any
-
-    Set-Service WinRM -ComputerName $servers -startuptype Automatic
-
-
-
-    Set-PSSessionConfiguration Microsoft.PowerShell -ShowSecurityDescriptorUI
-
-
-
-
-    #
+function Launch-RemotePowerShellCommand ($credentials, $command_as_a_string) {
+    # this helper scripts authenticates to the Fractal user via Remote-PowerShell, and runs the specified command in userspace
+    Write-Output "Get Public IPv4"
     $IPv4 = (Invoke-WebRequest -UseBasicParsing -uri "https://api.ipify.org/").Content
-    $hostname = hostname
-    $Password = "password1234567."
-    $User = "Fractal"
-    $secpasswd = ConvertTo-SecureString $Password -AsPlainText -Force
-    $Credentials = New-Object System.Management.Automation.PSCredential($User, $secpasswd)
 
-    $so = New-PsSessionOption –SkipCACheck -SkipCNCheck
-    $session = New-PSSession -ConnectionURI http://"$IPv4":5985 -Credential $Credentials -SessionOption $so
-    Invoke-Command -Session $session -ScriptBlock { Get-ChildItem C:\ }
+    Write-Output "Invoke Command in New Remote-PSSession"
+    $SO = New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck
+    $session = New-PSSession -ConnectionUri https://"$IPv4":5986 -Credential $credentials -SessionOption $SO
+    Invoke-Command -Session $session -ScriptBlock { $command_as_a_string }
 
-
-
-
-
-    Invoke-Command -ConnectionURI https://"$IPv4":5985 -ScriptBlock { Get-ChildItem C:\ } -Credential $psCred -SessionOption $so
-
-
-
-    $so = New-PsSessionOption –SkipCACheck -SkipCNCheck
-    $session = New-PSSession ConnectionURI https://"$IPv4":5985 -Credential $psCred -SessionOption $so
-    Invoke-Command -Session $session -ScriptBlock { Get-ChildItem C:\ }
-
-
-
-
-
-    Enter-PSSession -ConnectionUri https://<public-ip-dns-of-the-vm>:port -Credential $cred -SessionOption (New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck) -Authentication Negotiate
-
-
-
-    ######
-    $IPv4 = (Invoke-WebRequest -UseBasicParsing -uri "https://api.ipify.org/").Content
-    $hostname = hostname
-    $UserName = "Fractal"
-    $Password = ConvertTo-SecureString "password1234567." -AsPlainText -Force
-
-
-
-    $psCred = New-Object System.Management.Automation.PSCredential($UserName, $Password)
-#    Invoke-Command -ComputerName $IPv4 -ScriptBlock { Get-ChildItem C:\ } -Credential $psCred
-
-    Enter-PSSession -ComputerName $IPv4 -Credential "Fractal" -SessionOption (New-PSSessionOption -SkipCACheck -SkipCNCheck)
-
-
-    Enter-PSSession -ConnectionUri "$IPv4:5986" -Credential "$hostname/Fractal" -SessionOption (New-PSSessionOption -SkipCACheck -SkipCNCheck)
-
-
-
-
-
-    #
-    $IPv4 = (Invoke-WebRequest -UseBasicParsing -uri "https://api.ipify.org/").Content
-    $Password = "password1234567."
-    $User = "Fractal"
-    $secpasswd = ConvertTo-SecureString $Password -AsPlainText -Force
-    $Credentials = New-Object System.Management.Automation.PSCredential($User, $secpasswd)
-
-
-
-    Test-WsMan $IPv4
-    Invoke-Command -ComputerName $IPv4 -ScriptBlock { Get-ChildItem C:\ } -Credential $Credentials
-
-
-
-
-    Enable-WSManCredSSP $IPv4 –DelegateComputer $IPv4
-    Enable-WSManCredSSP $IPv4
-    Enter-PSSession $IPv4 -Authentication CredSSP -Credential Fractal
-
-
-    # TODO
-
-    Set-Item WSMan:\localhost\Client\TrustedHosts -Value "*" -Force
-    New-NetFirewallRule -DisplayName "WinRM HTTPS" -Direction Inbound -LocalPort 5986 -Profile Private, Public -Protocol TCP -Action Allow -Enabled True | Out-Null
-    Enable-PSRemoting -SkipNetworkProfileCheck -Force
-    Get-PSSessionConfiguration
-    $so = New-PsSessionOption –SkipCACheck -SkipCNCheck
-    $session = New-PSSession -ComputerName "52.168.66.248" -Credential "Fractal" -ConfigurationName Microsoft.PowerShell -UseSSL -SessionOption $so
-    Invoke-Command -Session $session -ScriptBlock { $PSVersionTable }
-
-
-    Enable-PSRemoting -SkipNetworkProfileCheck -Force
-
-    New-PSSession -ConnectionURI https://Fractal.fractalcomputers.com/52.170.41.191
-
-
-
-
-    Enter-PSSession –ComputerName 52.170.41.191 -Credential Get-Credential
-
-    Set-Item WSMan:\localhost\Client\TrustedHosts -Value 52.170.41.191
-
-    # credentials
-    $admin_username = "Fractal"
-    $admin_password = (ConvertTo-SecureString "password1234567." -AsPlainText -Force)
-    $credentials = New-Object System.Management.Automation.PSCredential $admin_username, $admin_password
-    $so = New-PsSessionOption –SkipCACheck -SkipCNCheck
-    $IPv4 = (Invoke-WebRequest -UseBasicParsing -uri "https://api.ipify.org/").Content
-    Write-Output $IPv4
-    Enter-PSSession -ComputerName $IPv4 -Credential $credentials -UseSSL -SessionOption $so
-     
-
-
-
-
-
-
-    
-    Enter-PSSession -ConnectionUri https://<public-ip-dns-of-the-vm>:5986 -Credential $cred -SessionOption (New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck) -Authentication Negotiate
-
-
-
-
-    Invoke-Command -ComputerName $IPv4 -Credential $credentials -UseSSL -SessionOption $so -ScriptBlock { $PSVersionTable }
-
-
-
-    Enter-PSSession -ComputerName "52.168.66.248"  -Credential "Fractal" -UseSSL -SessionOption $so
- 
-
-        
-    $session = New-PSSession -ComputerName "52.168.66.248"  -Credential "Fractal" -ConfigurationName Microsoft.PowerShell -UseSSL
-    Invoke-Command -Session $session -ScriptBlock { $PSVersionTable }
-
-
- 
-    # credentials
-    $admin_username = "Fractal"
-    $admin_password = (ConvertTo-SecureString "password1234567." -AsPlainText -Force)
-    $credentials = New-Object System.Management.Automation.PSCredential $admin_username, $admin_password
-
-
-    # 
-    Enable-PSRemoting -SkipNetworkProfileCheck -Force
-    Get-PSSessionConfiguration
-    
-    $session = New-PSSession -ComputerName 52.168.66.248 -Credential $credentials -ConfigurationName Microsoft.PowerShell -UseSSL
-
-
-    Invoke-Command -Session $session -ScriptBlock { $PSVersionTable }
-
-
-
-    # then set the wallpaper
-    Write-Output "Setting Fractal Wallpaper"
-    $file = "C:\cloud-1.ps1"
-    Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-file $file")
-
-
-
-
-
-
+    Write-Output "Done, Removing PS-Session(s)"
+    Remove-PSSession -Id 1, 2
 }
-########
 
 function Update-Windows {
     $url = "https://gallery.technet.microsoft.com/scriptcenter/Execute-Windows-Update-fc6acb16/file/144365/1/PS_WinUpdate.zip"
@@ -269,45 +90,64 @@ function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
     Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -Type String
 }
 
+function Enable-RemotePowerShell ($certificate_password) {
+    ###
+    # the following steps are based on: https://docs.microsoft.com/en-us/azure/virtual-machines/windows/winrm
+    ###
 
+    # the following commmented-out steps only need to be run once to set-up Azure for using WinRM VMs
+    # they are left here for reference, but should not be run every time a new VM gets created
 
+    # This following block of steps can also be done directly in the Azure Portal under Key Vaults, which is faster and simpler
+    # Write-Output "Create Fractal Azure Key Vault -- These needs to be run in Azure Portal PowerShell Terminal"
+    # Install-Module -Name Az -AllowClobber -Force
+    # Connect-AzAccount # You will need to enter the username and password for the Fractal Azure account
+    # New-AzKeyVault -VaultName "FractalKeyVault" -ResourceGroupName "Fractal" -Location "East US" -EnabledForDeployment -EnabledForTemplateDeployment
+    # Set-AzKeyVaultAccessPolicy -VaultName "FractalKeyVault" -ResourceGroupName "Fractal" -EnabledForDeployment
 
-function Set-RemotePowerShell {
-    # this function configures a VM to allow remote powershell for user-space scripts
-    Write-Output "Getting the Public IPv4 Address of VM"
-    $IPv4 = (Invoke-WebRequest -UseBasicParsing -uri "https://api.ipify.org/").Content
+    # Write-Output "Creating Self-signed Certificate"
+    # $certificateName = "FractalCertificate"
+    # $thumbprint = (New-SelfSignedCertificate -DnsName $certificateName -CertStoreLocation Cert:\CurrentUser\My -KeySpec KeyExchange).Thumbprint
+    # $cert = (Get-ChildItem -Path cert:\CurrentUser\My\$thumbprint)
+    # Export-PfxCertificate -Cert $cert -FilePath ".\$certificateName.pfx" -Password $certificate_password
 
+    # Write-Output "Uploading Self-signed Certificate to Azure Key Vault"
+    # $fileName = ".\$certificateName.pfx"
+    # $fileContentBytes = Get-Content $fileName -Encoding Byte
+    # $fileContentEncoded = [System.Convert]::ToBase64String($fileContentBytes)
+    
+# # this needs to not-be indented, otherwise it will fail...   
+# $jsonObject = @"
+# {
+#   "data": "$filecontentencoded",
+#   "dataType" :"pfx",
+#   "password": "$certificate_password"
+# }
+# "@
+
+    # $jsonObjectBytes = [System.Text.Encoding]::UTF8.GetBytes($jsonObject)
+    # $jsonEncoded = [System.Convert]::ToBase64String($jsonObjectBytes)
+    
+    # $secret = ConvertTo-SecureString -String $jsonEncoded -AsPlainText –Force
+    # Set-AzKeyVaultSecret -VaultName "FractalKeyVault" -Name "FractalWinRMSecret" -SecretValue $secret
+
+    # Write-Output "Uploading the URL for Self-signed Certificate in the Key Vault"
+    # $secretURL = (Get-AzKeyVaultSecret -VaultName "FractalKeyVault" -Name "FractalWinRMSecret").Id
+
+    # the rest of this script configures a VM to allow remote powershell for userspace scripts
     Write-Output "Setting WinRM for PowerShell Remoting"
     Start-Service WinRM
-    Set-Item WSMan:\localhost\Client\TrustedHosts -Value $IPv4 -Force
-    New-ItemProperty -Name LocalAccountTokenFilterPolicy -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -PropertyType DWord -Value 1
+    Set-Item WSMan:\localhost\Client\TrustedHosts -Value "*" -Force
+    New-ItemProperty -Name LocalAccountTokenFilterPolicy -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -PropertyType DWord -Value 1
+
+    Write-Output "Opening WinRM Firewall"
+    New-NetFirewallRule -Name "winrm_http" -DisplayName "winRM HTTP" -Enabled True -Profile Any -Action Allow -Direction Inbound -LocalPort 5985 -Protocol TCP
+    New-NetFirewallRule -Name "winrm_https" -DisplayName "winRM HTTPS" -Enabled True -Profile Any -Action Allow -Direction Inbound -LocalPort 5986 -Protocol TCP
 
     Write-Output "Enabling PowerShell Remoting"
     Enable-PSRemoting -SkipNetworkProfileCheck -Force
-
-
-
-    # this firewall thing works
-    New-NetFirewallRule -Name "winrm_http" -DisplayName "winrm_http" -Enabled True -Profile Any -Action Allow -Direction Inbound -LocalPort 5985 -Protocol TCP
-    New-NetFirewallRule -Name "winrm_https" -DisplayName "winrm_https" -Enabled True -Profile Any -Action Allow -Direction Inbound -LocalPort 5986 -Protocol TCP
-
-
-
-
-
-
-
-
-    # Set-Item WSMan:\localhost\Client\TrustedHosts -Value * -Force
-
-    New-SelfSignedCertificate -DnsName Fractal.fractalcomputers.com -CertStoreLocation Cert:\LocalMachine\My
-
-    winrm create winrm/config/Listener?Address=*+Transport=HTTPS @{Hostname="Fractal.fractalcomputers.com";CertificateThumbprint="F0A37B6C3CB1FA6724B7FDE5F43408DBF0392126"}
-
+    Get-PSSessionConfiguration
 }
-
-
-
 
 function Install-FractalWallpaper ($run_on_local, $credentials) {
     # first download the wallpaper
@@ -328,7 +168,7 @@ function Install-FractalWallpaper ($run_on_local, $credentials) {
         $command = 'if((Test-Path -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System") -eq $true) {} Else {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null}
         if((Test-RegistryValue -path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -value Wallpaper) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -PropertyType String -value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null}
         if((Test-RegistryValue -path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -value WallpaperStyle) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -value 2 | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -PropertyType String -value 2 | Out-Null}'
-        Launch-RemotePowerShellCommand $command        
+        Launch-RemotePowerShellCommand $credentials $command        
     }
 }
 
@@ -597,7 +437,7 @@ function Set-MousePrecision ($run_on_local, $credentials) {
     }
     # else we run via Remote-PS (to run from a webserver)
     else {
-        Launch-RemotePowerShellCommand 'Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name MouseSpeed -Value 1 | Out-Null'
+        Launch-RemotePowerShellCommand $credentials 'Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name MouseSpeed -Value 1 | Out-Null'
     }
 }
     
@@ -609,7 +449,7 @@ function Enable-MouseKeys ($run_on_local, $credentials) {
     }
     # else we run via Remote-PS (to run from a webserver)
     else {
-        Launch-RemotePowerShellCommand 'Set-ItemProperty -Path "HKCU:\Control Panel\Accessibility\MouseKeys" -Name Flags -Value 63 | Out-Null'
+        Launch-RemotePowerShellCommand $credentials 'Set-ItemProperty -Path "HKCU:\Control Panel\Accessibility\MouseKeys" -Name Flags -Value 63 | Out-Null'
     }
 }
 
@@ -643,7 +483,7 @@ function Show-FileExtensions ($run_on_local, $credentials) {
     }
     # else we run via Remote-PS (to run from a webserver)
     else {
-        Launch-RemotePowerShellCommand 'Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name HideFileExt -Value 0 | Out-Null'
+        Launch-RemotePowerShellCommand $credentials 'Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name HideFileExt -Value 0 | Out-Null'
     }
 }
   
