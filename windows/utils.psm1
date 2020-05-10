@@ -771,7 +771,7 @@ function Install-FractalExitScript {
 
 function Install-NvidiaTeslaPublicDrivers {
     Write-Output "Installing Nvidia Public Driver (GRID already installed at deployment through Azure)"
-    $driver_file = "441.22-tesla-desktop-win10-64bit-international.exe"
+    $driver_file = "442.50-tesla-desktop-win10-64bit-international.exe"
     $url = "http://us.download.nvidia.com/tesla/442.50/442.50-tesla-desktop-win10-64bit-international.exe" # this URL needs to be updated periodically when a new driver version comes out
     
     Write-Output "Downloading Nvidia M60 driver from $url"
