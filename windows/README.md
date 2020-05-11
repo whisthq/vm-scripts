@@ -6,7 +6,7 @@ This subfolder is responsible for all the Windows-related system scripts.
 
 The DPI script `dpi.ps1` is meant to be called from a webserver, along with the argument `96` or `144` depending on the respective DPI to set. It will use Remote-PowerShell to change the DPI of any windows VM or computer.
 
-Usage: ```run-dpi.ps1 "96"``` or ```run-dpi.ps1 "144"```
+Usage: ```dpi.ps1 "96"``` or ```dpi.ps1 "144"```
 
 ### Windows Cloud Scripts
 
