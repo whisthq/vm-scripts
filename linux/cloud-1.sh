@@ -28,6 +28,7 @@ yes | printf "password1234567." | sudo apt-get install wget python python3
 Update-Linux
 Set-Time
 Install-7Zip
+Install-Curl
 Install-Spotify
 Install-GoogleChrome
 Install-NvidiaTeslaPublicDrivers
@@ -46,7 +47,7 @@ Enable-FractalFirewallRule
 Install-Unison # SSH Automatically Enabled on Linux
 Enable-SSHKey
 Disable-Shutdown
-Add-AutoLogin # Needs to be done manually via GUI
+Add-AutoLogin
 
 # Install creative packages
 if [ "$creative_install" = true ] ; then

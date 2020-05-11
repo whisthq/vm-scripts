@@ -14,7 +14,8 @@ function Set-Time {
 }
 
 function Add-AutoLogin {
-    echo "Automatic Login on Linux should be done manually via GUI"
+    echo "Setting Automatic Login on Linux by replacing /etc/gdm3/custom.conf File"
+    # this action is done by Install-CustomGDMConfiguration
 }
 
 function Enable-FractalFirewallRule {
