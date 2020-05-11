@@ -184,9 +184,11 @@ function Install-ProcessManager {
     curl -s https://packagecloud.io/install/repositories/immortal/immortal/script.deb.sh | sudo bash
     yes | sudo apt-get install immortal
 
-    # then start Fractal with Immortal for auto-restart
+    # then start Fractal with Immortal for auto-restart, cwd set to /usr/share/fractal
     echo "Starting FractalServer with Immortal"
-    immortal /usr/share/fractal/FractalServer
+    immortal -d /usr/share/fractal /usr/share/fractal/FractalServer
+    # show immortal status in terminal
+    immortalctl
 }
 
 function Install-FractalServer {
@@ -197,7 +199,7 @@ function Install-FractalServer {
 
     # download the libraries
     echo "Downloading FFmpeg Libraries and Dependencies"
-    sudo apt-get install libavcodec-dev libavdevice-dev libx11-dev libxtst-dev libxdamage-dev libasound2-dev xclip xrandr -y
+    sudo apt-get install libavcodec-dev libavdevice-dev libx11-dev libxtst-dev libxdamage-dev libasound2-dev xclip -y
 }
 
 function Install-7Zip {
@@ -232,7 +234,7 @@ function Enable-SSHKey {
     # cp sshkey.pub "$HOME/.ssh/authorized_keys"
 
     echo "Download SSH Administrator Authorized Key"
-    sudo wget -O /tmp "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/administrator_authorized_keys"
+    sudo wget -O /tmp/administrator_authorized_keys "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/administrator_authorized_keys"
     sudo cp /tmp/administrator_authorized_keys "$HOME/.ssh/authorized_keys"
     sudo chmod 600 "$HOME/.ssh/authorized_keys" # activate
 
