@@ -1,6 +1,6 @@
 # This file contains the functions called in the PowerShell scripts
 [Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
-$webClient = new-object System.Net.WebClient
+$webClient = New-Object System.Net.WebClient
 
 function Test-RegistryValue {
     # https://www.jonathanmedd.net/2014/02/testing-for-the-presence-of-a-registry-key-and-value.html
@@ -28,6 +28,20 @@ function Set-FilePermission ($file_path) {
     $acl.SetAccessRule($administratorsRule)
     $acl.SetAccessRule($systemRule)
     $acl | Set-Acl
+}
+
+function Invoke-RemotePowerShellCommand ($credentials, $command_as_a_string) {
+    # this helper scripts authenticates to the Fractal user via Remote-PowerShell, and runs the specified command in userspace
+    Write-Output "Get Public IPv4"
+    $IPv4 = (Invoke-WebRequest -UseBasicParsing -uri "https://api.ipify.org/").Content
+
+    Write-Output "Invoke Command in New Remote-PSSession"
+    $SO = New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck
+    $session = New-PSSession -ConnectionUri https://"$IPv4":5986 -Credential $credentials -SessionOption $SO
+    Invoke-Command -Session $session -ScriptBlock { $command_as_a_string }
+
+    Write-Output "Done, Removing PS-Session(s)"
+    Remove-PSSession -Id 1, 2
 }
 
 function Update-Windows {
@@ -70,23 +84,95 @@ function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
 
     Write-Output "Make the admin login at startup"
     $registry = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
-    Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String
-    Set-ItemProperty $registry "DefaultDomainName" -Value "$env:COMPUTERNAME" -type String 
-    Set-ItemProperty $registry "DefaultUsername" -Value $admin_username -type String
-    Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -type String
+    Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -Type String
+    Set-ItemProperty $registry "DefaultDomainName" -Value "$env:COMPUTERNAME" -Type String 
+    Set-ItemProperty $registry "DefaultUsername" -Value $admin_username -Type String
+    Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -Type String
 }
 
-function Install-FractalWallpaper {
+function Enable-RemotePowerShell ($certificate_password) {
+    ###
+    # the following steps are based on: https://docs.microsoft.com/en-us/azure/virtual-machines/windows/winrm
+    ###
+
+    # the following commmented-out steps only need to be run once to set-up Azure for using WinRM VMs
+    # they are left here for reference, but should not be run every time a new VM gets created
+
+    # This following block of steps can also be done directly in the Azure Portal under Key Vaults, which is faster and simpler
+    # Write-Output "Create Fractal Azure Key Vault -- These needs to be run in Azure Portal PowerShell Terminal"
+    # Install-Module -Name Az -AllowClobber -Force
+    # Connect-AzAccount # You will need to enter the username and password for the Fractal Azure account
+    # New-AzKeyVault -VaultName "FractalKeyVault" -ResourceGroupName "Fractal" -Location "East US" -EnabledForDeployment -EnabledForTemplateDeployment
+    # Set-AzKeyVaultAccessPolicy -VaultName "FractalKeyVault" -ResourceGroupName "Fractal" -EnabledForDeployment
+
+    # Write-Output "Creating Self-signed Certificate"
+    # $certificateName = "FractalCertificate"
+    # $thumbprint = (New-SelfSignedCertificate -DnsName $certificateName -CertStoreLocation Cert:\CurrentUser\My -KeySpec KeyExchange).Thumbprint
+    # $cert = (Get-ChildItem -Path cert:\CurrentUser\My\$thumbprint)
+    # Export-PfxCertificate -Cert $cert -FilePath ".\$certificateName.pfx" -Password $certificate_password
+
+    # Write-Output "Uploading Self-signed Certificate to Azure Key Vault"
+    # $fileName = ".\$certificateName.pfx"
+    # $fileContentBytes = Get-Content $fileName -Encoding Byte
+    # $fileContentEncoded = [System.Convert]::ToBase64String($fileContentBytes)
+    
+# # this needs to not-be indented, otherwise it will fail...   
+# $jsonObject = @"
+# {
+#   "data": "$filecontentencoded",
+#   "dataType" :"pfx",
+#   "password": "$certificate_password"
+# }
+# "@
+
+    # $jsonObjectBytes = [System.Text.Encoding]::UTF8.GetBytes($jsonObject)
+    # $jsonEncoded = [System.Convert]::ToBase64String($jsonObjectBytes)
+    
+    # $secret = ConvertTo-SecureString -String $jsonEncoded -AsPlainText –Force
+    # Set-AzKeyVaultSecret -VaultName "FractalKeyVault" -Name "FractalWinRMSecret" -SecretValue $secret
+
+    # Write-Output "Uploading the URL for Self-signed Certificate in the Key Vault"
+    # $secretURL = (Get-AzKeyVaultSecret -VaultName "FractalKeyVault" -Name "FractalWinRMSecret").Id
+
+    # the rest of this script configures a VM to allow remote powershell for userspace scripts
+    Write-Output "Setting WinRM for PowerShell Remoting"
+    Start-Service WinRM
+    Set-Item WSMan:\localhost\Client\TrustedHosts -Value "*" -Force
+    New-ItemProperty -Name LocalAccountTokenFilterPolicy -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -PropertyType DWord -Value 1
+
+    Write-Output "Opening WinRM Firewall"
+    New-NetFirewallRule -Name "winrm_http" -DisplayName "winRM HTTP" -Enabled True -Profile Any -Action Allow -Direction Inbound -LocalPort 5985 -Protocol TCP
+    New-NetFirewallRule -Name "winrm_https" -DisplayName "winRM HTTPS" -Enabled True -Profile Any -Action Allow -Direction Inbound -LocalPort 5986 -Protocol TCP
+
+    Write-Output "Enabling PowerShell Remoting"
+    Enable-PSRemoting -SkipNetworkProfileCheck -Force
+    Get-PSSessionConfiguration
+}
+
+function Install-FractalWallpaper ($run_on_local, $credentials) {
+    # sleep for 15 seconds to make sure previous operations completed
+    Start-Sleep -s 15
+
     # first download the wallpaper
     Write-Output "Downloading Fractal Wallpaper"
     $fractalwallpaper_name = "C:\Program Files\Fractal\Assets\wallpaper.png"
     $fractalwallpaper_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/wallpaper.png"
     $webClient.DownloadFile($fractalwallpaper_url, $fractalwallpaper_name)
 
-    # then set the wallpaper
     Write-Output "Setting Fractal Wallpaper"
-    $file = "C:\cloud-1.ps1"
-    Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-file $file")
+    # if this script was meant to run locally (via RDP), we run the command directly
+    if ($run_on_local) {
+        if((Test-Path -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System") -eq $true) {} Else {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null}
+        if((Test-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Value Wallpaper) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -Value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -PropertyType String -Value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null}
+        if((Test-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Value WallpaperStyle) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -Value 2 | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -PropertyType String -Value 2 | Out-Null}
+    }
+    # else we run via Remote-PS (to run from a webserver)
+    else {
+        $command = 'if((Test-Path -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System") -eq $true) {} Else {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null}
+        if((Test-RegistryValue -path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -value Wallpaper) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -PropertyType String -value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null}
+        if((Test-RegistryValue -path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -value WallpaperStyle) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -value 2 | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -PropertyType String -value 2 | Out-Null}'
+        Invoke-RemotePowerShellCommand $credentials $command        
+    }
 }
 
 function Install-FractalService {
@@ -119,7 +205,7 @@ function Enable-Audio {
     Start-Service Audiosrv
 }
 
-function Install-VirtualAudio ($credentials) {
+function Install-VirtualAudio {
     $compressed_file = "VBCABLE_Driver_Pack43.zip"
     $driver_folder = "VBCABLE_Driver_Pack43"
     $driver_inf = "vbMmeCable64_win7.inf"
@@ -140,7 +226,7 @@ function Install-VirtualAudio ($credentials) {
 
     # installing in user session via $credentials
     Write-Output "Downloading and installing Windows Development Kit"
-    Start-Process -FilePath "C:\$wdk_installer" -Credential $credentials -ArgumentList "/S" -Wait
+    Start-Process -FilePath "C:\$wdk_installer" -ArgumentList "/S" -Wait
 
     $cert = "vb_cert.cer"
     $url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/vb_cert.cer"
@@ -151,9 +237,8 @@ function Install-VirtualAudio ($credentials) {
     Write-Output "Importing VB certificate"
     Import-Certificate -FilePath "C:\$cert" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher"
 
-    # installing in user session via $credentials
     Write-Output "Installing Virtual Audio Driver"
-    Start-Process -FilePath $devcon -Credential $credentials -ArgumentList "install", "C:\$driver_folder\$driver_inf", $hardware_id -Wait
+    Start-Process -FilePath $devcon -ArgumentList "install", "C:\$driver_folder\$driver_inf", $hardware_id -Wait
 
     Write-Output "Cleaning up Virtual Audio Driver installation files"
     Remove-Item -Path "C:\$driver_folder" -Confirm:$false -Recurse
@@ -169,7 +254,6 @@ function Install-VirtualAudio ($credentials) {
 function Install-Chocolatey {
     Write-Output "Installing Chocolatey"
     Invoke-Expression ($webClient.DownloadString('https://chocolatey.org/install.ps1'))
-    # $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
     chocolatey feature enable -n allowGlobalConfirmation
 }
 
@@ -277,6 +361,11 @@ function Install-Docker {
     choco install docker --force
 }
 
+function Install-Curl {
+    Write-Output "Installing Curl through Chocolatey"
+    choco install curl --force
+}
+
 function Install-Atom {
     Write-Output "Installing Atom through Chocolatey"
     choco install atom --force
@@ -348,14 +437,28 @@ function Disable-NetworkWindow {
     if((Test-RegistryValue -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Network" -Value NewNetworkWindowOff) -eq $true) {} Else {New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Network" -Name "NewNetworkWindowOff" | Out-Null}
 }
 
-function Set-MousePrecision {
+function Set-MousePrecision ($run_on_local, $credentials) {
     Write-Output "Enabling Enhanced Pointer Precision"
-    Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name MouseSpeed -Value 1 | Out-Null
+    # if this script was meant to run locally (via RDP), we run the command directly
+    if ($run_on_local) {
+        Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name MouseSpeed -Value 1 | Out-Null
+    }
+    # else we run via Remote-PS (to run from a webserver)
+    else {
+        Invoke-RemotePowerShellCommand $credentials 'Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name MouseSpeed -Value 1 | Out-Null'
+    }
 }
     
-function Enable-MouseKeys {
+function Enable-MouseKeys ($run_on_local, $credentials) {
     Write-Output "Enabling Mouse Keys"
-    Set-ItemProperty -Path "HKCU:\Control Panel\Accessibility\MouseKeys" -Name Flags -Value 63 | Out-Null
+    # if this script was meant to run locally (via RDP), we run the command directly
+    if ($run_on_local) {
+        Set-ItemProperty -Path "HKCU:\Control Panel\Accessibility\MouseKeys" -Name Flags -Value 63 | Out-Null
+    }
+    # else we run via Remote-PS (to run from a webserver)
+    else {
+        Invoke-RemotePowerShellCommand $credentials 'Set-ItemProperty -Path "HKCU:\Control Panel\Accessibility\MouseKeys" -Name Flags -Value 63 | Out-Null'
+    }
 }
 
 function Disable-Logout {
@@ -380,11 +483,16 @@ function Install-PoshSSH {
     Install-Module -Name Posh-SSH -Confirm:$False -Force
 }
 
-function Show-FileExtensions ($credentials) {
+function Show-FileExtensions ($run_on_local, $credentials) {
     Write-Output "Setting File Extensions"
-    # The script below also handles setting the wallpaper and DPI, it is run in "Install-FractalWallpaper"
-    # $file = "C:\cloud-1.ps1"
-    # Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-file $file")
+    # if this script was meant to run locally (via RDP), we run the command directly
+    if ($run_on_local) {
+        Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name HideFileExt -Value 0 | Out-Null
+    }
+    # else we run via Remote-PS (to run from a webserver)
+    else {
+        Invoke-RemotePowerShellCommand $credentials 'Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name HideFileExt -Value 0 | Out-Null'
+    }
 }
   
 function Set-FractalDirectory {
@@ -410,18 +518,17 @@ function Disable-HyperV {
 
     Write-Output "Downloading Device Management Powershell Script from $url"
     $webClient.DownloadFile($url, "C:\$compressed_file")
-    Unblock-File -Path "C:\$compressed_file" -Wait
+    Unblock-File -Path "C:\$compressed_file"
 
     Write-Output "Extracting Device Management Powershell Script"
-    Expand-Archive "C:\$compressed_file" -DestinationPath "C:\$extract_folder" -Force -Wait
+    Expand-Archive "C:\$compressed_file" -DestinationPath "C:\$extract_folder" -Force
 
     Write-Output "Disabling Hyper-V Video"
-    Import-Module "C:\$extract_folder\DeviceManagement.psd1" -Wait
+    Import-Module "C:\$extract_folder\DeviceManagement.psd1"
     Get-Device | Where-Object -Property Name -Like "Microsoft Hyper-V Video" | Disable-Device -Confirm:$false
 
-    Write-Output "Cleaning up Hyper-V Video disabling file"
+    Write-Output "Cleaning HyperV Disabling"
     Remove-Item -Path "C:\$compressed_file" -Confirm:$false
-    Remove-Item -Path "C:\$extract_folder" -Confirm:$false -Recurse
 }
 
 function Install-FractalServer {
@@ -512,14 +619,13 @@ function Install-FractalExitScript {
 
 function Install-NvidiaTeslaPublicDrivers {
     Write-Output "Installing Nvidia Public Driver (GRID already installed at deployment through Azure)"
-    $driver_file = "441.22-tesla-desktop-win10-64bit-international.exe"
-    $version = "441.22"
-    $url = "http://us.download.nvidia.com/tesla/441.22/441.22-tesla-desktop-win10-64bit-international.exe"
+    $driver_file = "442.50-tesla-desktop-win10-64bit-international.exe"
+    $url = "http://us.download.nvidia.com/tesla/442.50/442.50-tesla-desktop-win10-64bit-international.exe" # this URL needs to be updated periodically when a new driver version comes out
     
-    Write-Output "Downloading Nvidia M60 driver from URL $url"
+    Write-Output "Downloading Nvidia M60 driver from $url"
     $webClient.DownloadFile($url, "C:\$driver_file")
 
-    Write-Output "Installing Nvidia M60 driver from file $driver_file"
+    Write-Output "Installing Nvidia M60 driver from $driver_file"
     Start-Process -FilePath "C:\$driver_file" -ArgumentList "-s", "-noreboot" -Wait
 
     Write-Output "Cleaning up Nvidia Public Drivers installation file"
@@ -545,14 +651,6 @@ function Install-DirectX {
 
     Write-Output "Cleaning up DirectX installation file"
     Remove-Item -Path "C:\$directx_exe" -Confirm:$false
-    Remove-Item -Path "C:\DirectX" -Confirm:$false -Recurse
-}
-
-function Set-DPI ($credentials) {
-    Write-Output "Change Windows DPI to enable 4K Streaming"
-    # The script below also handles setting the wallpaper and file extension, it is run in "Install-FractalWallpaper"
-    # $file = "C:\cloud-1.ps1"
-    # Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-file $file")
 }
 
 function Install-Unison {
@@ -574,7 +672,7 @@ function Enable-SSHServer {
         }
     }
 
-    # TODO: for later, when we update the webserver
+    # NOTE: these commented out lines are for later, when we update the webserver to exchange SSH keys
     # Write-Output "Generating SSH Key"     
     # ssh-keygen -f sshkey -q -N """"
     # $From = Get-Content -Path sshkey.pub
@@ -601,4 +699,11 @@ function Enable-SSHServer {
 
     Write-Output "Adding Unison Executable Path"
     [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine) + ";C:\Program Files\Fractal", [EnvironmentVariableTarget]::Machine)
+
+    # Config ssh to force public key and disable password log in. This change also makes openssh look for the key in $user\.ssh/authorized_keys
+    $FilePath = "C:\ProgramData\ssh\sshd_config"
+    (Get-Content ($FilePath)) | Foreach-Object {$_ -replace '^Match Group administrators', (" ")} | Set-Content  ($Filepath)
+    (Get-Content ($FilePath)) | Foreach-Object {$_ -replace '^       AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys', (" ")} | Set-Content  ($Filepath)
+    (Get-Content ($FilePath)) | Foreach-Object {$_ -replace '^PasswordAuthentication yes', ("PasswordAuthentication no")} | Set-Content  ($Filepath)
+    Add-Content $FilePath "`nAuthenticationMethods publickey"
 }

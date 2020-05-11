@@ -1,7 +1,7 @@
 #!/bin/bash
 # This script gets run by a Fractal Cloud Computer to enable Cloud streaming
 # This script should only get run on Linux Ubuntu computers
-# This script is part 2 of 2 scripts needed to enable Cloud steaming
+# This script is part 2 of 2 scripts needed to enable Cloud streaming
 
 # variable blocks for optional installs
 creative_install=false
@@ -24,16 +24,16 @@ source ./utils.sh
 # Run sudo so it's not prompted in the following commands and install basic packages
 yes | printf "password1234567." | sudo apt-get install wget python python3
 
-# Run all the basic commands to setup a Fractal cloud computer
+# Run all the basic commands to setup a Fractal cloud computer (Install-VirtualDisplay done in cloud-0.sh)
 Update-Linux
 Set-Time
 Install-7Zip
+Install-Curl
 Install-Spotify
 Install-GoogleChrome
 Install-NvidiaTeslaPublicDrivers
 Disable-TCC
 Set-OptimalGPUSettings
-#Install-VirtualDisplay # Installed in script cloud-0.sh since it requires rebooting
 Install-CustomGDMConfiguration
 Install-CustomX11Configuration
 Set-FractalDirectory
@@ -46,8 +46,8 @@ Install-FractalWallpaper
 Enable-FractalFirewallRule
 Install-Unison # SSH Automatically Enabled on Linux
 Enable-SSHKey
-#Disable-Shutdown
-Add-AutoLogin # Needs to be done manually via GUI
+Disable-Shutdown
+Add-AutoLogin
 
 # Install creative packages
 if [ "$creative_install" = true ] ; then
