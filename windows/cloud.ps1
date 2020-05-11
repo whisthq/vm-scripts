@@ -50,7 +50,7 @@ Set-Time
 Disable-NetworkWindow
 Install-7Zip
 Install-GoogleChrome
-Install-NvidiaTeslaPublicDrivers
+# Install-NvidiaTeslaPublicDrivers
 Disable-TCC
 Set-OptimalGPUSettings
 Install-Curl
