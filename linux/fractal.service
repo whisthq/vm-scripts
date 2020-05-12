@@ -1,0 +1,12 @@
+[Unit]
+Description=Fractal service
+
+[Service]
+WorkingDirectory=/usr/share/fractal
+Type=simple
+ExecStart=/bin/bash /usr/share/fractal/FractalServer.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+

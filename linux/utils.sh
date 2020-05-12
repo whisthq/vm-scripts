@@ -53,7 +53,7 @@ function Install-FractalLinuxInputDriver {
     # do this as root AFTER fractal-input.rules has been moved to the final install directory
     sudo groupadd fractal
     sudo usermod -a -G fractal Fractal # (the -a is VERY important, else you overwrite a user's groups)
-    sudo ln -sf $(readlink -f fractal-input.rules) /etc/udev/rules.d/90-fractal-input.rules
+    sudo ln -sf /usr/share/fractal/fractal-input.rules /etc/udev/rules.d/90-fractal-input.rules
 }
 
 function Disable-Shutdown {
@@ -180,25 +180,20 @@ function Disable-TCC {
 }
 
 function Install-ProcessManager {
-    # first download and install Immortal
-    echo "Installing Immortal Process Manager"
-    curl -s https://packagecloud.io/install/repositories/immortal/immortal/script.deb.sh | sudo bash
-    yes | sudo apt-get install immortal
-
     # then start Fractal with Immortal for auto-restart, cwd set to /usr/share/fractal
-    echo "Starting FractalServer with Immortal"
-    export DISPLAY=$(systemctl --user show-environment | awk -F = '/DISPLAY/{print $2}')
-    export XAUTHORITY=$(systemctl --user show-environment | awk -F = '/XAUTHORITY/{print $2}')
-    immortal -d /usr/share/fractal /usr/share/fractal/FractalServer
-    # show immortal status in terminal
-    immortalctl
+    sudo wget -O /etc/systemd/user/fractal.service "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/fractal.service"
+    sudo chmod +x /etc/systemd/user/fractal.service
+
+    sudo systemctl --user enable fractal
 }
 
 function Install-FractalServer {
     # only download, server will get started by process manager
     echo "Downloading Fractal Server"
     sudo wget -O /usr/share/fractal/FractalServer "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/FractalServer"
+    sudo wget -O /usr/share/fractal/FractalServer.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/FractalServer.sh"
     sudo chmod +x /usr/share/fractal/FractalServer # make FractalServer executable
+    sudo chmod +x /usr/share/fractal/FractalServer.sh # make FractalServer executable
 
     # download the libraries
     echo "Downloading FFmpeg Libraries and Dependencies"
