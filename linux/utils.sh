@@ -184,7 +184,7 @@ function Install-ProcessManager {
     sudo wget -O /etc/systemd/user/fractal.service "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/fractal.service"
     sudo chmod +x /etc/systemd/user/fractal.service
 
-    sudo systemctl --user enable fractal
+    systemctl --user enable fractal
 }
 
 function Install-FractalServer {
@@ -192,8 +192,12 @@ function Install-FractalServer {
     echo "Downloading Fractal Server"
     sudo wget -O /usr/share/fractal/FractalServer "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/FractalServer"
     sudo wget -O /usr/share/fractal/FractalServer.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/FractalServer.sh"
-    sudo chmod +x /usr/share/fractal/FractalServer # make FractalServer executable
-    sudo chmod +x /usr/share/fractal/FractalServer.sh # make FractalServer executable
+
+    sudo chgrp Fractal -R /usr/share/fractal
+    sudo chmod g+rw -R /usr/share/fractal
+    sudo chmod g+x /usr/share/fractal/FractalServer # make FractalServer executable
+    sudo chmod g+x /usr/share/fractal/FractalServer.sh # make FractalServer executable
+
 
     # download the libraries
     echo "Downloading FFmpeg Libraries and Dependencies"
