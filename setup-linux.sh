@@ -10,11 +10,11 @@ fi
 sudo apt install sshpass -y
 
 sshpass -p "password1234567." scp  -o "StrictHostKeyChecking no" -r linux Fractal@$1:~/fractal-setup
-echo "cd ~/fractal-setup; /bin/bash linux/cloud-0.sh" | sshpass -p "password1234567." ssh -o "StrictHostKeyChecking no" Fractal@$1 /bin/bash
+echo "cd ~/fractal-setup; /bin/bash cloud-0.sh" | sshpass -p "password1234567." ssh -o "StrictHostKeyChecking no" Fractal@$1 /bin/bash
 echo "Waiting for server to reboot..."
 SSH_EXIT_STATUS=255
 while [[ $SSH_EXIT_STATUS -eq 255 ]]; do
-	echo "cd ~/fractal-setup; /bin/bash linux/cloud-1.sh" | sshpass -p "password1234567." ssh -o "StrictHostKeyChecking no" Fractal@$1 /bin/bash
+	echo "cd ~/fractal-setup; /bin/bash cloud-1.sh" | sshpass -p "password1234567." ssh -o "StrictHostKeyChecking no" Fractal@$1 /bin/bash
 	SSH_EXIT_STATUS=$?
 	echo "SSH: $SSH_EXIT_STATUS"
 done
