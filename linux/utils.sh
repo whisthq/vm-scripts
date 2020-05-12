@@ -187,6 +187,8 @@ function Install-ProcessManager {
 
     # then start Fractal with Immortal for auto-restart, cwd set to /usr/share/fractal
     echo "Starting FractalServer with Immortal"
+    export DISPLAY=$(systemctl --user show-environment | awk -F = '/DISPLAY/{print $2}')
+    export XAUTHORITY=$(systemctl --user show-environment | awk -F = '/XAUTHORITY/{print $2}')
     immortal -d /usr/share/fractal /usr/share/fractal/FractalServer
     # show immortal status in terminal
     immortalctl
