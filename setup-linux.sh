@@ -7,8 +7,16 @@ if ! [[ $1 =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
 	exit
 fi
 
-echo "mkdir ~/fractal-setup; cd ~/fractal-setup; /bin/bash linux/cloud-0.sh" | ssh Fractal@$1 /bin/bash
-sleep 30
-echo "cd ~/fractal-setup; /bin/bash linux/cloud-1.sh" | ssh Fractal@$1 /bin/bash
+sudo apt install sshpass -y
+
+sshpass -p "password1234567." scp  -o "StrictHostKeyChecking no" -r linux Fractal@$1:~/fractal-setup
+echo "cd ~/fractal-setup; /bin/bash linux/cloud-0.sh" | sshpass -p "password1234567." ssh -o "StrictHostKeyChecking no" Fractal@$1 /bin/bash
+echo "Waiting for server to reboot..."
+SSH_EXIT_STATUS=255
+while [[ $SSH_EXIT_STATUS -eq 255 ]]; do
+	echo "cd ~/fractal-setup; /bin/bash linux/cloud-1.sh" | sshpass -p "password1234567." ssh -o "StrictHostKeyChecking no" Fractal@$1 /bin/bash
+	SSH_EXIT_STATUS=$?
+	echo "SSH: $SSH_EXIT_STATUS"
+done
 ssh-keygen -f "/home/npip99/.ssh/known_hosts" -R "$1"
 

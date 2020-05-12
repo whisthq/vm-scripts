@@ -112,5 +112,5 @@ fi
 # Clean Bash install script and restart
 echo "Cleaning up Utils script"
 sudo rm -f "utils.sh"
-sudo reboot
+$(sleep 1; sudo reboot) &
 
