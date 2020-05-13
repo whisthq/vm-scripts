@@ -65,6 +65,7 @@ Install-FractalAutoUpdate
 Enable-FractalFirewallRule
 Install-Unison
 Enable-SSHServer
+Disable-Cursor
 Disable-HyperV
 Disable-Lock
 Disable-Logout
