@@ -18,5 +18,5 @@ while [[ $SSH_EXIT_STATUS -eq 255 ]]; do
 	SSH_EXIT_STATUS=$?
 	echo "SSH: $SSH_EXIT_STATUS"
 done
-ssh-keygen -f "/home/npip99/.ssh/known_hosts" -R "$1"
+ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$1"
 
