@@ -10,3 +10,7 @@ Install-WSL
 Install-Atom
 Install-Docker
 Install-Curl
+Install-LLVM
+Install-Cmake
+Install-Cppcheck
+Install-CUDA

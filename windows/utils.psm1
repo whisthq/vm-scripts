@@ -399,6 +399,16 @@ function Install-Office {
     choco install microsoft-office-deployment --force
 }
 
+function Install-CUDAToolkit {
+    Write-Output "Installing CUDA Development Toolkit through Chocolatey"
+    choco install cuda --force
+}
+
+function Install-LLVM {
+    Write-Output "Installing LLVM & Clang through Chocolatey"
+    choco install llvm --force
+}
+
 function Install-Anaconda {
     Write-Output "Installing Anaconda (Python 3) through Chocolatey"
     choco install anaconda3 --force
@@ -437,6 +447,16 @@ function Install-Lightworks {
 function Install-VSPro2019 {
     Write-Output "Installing Visual Studio Professional 2019 through Chocolatey"
     choco install visualstudio2019professional --force
+}
+
+function Install-Cmake {
+    Write-Output "Installing Cmake through Chocolatey"
+    choco install cmake --force
+}
+
+function Install-Cppcheck {
+    Write-Output "Installing Cppcheck through Chocolatey"
+    choco install cppcheck --force
 }
 
 function Install-VisualRedist {
