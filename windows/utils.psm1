@@ -366,23 +366,23 @@ function Install-AdobeCreativeCloud {
 }
 
 function Install-DaVinciResolve {
-    Write-Output "DaVinci Resolve is not downloadable without an Adobe subscription and thus cannot be installed"
+    Write-Output "DaVinci Resolve is not downloadable without a DaVinci Resolve subscription and thus cannot be installed"
 }
 
 function Install-ZBrush {
-    Write-Output "ZBrush is not downloadable without an Adobe subscription and thus cannot be installed"
+    Write-Output "ZBrush is not downloadable without a ZBrush subscription and thus cannot be installed"
 }
 
 function Install-AutodeskMaya {
-    Write-Output "Autodesk Maya is not downloadable without an Adobe subscription and thus cannot be installed"
+    Write-Output "Autodesk Maya is not downloadable without an Autodesk subscription and thus cannot be installed"
 }
 
 function Install-3DSMaxDesign {
-    Write-Output "Autodesk 3DS Max Design is not downloadable without an Adobe subscription and thus cannot be installed"
+    Write-Output "Autodesk 3DS Max Design is not downloadable without an Autodesk subscription and thus cannot be installed"
 }
 
 function Install-Solidworks {
-    Write-Output "Solidworks is not downloadable without a  subscription and thus cannot be installed"
+    Write-Output "Solidworks is not downloadable without a D'Assault Systemes subscription and thus cannot be installed"
 }
 
 function Install-Matlab {
