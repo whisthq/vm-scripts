@@ -113,4 +113,3 @@ fi
 echo "Cleaning up Utils script"
 sudo rm -f "utils.sh"
 $(sleep 1; sudo reboot) &
-

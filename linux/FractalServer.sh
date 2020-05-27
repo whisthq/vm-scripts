@@ -4,4 +4,3 @@ export DISPLAY=$(systemctl --user show-environment | awk -F = '/DISPLAY/{print $
 export XAUTHORITY=$(systemctl --user show-environment | awk -F = '/XAUTHORITY/{print $2}')
 
 ./FractalServer
-

@@ -19,4 +19,3 @@ while [[ $SSH_EXIT_STATUS -eq 255 ]]; do
 	echo "SSH: $SSH_EXIT_STATUS"
 done
 ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$1"
-

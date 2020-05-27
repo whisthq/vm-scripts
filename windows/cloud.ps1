@@ -4,7 +4,8 @@ param (
     [string]        $admin_username = "Fractal",
     [SecureString]  $admin_password = (ConvertTo-SecureString "password1234567." -AsPlainText -Force),
     [SecureString]  $certificate_password = (ConvertTo-SecureString "certificate-password1234567." -AsPlainText -Force),
-    [switch]        $run_on_local           = $true, # if true, this script won't use PS-Remoting and needs to be run locally via RDP, else it uses PS-Remoting to work from a webserver
+    [string]        $protocol_branch        = "master", # protocol branch to pull, either master, staging or dev
+    [switch]        $run_on_cloud           = $false, # if true, this script uses PS-Remoting and needs to be run from webserver, else it doesn't use PS-Remoting and should be run from a PowerShell prompt on RDP
     [switch]        $creative_install       = $false,
     [switch]        $datascience_install    = $false,
     [switch]        $gaming_install         = $false,
@@ -31,7 +32,7 @@ Get-PowerShellScript $utils_script_name $utils_script_url
 Import-Module "$utils_script_name"
 
 # Make sure we're in the proper directory (mostly for running from webservers) and define credentials for user
-cd C:\
+Set-Location C:\
 $credentials = New-Object System.Management.Automation.PSCredential $admin_username, $admin_password
 
 # Run all the basic commands to setup a Fractal cloud computer
@@ -44,8 +45,8 @@ Install-VisualRedist
 Install-VirtualAudio
 Enable-Audio
 Enable-RemotePowerShell $certificate_password # necessaryfor running run_on_local = $false scripts
-Enable-MouseKeys $run_on_local $credentials
-Set-MousePrecision $run_on_local $credentials
+Enable-MouseKeys $run_on_cloud $credentials
+Set-MousePrecision $run_on_cloud $credentials
 Set-Time
 Disable-NetworkWindow
 Install-7Zip
@@ -55,11 +56,11 @@ Disable-TCC
 Set-OptimalGPUSettings
 Install-Curl
 Install-PoshSSH
-Show-FileExtensions $run_on_local $credentials
-Install-FractalWallpaper $run_on_local $credentials
+Show-FileExtensions $run_on_cloud $credentials
+Install-FractalWallpaper $run_on_cloud $credentials
 Set-FractalDirectory
 Install-FractalService
-Install-FractalServer
+Install-FractalServer $protocol_branch
 Install-FractalExitScript
 Install-FractalAutoUpdate
 Enable-FractalFirewallRule

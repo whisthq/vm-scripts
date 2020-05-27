@@ -1,6 +1,6 @@
 # Fractal Linux Ubuntu Setup Scripts
 
-This subfolder is responsible for all the Linux-related system scripts.
+This subfolder is responsible for all the Linux-related system scripts to set up a computer, virtual machine or container for Fractal streaming.
 
 ### Linux Ubuntu Cloud Scripts
 
@@ -28,7 +28,7 @@ There are two Linux cloud scripts, `cloud-0.sh` and `cloud-1.sh`, which both nee
 - Download & Enable the Fractal Input Driver
 - Enable the SSH Server for File Sync (SSH Automatically Enabled on Linux)
 - Disable Shutdown in Start Menu
-- Set Auto-Login
+- Set Auto-Login & Disable Automatic Lock Screen
 
 ### Linux Ubuntu Peer-to-Peer Scripts
 

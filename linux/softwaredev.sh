@@ -10,3 +10,7 @@ Install-Docker
 Install-Curl
 Install-Make
 Install-GCC
+Install-Clangformat
+Install-Cmake
+Install-Cppcheck
+Install-CUDA

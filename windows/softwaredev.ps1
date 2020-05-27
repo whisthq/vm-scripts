@@ -13,4 +13,4 @@ Install-Curl
 Install-LLVM
 Install-Cmake
 Install-Cppcheck
-Install-CUDA
+Install-CUDAToolkit

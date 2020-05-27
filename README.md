@@ -1,6 +1,6 @@
-# Fractal Computer Setup Scripts
+# Fractal Setup Scripts
 
-This repository contains the Fractal PowerShell and Bash scripts that get launched at creation of a cloud computer to set it up in a specific configuration, or when a user sets up their personal computer for peer-to-peer streaming. The cloud scripts can be toggled from a selection on the Fractal website in the cloud computer creation page, and are then fed to the Azure SDK when the VM gets created. A combination of many scripts can be run.
+This repository contains the Fractal PowerShell and Bash scripts that get launched at creation of a cloud computer/container to set it up in a specific configuration, or when a user sets up their personal computer for peer-to-peer streaming. The cloud scripts can be toggled from a selection on the Fractal website in the cloud computer creation page, and are then fed to the Azure SDK when the VM gets created. A combination of many scripts can be run.
 
 ## Cloud Setup Scripts
 
@@ -30,6 +30,7 @@ In addition to the OS-specific scripts, which install the minimum required to ma
   - Solidworks (can't be installed without a subscription)
   - Autodesk Fusion 360 (Windows only)
   - Matlab (can't be installed without a subscription)
+  - Mathematica (can't be installed without a subscription)
 
 - Software Development Script
   - Windows Developer Mode Activated (Windows only)
@@ -39,6 +40,10 @@ In addition to the OS-specific scripts, which install the minimum required to ma
   - Windows Subsystem for Linux (Windows only)
   - Atom
   - Docker
+  - CUDA Toolkit
+  - Cmake
+  - Cppcheck
+  - LLVM & Clang-format
 
 - Data Science & Machine Learning Script
   - Git

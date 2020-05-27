@@ -30,7 +30,7 @@ function Set-FilePermission ($file_path) {
     $acl | Set-Acl
 }
 
-function Invoke-RemotePowerShellCommand ($credentials, $command_as_a_string) {
+function Invoke-RemotePowerShellCommand ([SecureString] $credentials, $command_as_a_string) {
     # this helper scripts authenticates to the Fractal user via Remote-PowerShell, and runs the specified command in userspace
     Write-Output "Get Public IPv4"
     $IPv4 = (Invoke-WebRequest -UseBasicParsing -uri "https://api.ipify.org/").Content
@@ -90,7 +90,7 @@ function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
     Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -Type String
 }
 
-function Enable-RemotePowerShell ($certificate_password) {
+function Enable-RemotePowerShell ([SecureString] $certificate_password) {
     ###
     # the following steps are based on: https://docs.microsoft.com/en-us/azure/virtual-machines/windows/winrm
     ###
@@ -149,7 +149,7 @@ function Enable-RemotePowerShell ($certificate_password) {
     Get-PSSessionConfiguration
 }
 
-function Install-FractalWallpaper ($run_on_local, $credentials) {
+function Install-FractalWallpaper ($run_on_cloud, [SecureString] $credentials) {
     # sleep for 15 seconds to make sure previous operations completed
     Start-Sleep -s 15
 
@@ -160,18 +160,18 @@ function Install-FractalWallpaper ($run_on_local, $credentials) {
     $webClient.DownloadFile($fractalwallpaper_url, $fractalwallpaper_name)
 
     Write-Output "Setting Fractal Wallpaper"
-    # if this script was meant to run locally (via RDP), we run the command directly
-    if ($run_on_local) {
-        if((Test-Path -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System") -eq $true) {} Else {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null}
-        if((Test-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Value Wallpaper) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -Value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -PropertyType String -Value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null}
-        if((Test-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Value WallpaperStyle) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -Value 2 | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -PropertyType String -Value 2 | Out-Null}
-    }
-    # else we run via Remote-PS (to run from a webserver)
-    else {
+    # if this script was meant to run on the cloud, we run via Remote-PS (to run from a webserver)
+    if ($run_on_cloud) {
         $command = 'if((Test-Path -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System") -eq $true) {} Else {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null}
         if((Test-RegistryValue -path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -value Wallpaper) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -PropertyType String -value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null}
         if((Test-RegistryValue -path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -value WallpaperStyle) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -value 2 | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -PropertyType String -value 2 | Out-Null}'
-        Invoke-RemotePowerShellCommand $credentials $command        
+        Invoke-RemotePowerShellCommand $credentials $command  
+    }
+    # else we run the command directly
+    else {
+        if((Test-Path -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System") -eq $true) {} Else {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null}
+        if((Test-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Value Wallpaper) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -Value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -PropertyType String -Value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null}
+        if((Test-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Value WallpaperStyle) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -Value 2 | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -PropertyType String -Value 2 | Out-Null}
     }
 }
 
@@ -382,11 +382,15 @@ function Install-3DSMaxDesign {
 }
 
 function Install-Solidworks {
-    Write-Output "Solidworks is not downloadable without an Adobe subscription and thus cannot be installed"
+    Write-Output "Solidworks is not downloadable without a  subscription and thus cannot be installed"
 }
 
 function Install-Matlab {
-    Write-Output "Matlab is not downloadable without an Adobe subscription and thus cannot be installed"
+    Write-Output "Matlab is not downloadable without a MathWorks subscription and thus cannot be installed"
+}
+
+function Install-Mathematica {
+    Write-Output "Mathematica is not downloadable without an Wolfram subscription and thus cannot be installed"
 }
 
 function Install-Zoom {
@@ -505,27 +509,27 @@ function Disable-NetworkWindow {
     if((Test-RegistryValue -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Network" -Value NewNetworkWindowOff) -eq $true) {} Else {New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Network" -Name "NewNetworkWindowOff" | Out-Null}
 }
 
-function Set-MousePrecision ($run_on_local, $credentials) {
+function Set-MousePrecision ($run_on_cloud, [SecureString] $credentials) {
     Write-Output "Enabling Enhanced Pointer Precision"
-    # if this script was meant to run locally (via RDP), we run the command directly
-    if ($run_on_local) {
-        Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name MouseSpeed -Value 1 | Out-Null
-    }
-    # else we run via Remote-PS (to run from a webserver)
-    else {
+    # if this script was meant to run on the cloud, we run via Remote-PS (to run from a webserver)    
+    if ($run_on_cloud) {
         Invoke-RemotePowerShellCommand $credentials 'Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name MouseSpeed -Value 1 | Out-Null'
+    }
+    # else we run the command directly
+    else {
+        Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name MouseSpeed -Value 1 | Out-Null
     }
 }
     
-function Enable-MouseKeys ($run_on_local, $credentials) {
+function Enable-MouseKeys ($run_on_cloud, [SecureString] $credentials) {
     Write-Output "Enabling Mouse Keys"
-    # if this script was meant to run locally (via RDP), we run the command directly
-    if ($run_on_local) {
-        Set-ItemProperty -Path "HKCU:\Control Panel\Accessibility\MouseKeys" -Name Flags -Value 63 | Out-Null
-    }
-    # else we run via Remote-PS (to run from a webserver)
-    else {
+    # if this script was meant to run on the cloud, we run via Remote-PS (to run from a webserver)    
+    if ($run_on_cloud) {
         Invoke-RemotePowerShellCommand $credentials 'Set-ItemProperty -Path "HKCU:\Control Panel\Accessibility\MouseKeys" -Name Flags -Value 63 | Out-Null'
+    }
+    # else we run the command directly
+    else {
+        Set-ItemProperty -Path "HKCU:\Control Panel\Accessibility\MouseKeys" -Name Flags -Value 63 | Out-Null
     }
 }
 
@@ -551,15 +555,15 @@ function Install-PoshSSH {
     Install-Module -Name Posh-SSH -Confirm:$False -Force
 }
 
-function Show-FileExtensions ($run_on_local, $credentials) {
+function Show-FileExtensions ($run_on_cloud, [SecureString] $credentials) {
     Write-Output "Setting File Extensions"
-    # if this script was meant to run locally (via RDP), we run the command directly
-    if ($run_on_local) {
-        Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name HideFileExt -Value 0 | Out-Null
-    }
-    # else we run via Remote-PS (to run from a webserver)
-    else {
+    # if this script was meant to run on the cloud, we run via Remote-PS (to run from a webserver)    
+    if ($run_on_cloud) {
         Invoke-RemotePowerShellCommand $credentials 'Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name HideFileExt -Value 0 | Out-Null'
+    }
+    # else we run the command directly
+    else {
+        Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name HideFileExt -Value 0 | Out-Null
     }
 }
   
@@ -599,46 +603,36 @@ function Disable-HyperV {
     Remove-Item -Path "C:\$compressed_file" -Confirm:$false
 }
 
-function Install-FractalServer {
-    # only download, server will get started by service
+function Install-FractalServer ($protocol_branch) {
+    # only download, server will get started by service -- download the master branch for users
     Write-Output "Downloading Fractal Server"
     $fractalserver_name = "C:\Program Files\Fractal\FractalServer.exe"
-    $fractalserver_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/FractalServer.exe"
+    $fractalserver_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$protocol_branch/FractalServer.exe"
     $webClient.DownloadFile($fractalserver_url, $fractalserver_name)
 
-    # download the .dlls
-    Write-Output "Downloading FFmpeg DLLs"
-    $avcodec_name = "C:\Program Files\Fractal\avcodec-58.dll"
-    $avcodec_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/avcodec-58.dll"
-    $webClient.DownloadFile($avcodec_url, $avcodec_name)
+    Write-Output "Download Shared FFmpeg Libs from S3"
+    $shared_libs_name = "C:\shared-libs.tar.gz"
+    $shared_libs_url = "https://fractal-protocol-shared-libs.s3.amazonaws.com/shared-libs.tar.gz"
+    $webClient.DownloadFile($shared_libs_url, $shared_libs_name)
 
-    $avdevice_name = "C:\Program Files\Fractal\avdevice-58.dll"
-    $avdevice_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/avdevice-58.dll"
-    $webClient.DownloadFile($avdevice_url, $avdevice_name)
+    Write-Output "Unzip the .tar.gz File and Remove shared-libs.tar.gz & /lib"
+    tar -xvzf .\shared-libs.tar.gz
+    Remove-Item -Path $shared_libs_name -Confirm:$false
+    Remove-Item -Path "C:\lib" -Confirm:$false -Recurse
 
-    $avfilter_name = "C:\Program Files\Fractal\avfilter-7.dll"
-    $avfilter_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/avfilter-7.dll"
-    $webClient.DownloadFile($avfilter_url, $avfilter_name)
+    $arch = (Get-WmiObject Win32_Processor).AddressWidth
 
-    $avformat_name = "C:\Program Files\Fractal\avformat-58.dll"
-    $avformat_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/avformat-58.dll"
-    $webClient.DownloadFile($avformat_url, $avformat_name)
-
-    $avutil_name = "C:\Program Files\Fractal\avutil-56.dll"
-    $avutil_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/avutil-56.dll"
-    $webClient.DownloadFile($avutil_url, $avutil_name)
-
-    $postproc_name = "C:\Program Files\Fractal\postproc-55.dll"
-    $postproc_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/postproc-55.dll"
-    $webClient.DownloadFile($postproc_url, $postproc_name)
-
-    $swresample_name = "C:\Program Files\Fractal\swresample-3.dll"
-    $swresample_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/swresample-3.dll"
-    $webClient.DownloadFile($swresample_url, $swresample_name)
-
-    $swscale_name = "C:\Program Files\Fractal\swscale-5.dll"
-    $swscale_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/swscale-5.dll"
-    $webClient.DownloadFile($swscale_url, $swscale_name)
+    Write-Output "Move the FFmpeg .dlls to the Fractal Folder and Remove /share"
+    Move-Item -Path "C:\share\$arch\Windows\avcodec-58.dll" -Destination "C:\Program Files\Fractal\avcodec-58.dll"
+    Move-Item -Path "C:\share\$arch\Windows\avdevice-58.dll" -Destination "C:\Program Files\Fractal\avdevice-58.dll"
+    Move-Item -Path "C:\share\$arch\Windows\avfilter-7.dll" -Destination "C:\Program Files\Fractal\avfilter-7.dll"
+    Move-Item -Path "C:\share\$arch\Windows\avformat-58.dll" -Destination "C:\Program Files\Fractal\avformat-58.dll"
+    Move-Item -Path "C:\share\$arch\Windows\avresample-4.dll" -Destination "C:\Program Files\Fractal\avresample-4.dll"
+    Move-Item -Path "C:\share\$arch\Windows\avutil-56.dll" -Destination "C:\Program Files\Fractal\avutil-56.dll"
+    Move-Item -Path "C:\share\$arch\Windows\postproc-55.dll" -Destination "C:\Program Files\Fractal\postproc-55.dll"
+    Move-Item -Path "C:\share\$arch\Windows\swscale-5.dll" -Destination "C:\Program Files\Fractal\swscale-5.dll"
+    Move-Item -Path "C:\share\$arch\Windows\swresample-3.dll" -Destination "C:\Program Files\Fractal\swresample-3.dll"
+    Remove-Item -Path "C:\share" -Confirm:$false -Recurse
 }
 
 function Install-FractalAutoUpdate {

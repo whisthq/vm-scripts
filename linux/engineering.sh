@@ -5,3 +5,4 @@ source ./utils.sh
 Install-Solidworks
 Install-Fusion360
 Install-Matlab
+Install-Mathematica

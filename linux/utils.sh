@@ -282,6 +282,15 @@ function Install-Blender {
     sudo snap install blender --classic
 }
 
+
+
+Install-Clangformat
+Install-Cmake
+Install-Cppcheck
+Install-CUDA
+
+
+
 function Install-Git {
     echo "Installing Git through Apt"
     yes | sudo apt-get install git
@@ -394,6 +403,10 @@ function Install-ZBrush {
 
 function Install-GOG {
     echo "GOG does not run on Linux Ubuntu and thus cannot be installed"
+}
+
+function Install-Mathematica {
+    echo "Mathematica requires a license to be downloaded and thus cannot be installed"
 }
 
 function Install-Blizzard {

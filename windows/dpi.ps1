@@ -25,7 +25,7 @@ Get-PowerShellScript $utils_script_name $utils_script_url
 Import-Module "$utils_script_name"
 
 # Make sure we're in the proper directory (mostly for running from webservers) and define credentials for user
-cd C:\
+Set-Location C:\
 $credentials = New-Object System.Management.Automation.PSCredential $admin_username, $admin_password
 
 # set DPI to 96
@@ -36,7 +36,7 @@ if ($dpi == "96") {
     Invoke-RemotePowerShellCommand $credentials $command        
 }
 # set dpi to 144
-else if ($dpi == "144") {
+elseif ($dpi == "144") {
     Write-Output "Change Windows DPI to 150% / 144 DPI"
     $command = 'Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name LogPixels -Value 144
     Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name Win8DpiScaling 1'  

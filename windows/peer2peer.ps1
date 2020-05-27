@@ -22,7 +22,7 @@ Import-Module "$utils_script_name"
 Update-Firewall
 Set-FractalDirectory
 Install-FractalService
-Install-FractalServer
+Install-FractalServer "master" # install the master branch, could be staging or dev as well
 Install-FractalExitScript
 Install-FractalAutoUpdate
 Enable-FractalFirewallRule
