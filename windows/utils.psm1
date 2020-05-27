@@ -635,11 +635,11 @@ function Install-FractalServer ($protocol_branch) {
     Remove-Item -Path "C:\share" -Confirm:$false -Recurse
 }
 
-function Install-FractalAutoUpdate {
+function Install-FractalAutoUpdate ($protocol_branch) {
     # no need to download version, update.bat will download it
     Write-Output "Downloading Fractal Auto Update script"
     $fractal_update_name = "C:\Program Files\Fractal\update.bat"
-    $fractal_update_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/update.bat"
+    $fractal_update_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$protocol_branch/update.bat"
     $webClient.DownloadFile($fractal_update_url, $fractal_update_name)
 }
 

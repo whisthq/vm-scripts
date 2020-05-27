@@ -24,7 +24,7 @@ Set-FractalDirectory
 Install-FractalService
 Install-FractalServer "master" # install the master branch, could be staging or dev as well
 Install-FractalExitScript
-Install-FractalAutoUpdate
+Install-FractalAutoUpdate "master" # install the master branch, could be staging or dev as well
 Enable-FractalFirewallRule
 Install-Unison
 Enable-SSHServer

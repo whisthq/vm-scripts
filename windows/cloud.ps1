@@ -62,7 +62,7 @@ Set-FractalDirectory
 Install-FractalService
 Install-FractalServer $protocol_branch
 Install-FractalExitScript
-Install-FractalAutoUpdate
+Install-FractalAutoUpdate $protocol_branch
 Enable-FractalFirewallRule
 Install-Unison
 Enable-SSHServer
