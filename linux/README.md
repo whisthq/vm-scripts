@@ -28,7 +28,10 @@ There are two Linux cloud scripts, `cloud-0.sh` and `cloud-1.sh`, which both nee
 - Download & Enable the Fractal Input Driver
 - Enable the SSH Server for File Sync (SSH Automatically Enabled on Linux)
 - Disable Shutdown in Start Menu
-- Set Auto-Login & Disable Automatic Lock Screen
+- Set Auto-Login
+- Disable Automatic Lock Screen
+
+You can simply run `./setup-linux.sh [IP ADDRESS]` to run those two scripts on a specific VM/container from any device.
 
 ### Linux Ubuntu Peer-to-Peer Scripts
 

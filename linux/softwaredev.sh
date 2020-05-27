@@ -13,4 +13,4 @@ Install-GCC
 Install-Clangformat
 Install-Cmake
 Install-Cppcheck
-Install-CUDA
+Install-CUDAToolkit

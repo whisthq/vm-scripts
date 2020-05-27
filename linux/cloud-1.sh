@@ -4,6 +4,7 @@
 # This script is part 2 of 2 scripts needed to enable Cloud streaming
 
 # variable blocks for optional installs
+protocol_branch="master" # protocol branch to download, could also be dev or staging
 creative_install=false
 datascience_install=false
 gaming_install=false
@@ -21,7 +22,7 @@ function GetBashScript {
 GetBashScript "utils.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/utils.sh"
 source ./utils.sh
 
-# Run sudo so it's not prompted in the following commands and install basic packages
+# Run sudo so it's not prompted in the following commands, and install basic packages
 yes | printf "password1234567." | sudo apt-get install wget python python3
 
 # Run all the basic commands to setup a Fractal cloud computer (Install-VirtualDisplay done in cloud-0.sh)
@@ -37,10 +38,10 @@ Set-OptimalGPUSettings
 Install-CustomGDMConfiguration
 Install-CustomX11Configuration
 Set-FractalDirectory
-Install-FractalServer
-Install-ProcessManager
+Install-FractalServer $protocol_branch
+Install-FractalService 
 Install-FractalExitScript
-Install-FractalAutoUpdate
+Install-FractalAutoUpdate $protocol_branch
 Install-FractalLinuxInputDriver
 Install-FractalWallpaper
 Enable-FractalFirewallRule
@@ -48,6 +49,7 @@ Install-Unison # SSH Automatically Enabled on Linux
 Enable-SSHKey
 Disable-Shutdown
 Add-AutoLogin
+Disable-AutomaticLockScreen
 
 # Install creative packages
 if [ "$creative_install" = true ] ; then

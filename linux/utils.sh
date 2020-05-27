@@ -18,6 +18,11 @@ function Add-AutoLogin {
     # this action is done by Install-CustomGDMConfiguration
 }
 
+function Disable-AutomaticLockScreen {
+    echo "Disabling Automatic Lock Screen"
+    gsettings set org.gnome.desktop.lockdown disable-lock-screen 'true'
+}
+
 function Enable-FractalFirewallRule {
     echo "Creating Fractal Firewall Rule"
     yes | sudo ufw enable
@@ -135,21 +140,20 @@ function Install-FractalExitScript {
     echo "Downloading Fractal Logo icon"
     sudo wget -O /usr/share/fractal/assets/logo.png "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/logo.png"
 
-    # download the desktop shortcut and make it executable
-    echo "Downloading Exit Fractal Desktop Shortcut"
-    sudo wget -O "$HOME/Desktop/Exit Fractal.desktop" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/Exit Fractal.desktop"
-    sudo chmod a+x "$HOME/Desktop/Exit Fractal.desktop" # make shortcut executable
+    # download Exit Fractal Desktop Shortcut
+    echo "Creating Exit-Fractal Desktop Shortcut"
+    sudo wget "$HOME/Exit-Fractal.desktop" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/Exit-Fractal.desktop"
+    sudo mv "$HOME/Exit-Fractal.desktop" "$HOME/.local/share/applications/Exit-Fractal.desktop"
 
-    # create favorites bar shortcut
-    # can read the desktop favorites with: gsettings get org.gnome.shell favorite-apps
-    echo "Creating Exit Fractal Favorites Bar Shortcut"
-    gsettings set org.gnome.shell favorite-apps "$(gsettings get org.gnome.shell favorite-apps | sed s/.$//), 'Exit Fractal.desktop']"
+    # create Ubuntu dock shortcut
+    echo "Creating Exit-Fractal Favorites Bar Shortcut"
+    gsettings set org.gnome.shell favorite-apps "$(gsettings get org.gnome.shell favorite-apps | sed s/.$//), 'Exit-Fractal.desktop']"
 }
 
 function Install-FractalAutoUpdate {
     # no need to download version, update.sh will download it
     echo "Downloading Fractal Auto Update Script"
-    sudo wget -O /usr/share/fractal/update.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/update.sh"
+    sudo wget -O /usr/share/fractal/update.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/update.sh"
 }
 
 function Install-NvidiaTeslaPublicDrivers {
@@ -179,25 +183,23 @@ function Disable-TCC {
     sudo nvidia-smi -g 0 -fdm 0 
 }
 
-function Install-ProcessManager {
-    # then start Fractal with Immortal for auto-restart, cwd set to /usr/share/fractal
+function Install-FractalService {
+    # then start Fractal with Fractal Service for auto-restart
     sudo wget -O /etc/systemd/user/fractal.service "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/fractal.service"
     sudo chmod +x /etc/systemd/user/fractal.service
-
     systemctl --user enable fractal
 }
 
 function Install-FractalServer {
-    # only download, server will get started by process manager
+    # only download, server will get started by FractalService
     echo "Downloading Fractal Server"
-    sudo wget -O /usr/share/fractal/FractalServer "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/FractalServer"
+    sudo wget -O /usr/share/fractal/FractalServer "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/FractalServer"
     sudo wget -O /usr/share/fractal/FractalServer.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/FractalServer.sh"
 
     sudo chgrp Fractal -R /usr/share/fractal
     sudo chmod g+rw -R /usr/share/fractal
     sudo chmod g+x /usr/share/fractal/FractalServer # make FractalServer executable
     sudo chmod g+x /usr/share/fractal/FractalServer.sh # make FractalServer executable
-
 
     # download the libraries
     echo "Downloading FFmpeg Libraries and Dependencies"
@@ -282,14 +284,28 @@ function Install-Blender {
     sudo snap install blender --classic
 }
 
+function Install-Cmake {
+    echo "Installing Cmake through Apt"
+    yes | sudo apt-get install apt-transport-https ca-certificates gnupg software-properties-common -y
+    sudo wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
+    yes | sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
+    yes | sudo apt-get update
+    yes | sudo apt-get install cmake -y
+}
 
+function Install-Cppcheck {
+    echo "Installing Cppcheck through Apt"
+    yes | sudo apt-get install cppcheck
+}
 
-Install-Clangformat
-Install-Cmake
-Install-Cppcheck
-Install-CUDA
+function Install-Clangformat {
+    echo "Installing Clang-format through Apt"
+    yes | sudo apt-get install clang-format
+}
 
-
+function Install-CUDAToolkit {
+    # Not implemented on Linux, given it is very involved
+}
 
 function Install-Git {
     echo "Installing Git through Apt"

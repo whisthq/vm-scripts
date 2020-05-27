@@ -16,10 +16,10 @@ source ./utils.sh
 Install-CustomGDMConfiguration
 Install-CustomX11Configuration
 Set-FractalDirectory
-Install-ProcessManager
-Install-FractalServer
+Install-FractalService
+Install-FractalServer "master" # install the master branch, could be staging or dev as well
 Install-FractalExitScript
-Install-FractalAutoUpdate
+Install-FractalAutoUpdate "master" # install the master branch, could be staging or dev as well
 Install-FractalLinuxInputDriver
 Enable-FractalFirewallRule
 Install-Unison # SSH Automatically Enabled on Linux

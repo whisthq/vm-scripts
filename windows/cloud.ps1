@@ -44,7 +44,7 @@ Install-DirectX
 Install-VisualRedist
 Install-VirtualAudio
 Enable-Audio
-Enable-RemotePowerShell $certificate_password # necessaryfor running run_on_local = $false scripts
+Enable-RemotePowerShell $certificate_password # necessary for running run_on_cloud = $true scripts
 Enable-MouseKeys $run_on_cloud $credentials
 Set-MousePrecision $run_on_cloud $credentials
 Set-Time
