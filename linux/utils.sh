@@ -304,7 +304,7 @@ function Install-Clangformat {
 }
 
 function Install-CUDAToolkit {
-    # Not implemented on Linux, given it is very involved
+    echo "Install CUDA Not Implemented on Linux; very involved"
 }
 
 function Install-Git {
