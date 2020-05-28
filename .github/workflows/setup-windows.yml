@@ -1,0 +1,30 @@
+name: Install Tests
+
+on:
+  push:
+    branches: [ master, actions ]
+  pull_request:
+    branches: [ master, actions]
+
+jobs:
+  setup-windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: powershell
+
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup fractal user
+      run: |
+        sudo useradd Fractal \
+        && echo 'Fractal:password1234567' | sudo chpasswd 
+
+    - name: Runs cloud.ps1
+      run: cloud.ps1
+      working-directory: windows
+      env:
+          LOCAL: yes

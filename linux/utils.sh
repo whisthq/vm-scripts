@@ -148,6 +148,10 @@ function Install-FractalExitScript {
 
     # create Ubuntu dock shortcut
     echo "Creating Exit-Fractal Favorites Bar Shortcut"
+    # Skips step if local
+    if [ $LOCAL = yes ]; then
+        return
+    fi
     gsettings set org.gnome.shell favorite-apps "$(gsettings get org.gnome.shell favorite-apps | sed s/.$//), 'Exit-Fractal.desktop']"
 }
 
@@ -272,6 +276,10 @@ function Install-FractalWallpaper {
 
     # then set the wallpaper
     echo "Setting Fractal Wallpaper"
+    # Skips step if local
+    if [ $LOCAL = yes ]; then
+        return
+    fi
     gsettings set org.gnome.desktop.background picture-uri /usr/share/fractal/assets/wallpaper.png
 }
 
