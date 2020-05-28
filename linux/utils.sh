@@ -304,7 +304,12 @@ function Install-Clangformat {
 }
 
 function Install-CUDAToolkit {
+    # You can't source empty functions in bash.  This originally worked because running 
+    # source ./utils.sh just runs the bash script rather than actually sourcing it
+    # https://stackoverflow.com/questions/30998558/empty-function-in-bash
+    :
     # Not implemented on Linux, given it is very involved
+
 }
 
 function Install-Git {
