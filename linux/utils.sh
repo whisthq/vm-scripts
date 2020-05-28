@@ -1,5 +1,6 @@
 #!/bin/bash
 # This file contains the functions called in the Bash scripts
+# Upload using `upload.sh`
 
 function Update-Linux {
     echo "Updating Linux Ubuntu"
@@ -30,7 +31,7 @@ function Enable-FractalFirewallRule {
     yes | sudo ufw allow 80 # HTTP
     yes | sudo ufw allow 443 # HTTPS
     yes | sudo ufw allow 32262 # Fractal Port Client->Server
-    yes | sudo ufw allow 32263 # Fractal Port Server->Client 
+    yes | sudo ufw allow 32263 # Fractal Port Server->Client
     yes | sudo ufw allow 32264 # Fractal Port Shared-TCP
 }
 
@@ -66,7 +67,7 @@ function Disable-Shutdown {
     echo "Disabling Shutdown Option in Start Menu"
     sudo wget -O /etc/polkit-1/localauthority/50-local.d/restrict-login-powermgmt.pkla "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/restrict-login-powermgmt.pkla"
 }
-    
+
 function Install-AutodeskMaya {
     echo "Installing Autodesk Maya"
     # Create Download Directory
@@ -79,11 +80,11 @@ function Install-AutodeskMaya {
 
     # Install Dependencies
     yes | sudo apt-get install -y libssl1.0.0 gcc  libssl-dev libjpeg62 alien csh tcsh libaudiofile-dev libglw1-mesa elfutils libglw1-mesa-dev mesa-utils xfstt xfonts-100dpi xfonts-75dpi ttf-mscorefonts-installer libfam0 libfam-dev libcurl4-openssl-dev libtbb-dev
-    yes | sudo apt-get install -y libtbb-dev 
+    yes | sudo apt-get install -y libtbb-dev
     sudo wget http://launchpadlibrarian.net/183708483/libxp6_1.0.2-2_amd64.deb
     sudo wget http://mirrors.kernel.org/ubuntu/pool/main/libp/libpng/libpng12-0_1.2.54-1ubuntu1_amd64.deb
 
-    # Install Maya 
+    # Install Maya
     sudo alien -cv *.rpm
     sudo dpkg -i *.deb
     echo "int main (void) {return 0;}" > mayainstall.c
@@ -163,7 +164,7 @@ function Install-NvidiaTeslaPublicDrivers {
 
     echo "Downloading Nvidia M60 Driver from Nvidia Website"
     sudo wget http://us.download.nvidia.com/tesla/440.64.00/nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb
-    
+
     echo "Installing Nvidia M60 Driver"
     sudo apt-key add /var/nvidia-driver-local-repo-440.64.00/7fa2af80.pub
     sudo dpkg -i nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb
@@ -180,7 +181,7 @@ function Set-OptimalGPUSettings {
 
 function Disable-TCC {
     echo "Disabling TCC Mode on Nvidia Tesla GPU"
-    sudo nvidia-smi -g 0 -fdm 0 
+    sudo nvidia-smi -g 0 -fdm 0
 }
 
 function Install-FractalService {
@@ -233,7 +234,7 @@ function Install-Unison {
 
 function Enable-SSHKey {
     # NOTE: needed for later, when we update webserver to exchange SSH keys
-    # echo "Generating SSH Key"     
+    # echo "Generating SSH Key"
     # yes | ssh-keygen -f sshkey -q -N """"
     # cp sshkey.pub "$HOME/.ssh/authorized_keys"
 
@@ -366,7 +367,7 @@ function Install-Anaconda {
     cd /tmp
     sudo wget "https://repo.anaconda.com/archive/Anaconda3-2019.03-Linux-x86_64.sh"
     sudo sha256sum Anaconda3-2019.03-Linux-x86_64.sh
-    sudo bash Anaconda3-2019.03-Linux-x86_64.sh -b    
+    sudo bash Anaconda3-2019.03-Linux-x86_64.sh -b
     source ~/.bashrc
     export PATH=~/anaconda3/bin:$PATH
 
