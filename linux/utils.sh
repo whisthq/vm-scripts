@@ -1,5 +1,6 @@
 #!/bin/bash
 # This file contains the functions called in the Bash scripts
+# Upload using `upload.sh`
 
 function Update-Linux {
     echo "Updating Linux Ubuntu"
@@ -30,7 +31,7 @@ function Enable-FractalFirewallRule {
     yes | sudo ufw allow 80 # HTTP
     yes | sudo ufw allow 443 # HTTPS
     yes | sudo ufw allow 32262 # Fractal Port Client->Server
-    yes | sudo ufw allow 32263 # Fractal Port Server->Client 
+    yes | sudo ufw allow 32263 # Fractal Port Server->Client
     yes | sudo ufw allow 32264 # Fractal Port Shared-TCP
 }
 
@@ -66,7 +67,7 @@ function Disable-Shutdown {
     echo "Disabling Shutdown Option in Start Menu"
     sudo wget -q -O /etc/polkit-1/localauthority/50-local.d/restrict-login-powermgmt.pkla "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/restrict-login-powermgmt.pkla"
 }
-    
+
 function Install-AutodeskMaya {
     echo "Installing Autodesk Maya"
     # Create Download Directory
@@ -78,12 +79,12 @@ function Install-AutodeskMaya {
     sudo tar xvf Autodesk_Maya_2017_EN_JP_ZH_Linux_64bit.tgz
 
     # Install Dependencies
-    yes | sudo apt-get install -y libssl1.0.0 gcc  libssl-dev libjpeg62 alien csh tcsh libaudiofile-dev libglw1-mesa elfutils libglw1-mesa-dev mesa-utils xfstt xfonts-100dpi xfonts-75dpi ttf-mscorefonts-installer libfam0 libfam-dev libcurl4-openssl-dev libtbb-dev
-    yes | sudo apt-get install -y libtbb-dev 
+    sudo apt-get install -y libssl1.0.0 gcc  libssl-dev libjpeg62 alien csh tcsh libaudiofile-dev libglw1-mesa elfutils libglw1-mesa-dev mesa-utils xfstt xfonts-100dpi xfonts-75dpi ttf-mscorefonts-installer libfam0 libfam-dev libcurl4-openssl-dev libtbb-dev
+    sudo apt-get install -y libtbb-dev 
     sudo wget -q http://launchpadlibrarian.net/183708483/libxp6_1.0.2-2_amd64.deb
     sudo wget -q http://mirrors.kernel.org/ubuntu/pool/main/libp/libpng/libpng12-0_1.2.54-1ubuntu1_amd64.deb
 
-    # Install Maya 
+    # Install Maya
     sudo alien -cv *.rpm
     sudo dpkg -i *.deb
     echo "int main (void) {return 0;}" > mayainstall.c
@@ -192,12 +193,14 @@ function Disable-TCC {
 
 function Install-FractalService {
     # then start Fractal with Fractal Service for auto-restart
-        if [ $LOCAL = yes ]; then
-        return
-    fi
 
     sudo wget -q -O /etc/systemd/user/fractal.service "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/fractal.service"
     sudo chmod +x /etc/systemd/user/fractal.service
+
+    # Skips enabling
+    if [ $LOCAL = yes ]; then
+        return
+    fi
     systemctl --user enable fractal
 }
 
@@ -219,7 +222,7 @@ function Install-FractalServer {
 
 function Install-7Zip {
     echo "Installing 7Zip through Apt"
-    yes | sudo apt-get install p7zip-full
+    sudo apt-get -y install p7zip-full
 }
 
 function Set-FractalDirectory {
@@ -244,7 +247,7 @@ function Install-Unison {
 
 function Enable-SSHKey {
     # NOTE: needed for later, when we update webserver to exchange SSH keys
-    # echo "Generating SSH Key"     
+    # echo "Generating SSH Key"
     # yes | ssh-keygen -f sshkey -q -N """"
     # cp sshkey.pub "$HOME/.ssh/authorized_keys"
 
@@ -274,7 +277,7 @@ function Install-FractalWallpaper {
 
 function Install-AdobeAcrobat {
     echo "Installing Adobe Acrobat Reader"
-    yes | sudo apt-get install gdebi-core libxml2:i386 libcanberra-gtk-module:i386 gtk2-engines-murrine:i386 libatk-adaptor:i386
+    sudo apt-get -y install gdebi-core libxml2:i386 libcanberra-gtk-module:i386 gtk2-engines-murrine:i386 libatk-adaptor:i386
     sudo wget -q "ftp://ftp.adobe.com/pub/adobe/reader/unix/9.x/9.5.5/enu/AdbeRdr9.5.5-1_i386linux_enu.deb"
     sudo gdebi "AdbeRdr9.5.5-1_i386linux_enu.deb"
     sudo rm -f "AdbeRdr9.5.5-1_i386linux_enu.deb"
@@ -297,21 +300,21 @@ function Install-Blender {
 
 function Install-Cmake {
     echo "Installing Cmake through Apt"
-    yes | sudo apt-get install apt-transport-https ca-certificates gnupg software-properties-common -y
+    sudo apt-get -y install apt-transport-https ca-certificates gnupg software-properties-common -y
     sudo wget -q -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
-    yes | sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
-    yes | sudo apt-get update
-    yes | sudo apt-get install cmake -y
+    sudo apt-add-repository -y 'deb https://apt.kitware.com/ubuntu/ bionic main'
+    sudo apt-get -y update
+    sudo apt-get -y install cmake
 }
 
 function Install-Cppcheck {
     echo "Installing Cppcheck through Apt"
-    yes | sudo apt-get install cppcheck
+    sudo apt-get -y install cppcheck
 }
 
 function Install-Clangformat {
     echo "Installing Clang-format through Apt"
-    yes | sudo apt-get install clang-format
+    sudo apt-get -y install clang-format
 }
 
 function Install-CUDAToolkit {
@@ -320,7 +323,7 @@ function Install-CUDAToolkit {
 
 function Install-Git {
     echo "Installing Git through Apt"
-    yes | sudo apt-get install git
+    sudo apt-get -y install git
 }
 
 function Install-Atom {
@@ -335,35 +338,35 @@ function Install-Slack {
 
 function Install-OpenCV {
     echo "Installing OpenCV through Apt"
-    yes | sudo apt-get install python3-opencv
+    sudo apt-get -y install python3-opencv
 }
 
 function Install-GoogleChrome {
     echo "Installing Google Chrome"
     sudo wget -q "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
-    yes | sudo apt-get install ./google-chrome-stable_current_amd64.deb
+    sudo apt-get -y install ./google-chrome-stable_current_amd64.deb
     sudo rm -f "google-chrome-stable_current_amd64.deb"
 }
 
 function Install-Curl {
     echo "Installing Curl through Apt"
-    yes | sudo apt-get install curl
+    sudo apt-get -y install curl
 }
 
 function Install-Make {
     echo "Installing Make through Apt"
-    yes | sudo apt-get install make
+    sudo apt-get -y install make
 }
 
 function Install-GCC {
     echo "Installing GCC through Apt"
-    yes | sudo apt-get install gcc
+    sudo apt-get -y install gcc
 }
 
 function Install-Zoom {
     echo "Installing Zoom"
     sudo wget -q "https://zoom.us/client/latest/zoom_amd64.deb"
-    yes | sudo apt-get install "./zoom_amd64.deb"
+    sudo apt-get -y install "./zoom_amd64.deb"
     sudo rm -f "./zoom_amd64.deb"
 }
 
@@ -377,7 +380,7 @@ function Install-Anaconda {
     cd /tmp
     sudo wget -q "https://repo.anaconda.com/archive/Anaconda3-2019.03-Linux-x86_64.sh"
     sudo sha256sum Anaconda3-2019.03-Linux-x86_64.sh
-    sudo bash Anaconda3-2019.03-Linux-x86_64.sh -b    
+    sudo bash Anaconda3-2019.03-Linux-x86_64.sh -b
     source ~/.bashrc
     export PATH=~/anaconda3/bin:$PATH
 
@@ -398,9 +401,9 @@ function Install-Discord {
 
 function Install-Steam {
     echo "Installing Steam through Apt"
-    yes | sudo add-apt-repository multiverse
-    yes | sudo apt-get update
-    yes | sudo apt-get install steam
+    sudo add-apt-repository -y multiverse
+    sudo apt-get -y update
+    sudo apt-get -y install steam
 }
 
 function Install-Matlab {

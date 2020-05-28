@@ -63,3 +63,9 @@ The general peer-to-peer scripts, `peer2peer.ps1` and `peer2peer.sh`, always get
 
 All of these scripts are hosted in the Fractal AWS S3 bucket "fractal-cloud-setup-s3bucket" at https://s3.console.aws.amazon.com/s3/home?region=us-east-1 and should be replaced there when there is another change for release.
 
+## Uploading the scripts
+
+To automatically upload the scripts run `./update.sh` 
+You will need the aws cli configured with an iam that has bucket access
+It will also ping slack that the utils.sh has been updated
+
