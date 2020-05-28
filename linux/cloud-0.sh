@@ -13,7 +13,11 @@ function GetBashScript {
 yes | printf "password1234567." | sudo apt-get install wget python python3
 
 # Download utils Bash script with helper functions and import it
-GetBashScript "utils.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/utils.sh"
+LOCAL=${LOCAL:=no}
+if [ $LOCAL = no ]; then
+    GetBashScript "utils.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/utils.sh"
+fi
+
 source ./utils.sh
 
 # Run all the basic command to setup Gnome and Linux virtual display
@@ -22,4 +26,9 @@ Install-VirtualDisplay # Requires rebooting
 # Clean Bash install script and restart
 echo "Cleaning up Utils script"
 sudo rm -f "utils.sh"
-sudo reboot
+
+if [ $LOCAL = no ]; then
+    sudo reboot
+elif [ $LOCAL = yes ]; then
+    echo Skipping reboot
+fi

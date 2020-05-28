@@ -32,12 +32,16 @@ jobs:
         tree
     # Runs a single command using the runners shell
     - name: Runs cloud-0.sh
-      run: ./linux/cloud-0.sh
+      run: ./cloud-0.sh
+      working-directory: linux
       env:
           DEBIAN_FRONTEND: "noninteractive"
+          LOCAL: yes
     
     - name: Runs cloud-1.sh
-      run: ./linux/cloud-1.sh
+      run: ./cloud-1.sh
+      working-directory: linux
       env:
           DEBIAN_FRONTEND: "noninteractive"
+          LOCAL: yes
 

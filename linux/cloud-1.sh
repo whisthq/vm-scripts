@@ -18,8 +18,12 @@ function GetBashScript {
     sudo wget $2
 }
 
+LOCAL=${LOCAL:=no}
+
 # Download utils Bash script with helper functions and import it
-GetBashScript "utils.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/utils.sh"
+if [ $LOCAL = no ]; then
+    GetBashScript "utils.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/utils.sh"
+fi
 source ./utils.sh
 
 # Run sudo so it's not prompted in the following commands, and install basic packages
@@ -114,4 +118,11 @@ fi
 # Clean Bash install script and restart
 echo "Cleaning up Utils script"
 sudo rm -f "utils.sh"
-$(sleep 1; sudo reboot) &
+
+
+if [ $LOCAL = no ]; then
+    $(sleep 1; sudo reboot) &
+elif [ $LOCAL = yes ]; then
+    echo Skipping reboot
+fi
+
