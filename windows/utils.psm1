@@ -157,7 +157,7 @@ function Enable-RemotePowerShell ([SecureString] $certificate_password) {
 }
 
 Write-Output "Install-FractalWallpaper imported"
-function Install-FractalWallpaper ($run_on_cloud, [SecureString] $credentials) {
+function Install-FractalWallpaper ($run_on_cloud, $credentials) {
     # sleep for 15 seconds to make sure previous operations completed
     Start-Sleep -s 15
 
@@ -524,7 +524,7 @@ function Disable-NetworkWindow {
     if((Test-RegistryValue -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Network" -Value NewNetworkWindowOff) -eq $true) {} Else {New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Network" -Name "NewNetworkWindowOff" | Out-Null}
 }
 
-function Set-MousePrecision ($run_on_cloud, [SecureString] $credentials) {
+function Set-MousePrecision ($run_on_cloud, $credentials) {
     Write-Output "Enabling Enhanced Pointer Precision"
     # if this script was meant to run on the cloud, we run via Remote-PS (to run from a webserver)    
     if ($run_on_cloud) {
@@ -536,7 +536,7 @@ function Set-MousePrecision ($run_on_cloud, [SecureString] $credentials) {
     }
 }
     
-function Enable-MouseKeys ($run_on_cloud, [SecureString] $credentials) {
+function Enable-MouseKeys ($run_on_cloud, $credentials) {
     Write-Output "Enabling Mouse Keys"
     # if this script was meant to run on the cloud, we run via Remote-PS (to run from a webserver)    
     if ($run_on_cloud) {
@@ -570,7 +570,7 @@ function Install-PoshSSH {
     Install-Module -Name Posh-SSH -Confirm:$False -Force
 }
 
-function Show-FileExtensions ($run_on_cloud, [SecureString] $credentials) {
+function Show-FileExtensions ($run_on_cloud, $credentials) {
     Write-Output "Setting File Extensions"
     # if this script was meant to run on the cloud, we run via Remote-PS (to run from a webserver)    
     if ($run_on_cloud) {

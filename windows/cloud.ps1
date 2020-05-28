@@ -54,9 +54,7 @@ Install-VisualRedist
 Install-VirtualAudio
 Enable-Audio
 Enable-RemotePowerShell $certificate_password # necessary for running run_on_cloud = $true scripts
-If ($LOCAL  -eq 'no')  {
-    Enable-MouseKeys $run_on_cloud $credentials
-}
+Enable-MouseKeys $run_on_cloud $credentials
 Set-MousePrecision $run_on_cloud $credentials
 Set-Time
 Disable-NetworkWindow
