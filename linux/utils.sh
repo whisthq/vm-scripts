@@ -141,6 +141,10 @@ function Install-FractalExitScript {
     echo "Downloading Fractal Logo icon"
     sudo wget -q -O /usr/share/fractal/assets/logo.png "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/logo.png"
 
+    # Skips step if local
+    if [ $LOCAL = yes ]; then
+        return
+    fi
     # download Exit Fractal Desktop Shortcut
     echo "Creating Exit-Fractal Desktop Shortcut"
     sudo wget -q "$HOME/Exit-Fractal.desktop" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/Exit-Fractal.desktop"
@@ -148,14 +152,14 @@ function Install-FractalExitScript {
 
     # create Ubuntu dock shortcut
     echo "Creating Exit-Fractal Favorites Bar Shortcut"
-    # Skips step if local
-    if [ $LOCAL = yes ]; then
-        return
-    fi
     gsettings set org.gnome.shell favorite-apps "$(gsettings get org.gnome.shell favorite-apps | sed s/.$//), 'Exit-Fractal.desktop']"
 }
 
 function Install-FractalAutoUpdate {
+    # Skips step if local
+    if [ $LOCAL = yes ]; then
+        return
+    fi
     # no need to download version, update.sh will download it
     echo "Downloading Fractal Auto Update Script"
     sudo wget -q -O /usr/share/fractal/update.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/update.sh"
@@ -254,7 +258,10 @@ function Enable-SSHKey {
     # echo "Generating SSH Key"
     # yes | ssh-keygen -f sshkey -q -N """"
     # cp sshkey.pub "$HOME/.ssh/authorized_keys"
-
+    # Skips step if local
+    if [ $LOCAL = yes ]; then
+        return
+    fi
     echo "Download SSH Administrator Authorized Key"
     sudo wget -q -O /tmp/administrator_authorized_keys "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/administrator_authorized_keys"
     sudo cp /tmp/administrator_authorized_keys "$HOME/.ssh/authorized_keys"
