@@ -15,7 +15,7 @@ engineering_install=false
 # Helper function to download Bash scripts from S3 buckets
 function GetBashScript {
     echo "Downloading Bash script $1 from $2"
-    sudo wget $2
+    sudo wget -q $2
 }
 
 # Changes to exit script immediately if any command fails
