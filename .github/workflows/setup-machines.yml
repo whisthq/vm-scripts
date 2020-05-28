@@ -60,13 +60,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Runs cloud.ps1
+    - name: Create Fractal user
       run: |
-        Get-Location
-        ls
-      working-directory: windows
-      env:
-          LOCAL: yes
+        $pass = ConvertTo-SecureString -String "password1234567" -AsPlainText -Force
+        New-LocalUser -FullName "Fractal" -Name "Fractal" -Password "$pass" -Description "Fractal Account"
+
 
     - name: Runs cloud.ps1
       run: ./cloud.ps1

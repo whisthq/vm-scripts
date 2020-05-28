@@ -22,6 +22,7 @@ function GetBashScript {
 set -e
 
 LOCAL=${LOCAL:=no}
+# TODO(alamp): Fix LOCAL=yes skip installs in github actions
 
 # Download utils Bash script with helper functions and import it
 if [ $LOCAL = no ]; then

@@ -27,13 +27,13 @@ function Get-PowerShellScript ($script_name, $script_url) {
 
 # Download utils PowerShell script with helper functions and import it, and download cloud-1.ps1
 if (-not (Test-Path env:LOCAL)) { $env:LOCAL = 'no' }
-If ($LOCAL  -eq 'no')  {
+If ($env:LOCAL  -eq 'no')  {
     Write-Output "Downloading utils"
     $utils_script_name = "C:\utils.psm1"
     $utils_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/utils.psm1"
     Get-PowerShellScript $utils_script_name $utils_script_url
 } Else {
-    Write-Output "Running Local"
+    Write-Output "Running Local: LOCAL=$env:LOCAL"
     Get-Location
     $utils_script_name = "./utils.psm1"
 }
