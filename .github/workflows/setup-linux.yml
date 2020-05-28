@@ -25,12 +25,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-
-    - name: Installs tree
+    - name: Setup fractal user
       run: |
-        sudo apt-get install tree
-        tree
-    # Runs a single command using the runners shell
+        sudo useradd Fractal \
+        && echo 'Fractal:password1234567' | sudo chpasswd 
+
     - name: Runs cloud-0.sh
       run: ./cloud-0.sh
       working-directory: linux

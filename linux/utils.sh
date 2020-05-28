@@ -3,14 +3,14 @@
 
 function Update-Linux {
     echo "Updating Linux Ubuntu"
-    yes | sudo apt-get update
-    yes | sudo apt-get upgrade
-    yes | sudo apt-get autoremove
+    sudo apt-get -y update
+    sudo apt-get -y upgrade
+    sudo apt-get -y autoremove
 }
 
 function Set-Time {
     echo "Setting Automatic Time & Timezone via Gnome Clocks"
-    yes | sudo apt-get install gnome-clocks
+    sudo apt-get -y install gnome-clocks
 }
 
 function Add-AutoLogin {
@@ -36,7 +36,7 @@ function Enable-FractalFirewallRule {
 
 function Install-VirtualDisplay {
     echo "Installing Gnome and Virtual Display Dummy"
-    yes | sudo apt-get install gnome xserver-xorg-video-dummy ubuntu-gnome-desktop
+    sudo apt-get -y install gnome xserver-xorg-video-dummy ubuntu-gnome-desktop
 }
 
 function Install-CustomGDMConfiguration {
@@ -159,13 +159,12 @@ function Install-FractalAutoUpdate {
 function Install-NvidiaTeslaPublicDrivers {
     echo "Installing Nvidia Public Driver (GRID already installed at deployment through Azure)"
     echo "Installing Nvidia CUDA GPG Key"
-    sudo apt-key add /var/nvidia-driver-local-repo-440.64.00/7fa2af80.pub
+    sudo apt-key adv --fetch-keys  http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
 
     echo "Downloading Nvidia M60 Driver from Nvidia Website"
     sudo wget http://us.download.nvidia.com/tesla/440.64.00/nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb
     
     echo "Installing Nvidia M60 Driver"
-    sudo apt-key add /var/nvidia-driver-local-repo-440.64.00/7fa2af80.pub
     sudo dpkg -i nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb
 
     echo "Cleaning up Nvidia Public Drivers Installation"
@@ -174,12 +173,20 @@ function Install-NvidiaTeslaPublicDrivers {
 
 function Set-OptimalGPUSettings {
     echo "Setting Optimal Tesla M60 GPU Settings"
+    # Skips nvidia-smi if LOCAL-yes
+    if [ $LOCAL = yes ]; then
+        return
+    fi
     sudo nvidia-smi --auto-boost-default=0
     sudo nvidia-smi -ac "2505,1177"
 }
 
 function Disable-TCC {
     echo "Disabling TCC Mode on Nvidia Tesla GPU"
+    # Skips nvidia-smi if LOCAL-yes
+    if [ $LOCAL = yes ]; then
+        return
+    fi
     sudo nvidia-smi -g 0 -fdm 0 
 }
 

@@ -18,6 +18,9 @@ function GetBashScript {
     sudo wget $2
 }
 
+# Changes to exit script immediately if any command fails
+set -e
+
 LOCAL=${LOCAL:=no}
 
 # Download utils Bash script with helper functions and import it
@@ -34,7 +37,7 @@ Update-Linux
 Set-Time
 Install-7Zip
 Install-Curl
-Install-Spotify
+# Install-Spotify
 Install-GoogleChrome
 Install-NvidiaTeslaPublicDrivers
 Disable-TCC
@@ -117,10 +120,9 @@ fi
 
 # Clean Bash install script and restart
 echo "Cleaning up Utils script"
-sudo rm -f "utils.sh"
-
 
 if [ $LOCAL = no ]; then
+    sudo rm -f "utils.sh"
     $(sleep 1; sudo reboot) &
 elif [ $LOCAL = yes ]; then
     echo Skipping reboot

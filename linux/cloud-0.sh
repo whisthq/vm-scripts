@@ -9,8 +9,15 @@ function GetBashScript {
     sudo wget $2
 }
 
+# Changes to exit script immediately if any command fails
+set -e
+
 # Run sudo so it's not prompted in the following commands and install basic packages
-yes | printf "password1234567." | sudo apt-get install wget python python3
+if [ $LOCAL = no ]; then
+    printf "password1234567." | sudo apt-get -y install wget python python3
+else
+    sudo apt-get -y install wget python python3
+fi
 
 # Download utils Bash script with helper functions and import it
 LOCAL=${LOCAL:=no}
@@ -21,13 +28,15 @@ fi
 source ./utils.sh
 
 # Run all the basic command to setup Gnome and Linux virtual display
+echo Installing virtual display
+Update-Linux
 Install-VirtualDisplay # Requires rebooting
 
 # Clean Bash install script and restart
 echo "Cleaning up Utils script"
-sudo rm -f "utils.sh"
 
 if [ $LOCAL = no ]; then
+    sudo rm -f "utils.sh"
     sudo reboot
 elif [ $LOCAL = yes ]; then
     echo Skipping reboot
