@@ -192,6 +192,10 @@ function Disable-TCC {
 
 function Install-FractalService {
     # then start Fractal with Fractal Service for auto-restart
+        if [ $LOCAL = yes ]; then
+        return
+    fi
+
     sudo wget -q -O /etc/systemd/user/fractal.service "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/fractal.service"
     sudo chmod +x /etc/systemd/user/fractal.service
     systemctl --user enable fractal
