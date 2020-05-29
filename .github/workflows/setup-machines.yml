@@ -62,8 +62,8 @@ jobs:
 
     - name: Create Fractal user
       run: |
-        $pass = ConvertTo-SecureString -String "password1234567" -AsPlainText -Force
-        New-LocalUser -FullName "Fractal" -Name "Fractal" -Password "$pass" -Description "Fractal Account"
+        $pass = (ConvertTo-SecureString "password1234567." -AsPlainText -Force)
+        New-LocalUser -FullName "Fractal" -Name "Fractal" -Password $pass -Description "Fractal Account"
 
 
     - name: Runs cloud.ps1
