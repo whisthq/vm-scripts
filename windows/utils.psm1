@@ -182,55 +182,7 @@ function Install-FractalWallpaper ($run_on_cloud, $credentials) {
     }
 }
 
-function Disable-Cursor {
-    # makes the Windows cursor blank to avoid duplicate cursor issue
-    If ($env:LOCAL  -eq 'yes')  {
-        return
-    }
-    Write-Output "Downloading the Blank Cursor File"
-    $cursorPath = "C:\Program Files\Fractal\Assets\blank.cur"
-    $cursorPath_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/blank.cur"
-    $webClient.DownloadFile($cursorPath_url, $cursorPath)
 
-    Write-Output "Opening the Windows Cursor Registry"
-    $RegConnect = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey([Microsoft.Win32.RegistryHive]"CurrentUser","$env:COMPUTERNAME")
-    $RegCursors = $RegConnect.OpenSubKey("Control Panel\Cursors",$true)
-    
-    Write-Output "Setting the Windows Cursors to Blank"
-    $RegCursors.SetValue("", $cursorPath)
-    $RegCursors.SetValue("AppStarting", $cursorPath)
-    $RegCursors.SetValue("Arrow", $cursorPath)
-    $RegCursors.SetValue("Crosshair", $cursorPath)
-    $RegCursors.SetValue("Hand", $cursorPath)
-    $RegCursors.SetValue("Help", $cursorPath)
-    $RegCursors.SetValue("IBeam", $cursorPath)
-    $RegCursors.SetValue("No", $cursorPath)
-    $RegCursors.SetValue("NWPen", $cursorPath)
-    $RegCursors.SetValue("SizeAll", $cursorPath)
-    $RegCursors.SetValue("SizeNESW", $cursorPath)
-    $RegCursors.SetValue("SizeNS", $cursorPath)
-    $RegCursors.SetValue("SizeNWSE", $cursorPath)
-    $RegCursors.SetValue("SizeWE", $cursorPath)
-    $RegCursors.SetValue("UpArrow", $cursorPath)
-    $RegCursors.SetValue("Wait", $cursorPath)
-    
-    Write-Output "Closing the Windows Cursor Registry"
-    $RegCursors.Close()
-    $RegConnect.Close()
-    
-# define C# signature for modifying system parameters
-$CSharpSig = @'
-[DllImport("user32.dll", EntryPoint = "SystemParametersInfo")]
-public static extern bool SystemParametersInfo(
-                    uint uiAction,
-                    uint uiParam,
-                    uint pvParam,
-                    uint fWinIni);
-'@
-    Write-Output "Refresh the Cursor Parameter to Enable Changes"
-    # $CursorRefresh = Add-Type -Path $CSharpSig -Name WinAPICall -Namespace SystemParamInfo –PassThru
-    # $CursorRefresh::SystemParametersInfo(0x0057, 0, $null, 0)
-}
 
 function Install-FractalService {
     # first download the service executable
@@ -787,4 +739,56 @@ function Enable-SSHServer {
     (Get-Content ($FilePath)) | Foreach-Object {$_ -replace '^       AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys', (" ")} | Set-Content  ($Filepath)
     (Get-Content ($FilePath)) | Foreach-Object {$_ -replace '^PasswordAuthentication yes', ("PasswordAuthentication no")} | Set-Content  ($Filepath)
     Add-Content $FilePath "`nAuthenticationMethods publickey"
+}
+
+
+function Disable-Cursor {
+    # makes the Windows cursor blank to avoid duplicate cursor issue
+    If ($env:LOCAL  -eq 'yes')  {
+        return
+    }
+    Write-Output "Downloading the Blank Cursor File"
+    $cursorPath = "C:\Program Files\Fractal\Assets\blank.cur"
+    $cursorPath_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/blank.cur"
+    $webClient.DownloadFile($cursorPath_url, $cursorPath)
+
+    Write-Output "Opening the Windows Cursor Registry"
+    $RegConnect = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey([Microsoft.Win32.RegistryHive]"CurrentUser","$env:COMPUTERNAME")
+    $RegCursors = $RegConnect.OpenSubKey("Control Panel\Cursors",$true)
+    
+    Write-Output "Setting the Windows Cursors to Blank"
+    $RegCursors.SetValue("", $cursorPath)
+    $RegCursors.SetValue("AppStarting", $cursorPath)
+    $RegCursors.SetValue("Arrow", $cursorPath)
+    $RegCursors.SetValue("Crosshair", $cursorPath)
+    $RegCursors.SetValue("Hand", $cursorPath)
+    $RegCursors.SetValue("Help", $cursorPath)
+    $RegCursors.SetValue("IBeam", $cursorPath)
+    $RegCursors.SetValue("No", $cursorPath)
+    $RegCursors.SetValue("NWPen", $cursorPath)
+    $RegCursors.SetValue("SizeAll", $cursorPath)
+    $RegCursors.SetValue("SizeNESW", $cursorPath)
+    $RegCursors.SetValue("SizeNS", $cursorPath)
+    $RegCursors.SetValue("SizeNWSE", $cursorPath)
+    $RegCursors.SetValue("SizeWE", $cursorPath)
+    $RegCursors.SetValue("UpArrow", $cursorPath)
+    $RegCursors.SetValue("Wait", $cursorPath)
+    
+    Write-Output "Closing the Windows Cursor Registry"
+    $RegCursors.Close()
+    $RegConnect.Close()
+    
+# define C# signature for modifying system parameters
+$CSharpSig = @'
+[DllImport("user32.dll", EntryPoint = "SystemParametersInfo")]
+public static extern bool SystemParametersInfo(
+                    uint uiAction,
+                    uint uiParam,
+                    uint pvParam,
+                    uint fWinIni);
+'@
+    
+    Write-Output "Refresh the Cursor Parameter to Enable Changes"
+    $CursorRefresh = Add-Type -MemberDefinition $CSharpSig -Name WinAPICall -Namespace SystemParamInfo -PassThru
+    $CursorRefresh::SystemParametersInfo(0x0057, 0, $null, 0)
 }
