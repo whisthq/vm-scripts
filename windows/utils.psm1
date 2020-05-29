@@ -19,7 +19,6 @@ function Test-RegistryValue {
     }
 }
 
-Write-Output "Set-FilePermission imported"
 function Set-FilePermission ($file_path) {
     # helper function for setting permissiosn of a file
     $acl = Get-Acl $file_path
@@ -31,7 +30,6 @@ function Set-FilePermission ($file_path) {
     $acl | Set-Acl
 }
 
-Write-Output "Invoke-RemotePowerShellCommand imported"
 function Invoke-RemotePowerShellCommand ([SecureString] $credentials, $command_as_a_string) {
     # this helper scripts authenticates to the Fractal user via Remote-PowerShell, and runs the specified command in userspace
     Write-Output "Get Public IPv4"
@@ -46,7 +44,6 @@ function Invoke-RemotePowerShellCommand ([SecureString] $credentials, $command_a
     Remove-PSSession -Id 1, 2
 }
 
-Write-Output "Update-Windows imported"
 function Update-Windows {
     $url = "https://gallery.technet.microsoft.com/scriptcenter/Execute-Windows-Update-fc6acb16/file/144365/1/PS_WinUpdate.zip"
     $compressed_file = "PS_WinUpdate.zip"
@@ -69,13 +66,11 @@ function Update-Windows {
     Remove-Item -Path "C:\$($env:COMPUTERNAME)_Report.txt" -Confirm:$false -ErrorAction SilentlyContinue
 }
 
-Write-Output "Update-Firewall imported"
 function Update-Firewall {
     Write-Output "Enable ICMP Ping in Firewall"
     Set-NetFirewallRule -DisplayName "File and Printer Sharing (Echo Request - ICMPv4-In)" -Enabled True
 }
 
-Write-Output "Disable-TCC imported"
 function Disable-TCC {
     If ($env:LOCAL  -eq 'yes')  {
         return
@@ -86,7 +81,6 @@ function Disable-TCC {
     & $nvsmi -g $gpu -fdm 0
 }
 
-Write-Output "Add-AutoLogin imported"
 function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
     Write-Output "Make the password and account of admin user never expire"
     Set-LocalUser -Name $admin_username -PasswordNeverExpires $true -AccountNeverExpires
@@ -99,7 +93,6 @@ function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
     Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -Type String
 }
 
-Write-Output "Enable-RemotePowerShell imported"
 function Enable-RemotePowerShell ([SecureString] $certificate_password) {
     ###
     # the following steps are based on: https://docs.microsoft.com/en-us/azure/virtual-machines/windows/winrm
@@ -159,7 +152,6 @@ function Enable-RemotePowerShell ([SecureString] $certificate_password) {
     Get-PSSessionConfiguration
 }
 
-Write-Output "Install-FractalWallpaper imported"
 function Install-FractalWallpaper ($run_on_cloud, $credentials) {
     # sleep for 15 seconds to make sure previous operations completed
     Start-Sleep -s 15
@@ -190,7 +182,6 @@ function Install-FractalWallpaper ($run_on_cloud, $credentials) {
     }
 }
 
-Write-Output "Disable-Cursor imported"
 function Disable-Cursor {
     # makes the Windows cursor blank to avoid duplicate cursor issue
     If ($env:LOCAL  -eq 'yes')  {
@@ -227,22 +218,20 @@ function Disable-Cursor {
     $RegCursors.Close()
     $RegConnect.Close()
     
-# # define C# signature for modifying system parameters
-# $CSharpSig = @'
-# [DllImport("user32.dll", EntryPoint = "SystemParametersInfo")]
-# public static extern bool SystemParametersInfo(
-#                     uint uiAction,
-#                     uint uiParam,
-#                     uint pvParam,
-#                     uint fWinIni);
-# '@
-    
-#     Write-Output "Refresh the Cursor Parameter to Enable Changes"
-#     $CursorRefresh = Add-Type -MemberDefinition $CSharpSig -Name WinAPICall -Namespace SystemParamInfo –PassThru
-#     $CursorRefresh::SystemParametersInfo(0x0057, 0, $null, 0)
+# define C# signature for modifying system parameters
+$CSharpSig = @'
+[DllImport("user32.dll", EntryPoint = "SystemParametersInfo")]
+public static extern bool SystemParametersInfo(
+                    uint uiAction,
+                    uint uiParam,
+                    uint pvParam,
+                    uint fWinIni);
+'@
+    Write-Output "Refresh the Cursor Parameter to Enable Changes"
+    $CursorRefresh = Add-Type -Path $CSharpSig -Name WinAPICall -Namespace SystemParamInfo –PassThru
+    # $CursorRefresh::SystemParametersInfo(0x0057, 0, $null, 0)
 }
 
-Write-Output "Install-FractalService imported"
 function Install-FractalService {
     # first download the service executable
     Write-Output "Downloading Fractal Service"
@@ -257,26 +246,22 @@ function Install-FractalService {
     sc.exe Start 'Fractal' | Out-Null
 }
 
-Write-Output "Enable-FractalFirewallRule imported"
 function Enable-FractalFirewallRule {
     Write-host "Creating Fractal Firewall Rule"
     New-NetFirewallRule -DisplayName "Fractal" -Direction Inbound -Program "C:\Program Files\Fractal\FractalServer.exe" -Profile Private, Public -Action Allow -Enabled True | Out-Null
 }
 
-Write-Output "Enable-DeveloperMode imported"
 function Enable-DeveloperMode {
     Write-Output "Enabling Windows Developer Mode"
     reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v "AllowDevelopmentWithoutDevLicense" /d "1"
 }
 
-Write-Output "Enable-Audio imported"
 function Enable-Audio {
     Write-Output "Enabling Audio Service"
     Set-Service -Name "Audiosrv" -StartupType Automatic
     Start-Service Audiosrv
 }
 
-Write-Output "Enable-VirtualAudio imported"
 function Install-VirtualAudio {
     $compressed_file = "VBCABLE_Driver_Pack43.zip"
     $driver_folder = "VBCABLE_Driver_Pack43"
@@ -323,7 +308,6 @@ function Install-VirtualAudio {
     Remove-Item -Path "C:\Users\Public\Desktop\WPCups.lnk" -Confirm:$false
 }
 
-Write-Output "Functions for choco"
 function Install-Chocolatey {
     Write-Output "Installing Chocolatey"
     Invoke-Expression ($webClient.DownloadString('https://chocolatey.org/install.ps1'))
