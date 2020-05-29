@@ -228,7 +228,7 @@ public static extern bool SystemParametersInfo(
                     uint fWinIni);
 '@
     Write-Output "Refresh the Cursor Parameter to Enable Changes"
-    $CursorRefresh = Add-Type -Path $CSharpSig -Name WinAPICall -Namespace SystemParamInfo –PassThru
+    # $CursorRefresh = Add-Type -Path $CSharpSig -Name WinAPICall -Namespace SystemParamInfo –PassThru
     # $CursorRefresh::SystemParametersInfo(0x0057, 0, $null, 0)
 }
 
