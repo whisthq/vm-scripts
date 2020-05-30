@@ -15,11 +15,19 @@ engineering_install=false
 # Helper function to download Bash scripts from S3 buckets
 function GetBashScript {
     echo "Downloading Bash script $1 from $2"
-    sudo wget $2
+    sudo wget -q $2
 }
 
+# Changes to exit script immediately if any command fails
+set -e
+
+LOCAL=${LOCAL:=no}
+# TODO(alamp): Fix LOCAL=yes skip installs in github actions
+
 # Download utils Bash script with helper functions and import it
-GetBashScript "utils.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/utils.sh"
+if [ $LOCAL = no ]; then
+    GetBashScript "utils.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/utils.sh"
+fi
 source ./utils.sh
 
 # Run sudo so it's not prompted in the following commands, and install basic packages
@@ -30,7 +38,7 @@ Update-Linux
 Set-Time
 Install-7Zip
 Install-Curl
-Install-Spotify
+# Install-Spotify
 Install-GoogleChrome
 Install-NvidiaTeslaPublicDrivers
 Disable-TCC
@@ -113,5 +121,11 @@ fi
 
 # Clean Bash install script and restart
 echo "Cleaning up Utils script"
-sudo rm -f "utils.sh"
-$(sleep 1; sudo reboot) &
+
+if [ $LOCAL = no ]; then
+    sudo rm -f "utils.sh"
+    $(sleep 1; sudo reboot) &
+elif [ $LOCAL = yes ]; then
+    echo Skipping reboot
+fi
+

@@ -6,20 +6,38 @@
 # Helper function to download Bash scripts from S3 buckets
 function GetBashScript {
     echo "Downloading Bash script $1 from $2"
-    sudo wget $2
+    sudo wget -q $2
 }
 
+# Changes to exit script immediately if any command fails
+set -e
+
 # Run sudo so it's not prompted in the following commands and install basic packages
-yes | printf "password1234567." | sudo apt-get install wget python python3
+if [ $LOCAL = no ]; then
+    printf "password1234567." | sudo apt-get -y install wget python python3
+else
+    sudo apt-get -y install wget python python3
+fi
 
 # Download utils Bash script with helper functions and import it
-GetBashScript "utils.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/utils.sh"
+LOCAL=${LOCAL:=no}
+if [ $LOCAL = no ]; then
+    GetBashScript "utils.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/utils.sh"
+fi
+
 source ./utils.sh
 
 # Run all the basic command to setup Gnome and Linux virtual display
+echo Installing virtual display
+Update-Linux
 Install-VirtualDisplay # Requires rebooting
 
 # Clean Bash install script and restart
 echo "Cleaning up Utils script"
-sudo rm -f "utils.sh"
-sudo reboot
+
+if [ $LOCAL = no ]; then
+    sudo rm -f "utils.sh"
+    sudo reboot
+elif [ $LOCAL = yes ]; then
+    echo Skipping reboot
+fi

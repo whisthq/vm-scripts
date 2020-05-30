@@ -62,8 +62,8 @@ function Update-Windows {
     Write-Output "Cleaning up Windows Update installation files"
     Remove-Item -Path "C:\$update_script" -Confirm:$false
     Remove-Item -Path "C:\$compressed_file" -Confirm:$false
-    Remove-Item -Path "C:\TestServ01_Report.txt" -Confirm:$false
-    Remove-Item -Path "C:\$($env:COMPUTERNAME)_Report.txt" -Confirm:$false
+    Remove-Item -Path "C:\TestServ01_Report.txt" -Confirm:$false 
+    Remove-Item -Path "C:\$($env:COMPUTERNAME)_Report.txt" -Confirm:$false -ErrorAction SilentlyContinue
 }
 
 function Update-Firewall {
@@ -72,6 +72,9 @@ function Update-Firewall {
 }
 
 function Disable-TCC {
+    If ($env:LOCAL  -eq 'yes')  {
+        return
+    }
     Write-Output "Disable TCC Mode on Nvidia Tesla GPU"
     $nvsmi = "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe"
     $gpu = & $nvsmi --format=csv,noheader --query-gpu=pci.bus_id
@@ -88,6 +91,57 @@ function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
     Set-ItemProperty $registry "DefaultDomainName" -Value "$env:COMPUTERNAME" -Type String 
     Set-ItemProperty $registry "DefaultUsername" -Value $admin_username -Type String
     Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -Type String
+}
+
+function Disable-Cursor {
+    # makes the Windows cursor blank to avoid duplicate cursor issue
+    If ($env:LOCAL  -eq 'yes')  {
+        return
+    }
+    Write-Output "Downloading the Blank Cursor File"
+    $cursorPath = "C:\Program Files\Fractal\Assets\blank.cur"
+    $cursorPath_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/blank.cur"
+    $webClient.DownloadFile($cursorPath_url, $cursorPath)
+
+    Write-Output "Opening the Windows Cursor Registry"
+    $RegConnect = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey([Microsoft.Win32.RegistryHive]"CurrentUser","$env:COMPUTERNAME")
+    $RegCursors = $RegConnect.OpenSubKey("Control Panel\Cursors",$true)
+    
+    Write-Output "Setting the Windows Cursors to Blank"
+    $RegCursors.SetValue("", $cursorPath)
+    $RegCursors.SetValue("AppStarting", $cursorPath)
+    $RegCursors.SetValue("Arrow", $cursorPath)
+    $RegCursors.SetValue("Crosshair", $cursorPath)
+    $RegCursors.SetValue("Hand", $cursorPath)
+    $RegCursors.SetValue("Help", $cursorPath)
+    $RegCursors.SetValue("IBeam", $cursorPath)
+    $RegCursors.SetValue("No", $cursorPath)
+    $RegCursors.SetValue("NWPen", $cursorPath)
+    $RegCursors.SetValue("SizeAll", $cursorPath)
+    $RegCursors.SetValue("SizeNESW", $cursorPath)
+    $RegCursors.SetValue("SizeNS", $cursorPath)
+    $RegCursors.SetValue("SizeNWSE", $cursorPath)
+    $RegCursors.SetValue("SizeWE", $cursorPath)
+    $RegCursors.SetValue("UpArrow", $cursorPath)
+    $RegCursors.SetValue("Wait", $cursorPath)
+    
+    Write-Output "Closing the Windows Cursor Registry"
+    $RegCursors.Close()
+    $RegConnect.Close()
+    
+# define C# signature for modifying system parameters
+$CSharpSig = @'
+[DllImport("user32.dll", EntryPoint = "SystemParametersInfo")]
+public static extern bool SystemParametersInfo(
+                    uint uiAction,
+                    uint uiParam,
+                    uint pvParam,
+                    uint fWinIni);
+'@
+    
+    Write-Output "Refresh the Cursor Parameter to Enable Changes"
+    $CursorRefresh = Add-Type -MemberDefinition $CSharpSig -Name WinAPICall -Namespace SystemParamInfo -PassThru
+    $CursorRefresh::SystemParametersInfo(0x0057, 0, $null, 0)
 }
 
 function Enable-RemotePowerShell ([SecureString] $certificate_password) {
@@ -149,9 +203,13 @@ function Enable-RemotePowerShell ([SecureString] $certificate_password) {
     Get-PSSessionConfiguration
 }
 
-function Install-FractalWallpaper ($run_on_cloud, [SecureString] $credentials) {
+function Install-FractalWallpaper ($run_on_cloud, $credentials) {
     # sleep for 15 seconds to make sure previous operations completed
     Start-Sleep -s 15
+
+    If ($env:LOCAL  -eq 'yes')  {
+        return
+    }
 
     # first download the wallpaper
     Write-Output "Downloading Fractal Wallpaper"
@@ -175,53 +233,7 @@ function Install-FractalWallpaper ($run_on_cloud, [SecureString] $credentials) {
     }
 }
 
-function Disable-Cursor {
-    # makes the Windows cursor blank to avoid duplicate cursor issue
-    Write-Output "Downloading the Blank Cursor File"
-    $cursorPath = "C:\Program Files\Fractal\Assets\blank.cur"
-    $cursorPath_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/blank.cur"
-    $webClient.DownloadFile($cursorPath_url, $cursorPath)
 
-    Write-Output "Opening the Windows Cursor Registry"
-    $RegConnect = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey([Microsoft.Win32.RegistryHive]"CurrentUser","$env:COMPUTERNAME")
-    $RegCursors = $RegConnect.OpenSubKey("Control Panel\Cursors",$true)
-    
-    Write-Output "Setting the Windows Cursors to Blank"
-    $RegCursors.SetValue("", $cursorPath)
-    $RegCursors.SetValue("AppStarting", $cursorPath)
-    $RegCursors.SetValue("Arrow", $cursorPath)
-    $RegCursors.SetValue("Crosshair", $cursorPath)
-    $RegCursors.SetValue("Hand", $cursorPath)
-    $RegCursors.SetValue("Help", $cursorPath)
-    $RegCursors.SetValue("IBeam", $cursorPath)
-    $RegCursors.SetValue("No", $cursorPath)
-    $RegCursors.SetValue("NWPen", $cursorPath)
-    $RegCursors.SetValue("SizeAll", $cursorPath)
-    $RegCursors.SetValue("SizeNESW", $cursorPath)
-    $RegCursors.SetValue("SizeNS", $cursorPath)
-    $RegCursors.SetValue("SizeNWSE", $cursorPath)
-    $RegCursors.SetValue("SizeWE", $cursorPath)
-    $RegCursors.SetValue("UpArrow", $cursorPath)
-    $RegCursors.SetValue("Wait", $cursorPath)
-    
-    Write-Output "Closing the Windows Cursor Registry"
-    $RegCursors.Close()
-    $RegConnect.Close()
-    
-# define C# signature for modifying system parameters
-$CSharpSig = @'
-[DllImport("user32.dll", EntryPoint = "SystemParametersInfo")]
-public static extern bool SystemParametersInfo(
-                    uint uiAction,
-                    uint uiParam,
-                    uint pvParam,
-                    uint fWinIni);
-'@
-    
-    Write-Output "Refresh the Cursor Parameter to Enable Changes"
-    $CursorRefresh = Add-Type -MemberDefinition $CSharpSig -Name WinAPICall -Namespace SystemParamInfo –PassThru
-    $CursorRefresh::SystemParametersInfo(0x0057, 0, $null, 0)
-}
 
 function Install-FractalService {
     # first download the service executable
@@ -328,7 +340,7 @@ function Install-EpicGamesLauncher {
 function Install-Blizzard {
     $blizzard_exe = "Battle.net-Setup.exe"
     Write-Output "Downloading Blizzard Battle.Net Launcher into path C:\$blizzard_exe"
-    $webClient.DownloadFile("https://www.battle.net/download/getInstallerForGame?os=win&locale=enUS&version=LIVE&gameProgram=BATTLENET_APP&id=634826696.1580926426", "C:\$blizzard_exe")    
+    $webClient.DownloadFile('https://www.battle.net/download/getInstallerForGame?os=win&locale=enUS&version=LIVE&gameProgram=BATTLENET_APP&id=634826696.1580926426', "C:\$blizzard_exe")    
     Write-Output "Installing Blizzard Battle.Net Launcher"
     Start-Process -FilePath "C:\$blizzard_exe" -ArgumentList "/q" -Wait
 
@@ -509,7 +521,7 @@ function Disable-NetworkWindow {
     if((Test-RegistryValue -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Network" -Value NewNetworkWindowOff) -eq $true) {} Else {New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Network" -Name "NewNetworkWindowOff" | Out-Null}
 }
 
-function Set-MousePrecision ($run_on_cloud, [SecureString] $credentials) {
+function Set-MousePrecision ($run_on_cloud, $credentials) {
     Write-Output "Enabling Enhanced Pointer Precision"
     # if this script was meant to run on the cloud, we run via Remote-PS (to run from a webserver)    
     if ($run_on_cloud) {
@@ -521,7 +533,7 @@ function Set-MousePrecision ($run_on_cloud, [SecureString] $credentials) {
     }
 }
     
-function Enable-MouseKeys ($run_on_cloud, [SecureString] $credentials) {
+function Enable-MouseKeys ($run_on_cloud, $credentials) {
     Write-Output "Enabling Mouse Keys"
     # if this script was meant to run on the cloud, we run via Remote-PS (to run from a webserver)    
     if ($run_on_cloud) {
@@ -555,7 +567,7 @@ function Install-PoshSSH {
     Install-Module -Name Posh-SSH -Confirm:$False -Force
 }
 
-function Show-FileExtensions ($run_on_cloud, [SecureString] $credentials) {
+function Show-FileExtensions ($run_on_cloud, $credentials) {
     Write-Output "Setting File Extensions"
     # if this script was meant to run on the cloud, we run via Remote-PS (to run from a webserver)    
     if ($run_on_cloud) {
@@ -614,6 +626,10 @@ function Install-FractalServer ($protocol_branch) {
     $shared_libs_name = "C:\shared-libs.tar.gz"
     $shared_libs_url = "https://fractal-protocol-shared-libs.s3.amazonaws.com/shared-libs.tar.gz"
     $webClient.DownloadFile($shared_libs_url, $shared_libs_name)
+
+    If ($env:LOCAL  -eq 'yes')  {
+        return
+    }
 
     Write-Output "Unzip the .tar.gz File and Remove shared-libs.tar.gz & /lib"
     tar -xvzf .\shared-libs.tar.gz
@@ -695,6 +711,9 @@ function Install-NvidiaTeslaPublicDrivers {
 }
 
 function Set-OptimalGPUSettings {
+    If ($env:LOCAL  -eq 'yes')  {
+        return
+    }
     Write-Output "Setting Optimal Tesla M60 GPU Settings"
     C:\'Program Files'\'NVIDIA Corporation'\NVSMI\.\nvidia-smi --auto-boost-default=0
     C:\'Program Files'\'NVIDIA Corporation'\NVSMI\.\nvidia-smi -ac "2505,1177"
@@ -724,6 +743,9 @@ function Install-Unison {
 
 function Enable-SSHServer {
     Write-Output "Adding OpenSSH Server Capability"
+    If ($env:LOCAL  -eq 'yes')  {
+        return
+    }
     Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
     if (-not $?) {
         Write-Output "Add-WindowsCapability Failed, Trying DISM"
@@ -769,3 +791,5 @@ function Enable-SSHServer {
     (Get-Content ($FilePath)) | Foreach-Object {$_ -replace '^PasswordAuthentication yes', ("PasswordAuthentication no")} | Set-Content  ($Filepath)
     Add-Content $FilePath "`nAuthenticationMethods publickey"
 }
+
+

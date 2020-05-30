@@ -4,14 +4,14 @@
 
 function Update-Linux {
     echo "Updating Linux Ubuntu"
-    yes | sudo apt-get update
-    yes | sudo apt-get upgrade
-    yes | sudo apt-get autoremove
+    sudo apt-get -y update
+    sudo apt-get -y upgrade
+    sudo apt-get -y autoremove
 }
 
 function Set-Time {
     echo "Setting Automatic Time & Timezone via Gnome Clocks"
-    yes | sudo apt-get install gnome-clocks
+    sudo apt-get -y install gnome-clocks
 }
 
 function Add-AutoLogin {
@@ -37,23 +37,23 @@ function Enable-FractalFirewallRule {
 
 function Install-VirtualDisplay {
     echo "Installing Gnome and Virtual Display Dummy"
-    yes | sudo apt-get install gnome xserver-xorg-video-dummy ubuntu-gnome-desktop
+    sudo apt-get -y install gnome xserver-xorg-video-dummy ubuntu-gnome-desktop
 }
 
 function Install-CustomGDMConfiguration {
    echo "Installing Custom Gnome Display Manager Configuration"
-   sudo wget -O /etc/gdm3/custom.conf "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/custom.conf"
+   sudo wget -q -O /etc/gdm3/custom.conf "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/custom.conf"
 }
 
 function Install-CustomX11Configuration {
    echo "Installing Custom X11 Configuration"
-   sudo wget -O /usr/share/X11/xorg.conf.d/01-dummy.conf "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/01-dummy.conf"
+   sudo wget -q -O /usr/share/X11/xorg.conf.d/01-dummy.conf "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/01-dummy.conf"
 }
 
 function Install-FractalLinuxInputDriver {
     # first download the driver symlink file
     echo "Installing Fractal Linux Input Driver"
-    sudo wget -O /usr/share/fractal/fractal-input.rules "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/fractal-input.rules"
+    sudo wget -q -O /usr/share/fractal/fractal-input.rules "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/fractal-input.rules"
 
     # symlink file
     # do this as root AFTER fractal-input.rules has been moved to the final install directory
@@ -65,7 +65,7 @@ function Install-FractalLinuxInputDriver {
 function Disable-Shutdown {
     # based on: https://askubuntu.com/questions/453479/how-to-disable-shutdown-reboot-from-lightdm-in-14-04
     echo "Disabling Shutdown Option in Start Menu"
-    sudo wget -O /etc/polkit-1/localauthority/50-local.d/restrict-login-powermgmt.pkla "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/restrict-login-powermgmt.pkla"
+    sudo wget -q -O /etc/polkit-1/localauthority/50-local.d/restrict-login-powermgmt.pkla "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/restrict-login-powermgmt.pkla"
 }
 
 function Install-AutodeskMaya {
@@ -79,10 +79,10 @@ function Install-AutodeskMaya {
     sudo tar xvf Autodesk_Maya_2017_EN_JP_ZH_Linux_64bit.tgz
 
     # Install Dependencies
-    yes | sudo apt-get install -y libssl1.0.0 gcc  libssl-dev libjpeg62 alien csh tcsh libaudiofile-dev libglw1-mesa elfutils libglw1-mesa-dev mesa-utils xfstt xfonts-100dpi xfonts-75dpi ttf-mscorefonts-installer libfam0 libfam-dev libcurl4-openssl-dev libtbb-dev
-    yes | sudo apt-get install -y libtbb-dev
-    sudo wget http://launchpadlibrarian.net/183708483/libxp6_1.0.2-2_amd64.deb
-    sudo wget http://mirrors.kernel.org/ubuntu/pool/main/libp/libpng/libpng12-0_1.2.54-1ubuntu1_amd64.deb
+    sudo apt-get install -y libssl1.0.0 gcc  libssl-dev libjpeg62 alien csh tcsh libaudiofile-dev libglw1-mesa elfutils libglw1-mesa-dev mesa-utils xfstt xfonts-100dpi xfonts-75dpi ttf-mscorefonts-installer libfam0 libfam-dev libcurl4-openssl-dev libtbb-dev
+    sudo apt-get install -y libtbb-dev 
+    sudo wget -q http://launchpadlibrarian.net/183708483/libxp6_1.0.2-2_amd64.deb
+    sudo wget -q http://mirrors.kernel.org/ubuntu/pool/main/libp/libpng/libpng12-0_1.2.54-1ubuntu1_amd64.deb
 
     # Install Maya
     sudo alien -cv *.rpm
@@ -135,15 +135,19 @@ function Install-AutodeskMaya {
 function Install-FractalExitScript {
     # download exit Bash script
     echo "Downloading Fractal Exit script"
-    sudo wget -O /usr/share/fractal/exit/exit.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/exit.sh"
+    sudo wget -q -O /usr/share/fractal/exit/exit.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/exit.sh"
 
     # download the Fractal logo for the icons
     echo "Downloading Fractal Logo icon"
-    sudo wget -O /usr/share/fractal/assets/logo.png "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/logo.png"
+    sudo wget -q -O /usr/share/fractal/assets/logo.png "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/logo.png"
 
+    # Skips step if local
+    if [ $LOCAL = yes ]; then
+        return
+    fi
     # download Exit Fractal Desktop Shortcut
     echo "Creating Exit-Fractal Desktop Shortcut"
-    sudo wget "$HOME/Exit-Fractal.desktop" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/Exit-Fractal.desktop"
+    sudo wget -q "$HOME/Exit-Fractal.desktop" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/Exit-Fractal.desktop"
     sudo mv "$HOME/Exit-Fractal.desktop" "$HOME/.local/share/applications/Exit-Fractal.desktop"
 
     # create Ubuntu dock shortcut
@@ -152,21 +156,24 @@ function Install-FractalExitScript {
 }
 
 function Install-FractalAutoUpdate {
+    # Skips step if local
+    if [ $LOCAL = yes ]; then
+        return
+    fi
     # no need to download version, update.sh will download it
     echo "Downloading Fractal Auto Update Script"
-    sudo wget -O /usr/share/fractal/update.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/update.sh"
+    sudo wget -q -O /usr/share/fractal/update.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/update.sh"
 }
 
 function Install-NvidiaTeslaPublicDrivers {
     echo "Installing Nvidia Public Driver (GRID already installed at deployment through Azure)"
     echo "Installing Nvidia CUDA GPG Key"
-    sudo apt-key add /var/nvidia-driver-local-repo-440.64.00/7fa2af80.pub
+    sudo apt-key adv --fetch-keys  http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
 
     echo "Downloading Nvidia M60 Driver from Nvidia Website"
-    sudo wget http://us.download.nvidia.com/tesla/440.64.00/nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb
-
+    sudo wget -q http://us.download.nvidia.com/tesla/440.64.00/nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb
+    
     echo "Installing Nvidia M60 Driver"
-    sudo apt-key add /var/nvidia-driver-local-repo-440.64.00/7fa2af80.pub
     sudo dpkg -i nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb
 
     echo "Cleaning up Nvidia Public Drivers Installation"
@@ -175,27 +182,41 @@ function Install-NvidiaTeslaPublicDrivers {
 
 function Set-OptimalGPUSettings {
     echo "Setting Optimal Tesla M60 GPU Settings"
+    # Skips nvidia-smi if LOCAL-yes
+    if [ $LOCAL = yes ]; then
+        return
+    fi
     sudo nvidia-smi --auto-boost-default=0
     sudo nvidia-smi -ac "2505,1177"
 }
 
 function Disable-TCC {
     echo "Disabling TCC Mode on Nvidia Tesla GPU"
-    sudo nvidia-smi -g 0 -fdm 0
+    # Skips nvidia-smi if LOCAL-yes
+    if [ $LOCAL = yes ]; then
+        return
+    fi
+    sudo nvidia-smi -g 0 -fdm 0 
 }
 
 function Install-FractalService {
     # then start Fractal with Fractal Service for auto-restart
-    sudo wget -O /etc/systemd/user/fractal.service "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/fractal.service"
+
+    sudo wget -q -O /etc/systemd/user/fractal.service "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/fractal.service"
     sudo chmod +x /etc/systemd/user/fractal.service
+
+    # Skips enabling
+    if [ $LOCAL = yes ]; then
+        return
+    fi
     systemctl --user enable fractal
 }
 
 function Install-FractalServer {
     # only download, server will get started by FractalService
     echo "Downloading Fractal Server"
-    sudo wget -O /usr/share/fractal/FractalServer "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/FractalServer"
-    sudo wget -O /usr/share/fractal/FractalServer.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/FractalServer.sh"
+    sudo wget -q -O /usr/share/fractal/FractalServer "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/FractalServer"
+    sudo wget -q -O /usr/share/fractal/FractalServer.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/FractalServer.sh"
 
     sudo chgrp Fractal -R /usr/share/fractal
     sudo chmod g+rw -R /usr/share/fractal
@@ -209,7 +230,7 @@ function Install-FractalServer {
 
 function Install-7Zip {
     echo "Installing 7Zip through Apt"
-    yes | sudo apt-get install p7zip-full
+    sudo apt-get -y install p7zip-full
 }
 
 function Set-FractalDirectory {
@@ -228,7 +249,7 @@ function Set-FractalDirectory {
 
 function Install-Unison {
     echo "Downloading Unison File Sync from S3 Bucket"
-    sudo wget -O /usr/share/fractal/linux_unison "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/linux_unison"
+    sudo wget -q -O /usr/share/fractal/linux_unison "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/linux_unison"
     sudo ln -s /usr/share/fractal/linux_unison /usr/bin/unison
 }
 
@@ -237,15 +258,18 @@ function Enable-SSHKey {
     # echo "Generating SSH Key"
     # yes | ssh-keygen -f sshkey -q -N """"
     # cp sshkey.pub "$HOME/.ssh/authorized_keys"
-
+    # Skips step if local
+    if [ $LOCAL = yes ]; then
+        return
+    fi
     echo "Download SSH Administrator Authorized Key"
-    sudo wget -O /tmp/administrator_authorized_keys "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/administrator_authorized_keys"
+    sudo wget -q -O /tmp/administrator_authorized_keys "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/administrator_authorized_keys"
     sudo cp /tmp/administrator_authorized_keys "$HOME/.ssh/authorized_keys"
     sudo chmod 600 "$HOME/.ssh/authorized_keys" # activate
 
     echo "Downloading SSH ECDSA Keys"
-    sudo wget -O /tmp/ssh_host_ecdsa_key "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key"
-    sudo wget -O /tmp/ssh_host_ecdsa_key.pub "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key.pub"
+    sudo wget -q -O /tmp/ssh_host_ecdsa_key "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key"
+    sudo wget -q -O /tmp/ssh_host_ecdsa_key.pub "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key.pub"
     sudo cp /tmp/ssh_host_ecdsa_key "/etc/ssh/ssh_host_ecdsa_key"
     sudo cp /tmp/ssh_host_ecdsa_key.pub "/etc/ssh/ssh_host_ecdsa_key.pub"
     sudo chmod 600 "/etc/ssh/ssh_host_ecdsa_key" # activate
@@ -255,17 +279,21 @@ function Enable-SSHKey {
 function Install-FractalWallpaper {
     # first download the wallpaper
     echo "Downloading Fractal Wallpaper"
-    sudo wget -O /usr/share/fractal/assets/wallpaper.png "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/wallpaper.png"
+    sudo wget -q -O /usr/share/fractal/assets/wallpaper.png "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/wallpaper.png"
 
     # then set the wallpaper
     echo "Setting Fractal Wallpaper"
+    # Skips step if local
+    if [ $LOCAL = yes ]; then
+        return
+    fi
     gsettings set org.gnome.desktop.background picture-uri /usr/share/fractal/assets/wallpaper.png
 }
 
 function Install-AdobeAcrobat {
     echo "Installing Adobe Acrobat Reader"
-    yes | sudo apt-get install gdebi-core libxml2:i386 libcanberra-gtk-module:i386 gtk2-engines-murrine:i386 libatk-adaptor:i386
-    sudo wget "ftp://ftp.adobe.com/pub/adobe/reader/unix/9.x/9.5.5/enu/AdbeRdr9.5.5-1_i386linux_enu.deb"
+    sudo apt-get -y install gdebi-core libxml2:i386 libcanberra-gtk-module:i386 gtk2-engines-murrine:i386 libatk-adaptor:i386
+    sudo wget -q "ftp://ftp.adobe.com/pub/adobe/reader/unix/9.x/9.5.5/enu/AdbeRdr9.5.5-1_i386linux_enu.deb"
     sudo gdebi "AdbeRdr9.5.5-1_i386linux_enu.deb"
     sudo rm -f "AdbeRdr9.5.5-1_i386linux_enu.deb"
 }
@@ -287,21 +315,21 @@ function Install-Blender {
 
 function Install-Cmake {
     echo "Installing Cmake through Apt"
-    yes | sudo apt-get install apt-transport-https ca-certificates gnupg software-properties-common -y
-    sudo wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
-    yes | sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
-    yes | sudo apt-get update
-    yes | sudo apt-get install cmake -y
+    sudo apt-get -y install apt-transport-https ca-certificates gnupg software-properties-common -y
+    sudo wget -q -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
+    sudo apt-add-repository -y 'deb https://apt.kitware.com/ubuntu/ bionic main'
+    sudo apt-get -y update
+    sudo apt-get -y install cmake
 }
 
 function Install-Cppcheck {
     echo "Installing Cppcheck through Apt"
-    yes | sudo apt-get install cppcheck
+    sudo apt-get -y install cppcheck
 }
 
 function Install-Clangformat {
     echo "Installing Clang-format through Apt"
-    yes | sudo apt-get install clang-format
+    sudo apt-get -y install clang-format
 }
 
 function Install-CUDAToolkit {
@@ -310,7 +338,7 @@ function Install-CUDAToolkit {
 
 function Install-Git {
     echo "Installing Git through Apt"
-    yes | sudo apt-get install git
+    sudo apt-get -y install git
 }
 
 function Install-Atom {
@@ -325,35 +353,35 @@ function Install-Slack {
 
 function Install-OpenCV {
     echo "Installing OpenCV through Apt"
-    yes | sudo apt-get install python3-opencv
+    sudo apt-get -y install python3-opencv
 }
 
 function Install-GoogleChrome {
     echo "Installing Google Chrome"
-    sudo wget "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
-    yes | sudo apt-get install ./google-chrome-stable_current_amd64.deb
+    sudo wget -q "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
+    sudo apt-get -y install ./google-chrome-stable_current_amd64.deb
     sudo rm -f "google-chrome-stable_current_amd64.deb"
 }
 
 function Install-Curl {
     echo "Installing Curl through Apt"
-    yes | sudo apt-get install curl
+    sudo apt-get -y install curl
 }
 
 function Install-Make {
     echo "Installing Make through Apt"
-    yes | sudo apt-get install make
+    sudo apt-get -y install make
 }
 
 function Install-GCC {
     echo "Installing GCC through Apt"
-    yes | sudo apt-get install gcc
+    sudo apt-get -y install gcc
 }
 
 function Install-Zoom {
     echo "Installing Zoom"
-    sudo wget "https://zoom.us/client/latest/zoom_amd64.deb"
-    yes | sudo apt-get install "./zoom_amd64.deb"
+    sudo wget -q "https://zoom.us/client/latest/zoom_amd64.deb"
+    sudo apt-get -y install "./zoom_amd64.deb"
     sudo rm -f "./zoom_amd64.deb"
 }
 
@@ -365,7 +393,7 @@ function Install-Skype {
 function Install-Anaconda {
     echo "Installing Anaconda"
     cd /tmp
-    sudo wget "https://repo.anaconda.com/archive/Anaconda3-2019.03-Linux-x86_64.sh"
+    sudo wget -q "https://repo.anaconda.com/archive/Anaconda3-2019.03-Linux-x86_64.sh"
     sudo sha256sum Anaconda3-2019.03-Linux-x86_64.sh
     sudo bash Anaconda3-2019.03-Linux-x86_64.sh -b
     source ~/.bashrc
@@ -388,9 +416,9 @@ function Install-Discord {
 
 function Install-Steam {
     echo "Installing Steam through Apt"
-    yes | sudo add-apt-repository multiverse
-    yes | sudo apt-get update
-    yes | sudo apt-get install steam
+    sudo add-apt-repository -y multiverse
+    sudo apt-get -y update
+    sudo apt-get -y install steam
 }
 
 function Install-Matlab {
@@ -403,7 +431,7 @@ function Install-Cinema4D {
 
 function Install-Lightworks {
     echo "Installing Lightworks"
-    sudo wget "https://downloads.lwks.com/v14-5/lightworks-14.5.0-amd64.deb"
+    sudo wget -q "https://downloads.lwks.com/v14-5/lightworks-14.5.0-amd64.deb"
     sudo dpkg -i "lightworks-14.5.0-amd64.deb"
     yes | sudo apt-get -f install
     sudo dpkg -i "lightworks-14.5.0-amd64.deb"
