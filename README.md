@@ -1,6 +1,6 @@
-![Install Tests](https://github.com/fractalcomputers/setup-scripts/workflows/Install%20Tests/badge.svg)
-
 # Fractal Setup Scripts
+
+![Install Tests](https://github.com/fractalcomputers/setup-scripts/workflows/Install%20Tests/badge.svg)
 
 This repository contains the Fractal PowerShell and Bash scripts that get launched at creation of a cloud computer/container to set it up in a specific configuration, or when a user sets up their personal computer for peer-to-peer streaming. The cloud scripts can be toggled from a selection on the Fractal website in the cloud computer creation page, and are then fed to the Azure SDK when the VM gets created. A combination of many scripts can be run.
 
