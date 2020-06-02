@@ -747,7 +747,7 @@ function Install-Unison {
 function Enable-SSHServer {
     Write-Output "Adding OpenSSH Server Capability"
 
-    Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+    Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0 -ErrorAction SilentlyContinue
     if (-not $?) {
         Write-Output "Add-WindowsCapability Failed, Trying DISM"
         dism /online /Add-Capability /CapabilityName:OpenSSH.Server~~~~0.0.1.0
