@@ -74,4 +74,5 @@ jobs:
       env:
           LOCAL: yes
           NO_UPDATE: yes
+          QUIET: yes
 
