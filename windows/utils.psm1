@@ -72,13 +72,14 @@ function Update-Firewall {
 }
 
 function Disable-TCC {
-    If ($env:LOCAL  -eq 'yes')  {
-        return
-    }
     Write-Output "Disable TCC Mode on Nvidia Tesla GPU"
-    $nvsmi = "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe"
-    $gpu = & $nvsmi --format=csv,noheader --query-gpu=pci.bus_id
-    & $nvsmi -g $gpu -fdm 0
+    if((Test-Path -Path "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe") -eq $true) {
+        $nvsmi = "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe"
+        $gpu = & $nvsmi --format=csv,noheader --query-gpu=pci.bus_id
+        & $nvsmi -g $gpu -fdm 0
+    }else {
+        Write-Output "Skipping Disable-TCC, no nvidia-smi found"
+    }
 }
 
 function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
@@ -700,12 +701,13 @@ function Install-NvidiaTeslaPublicDrivers {
 }
 
 function Set-OptimalGPUSettings {
-    If ($env:LOCAL  -eq 'yes')  {
-        return
+    if((Test-Path -Path "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe") -eq $true) {
+        Write-Output "Setting Optimal Tesla M60 GPU Settings"
+        C:\'Program Files'\'NVIDIA Corporation'\NVSMI\.\nvidia-smi --auto-boost-default=0
+        C:\'Program Files'\'NVIDIA Corporation'\NVSMI\.\nvidia-smi -ac "2505,1177"
+    }else {
+        Write-Output "Skipping Set-OptimalGPUSettings, no nvidia-smi found"
     }
-    Write-Output "Setting Optimal Tesla M60 GPU Settings"
-    C:\'Program Files'\'NVIDIA Corporation'\NVSMI\.\nvidia-smi --auto-boost-default=0
-    C:\'Program Files'\'NVIDIA Corporation'\NVSMI\.\nvidia-smi -ac "2505,1177"
 }
 
 function Install-DirectX {
