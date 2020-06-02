@@ -128,4 +128,3 @@ if [ $LOCAL = no ]; then
 elif [ $LOCAL = yes ]; then
     echo Skipping reboot
 fi
-

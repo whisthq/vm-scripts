@@ -65,9 +65,8 @@ The general peer-to-peer scripts, `peer2peer.ps1` and `peer2peer.sh`, always get
 
 All of these scripts are hosted in the Fractal AWS S3 bucket "fractal-cloud-setup-s3bucket" at https://s3.console.aws.amazon.com/s3/home?region=us-east-1 and should be replaced there when there is another change for release.
 
-## Uploading the scripts
+## Publishing the Scripts
 
-To automatically upload the scripts run `./update.sh` 
-You will need the aws cli configured with an iam that has bucket access
-It will also ping slack that the utils.sh has been updated
+To automatically upload the scripts for production, run `./update.sh`. This script will upload the new scripts to AWS S3 and notify the team in Slack.
 
+If you get permission denied, or if this is your first time doing this for Fractal, you need to download the AWS CLI for your local platform. Your first need to install the CLI via your local package manager, i.e. `brew install awscli`, and then configure it via `aws configure`. This will prompt you for an AWS Acces Key ID and Secret Key ID. You can find those [here](https://console.aws.amazon.com/iam/home?region=us-east-1#/users/UpdateServer?section=security_credentials). You will need to create a new AWS Key and Secret Key for yourself. You should set `us-east-1` for the default region, and `None` for the format. The scripts will be updated in the S3 bucket, and the standard Fractal disk image, which gets cloned when new VMs are created, will need to be updated manually for each region.
