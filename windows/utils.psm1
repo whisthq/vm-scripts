@@ -45,6 +45,10 @@ function Invoke-RemotePowerShellCommand ([SecureString] $credentials, $command_a
 }
 
 function Update-Windows {
+    If ($env:NO_UPDATE  -eq 'yes')  {	
+        Write-Output "Skipping Windows Update"
+        return
+    }
     $url = "https://gallery.technet.microsoft.com/scriptcenter/Execute-Windows-Update-fc6acb16/file/144365/1/PS_WinUpdate.zip"
     $compressed_file = "PS_WinUpdate.zip"
     $update_script = "PS_WinUpdate.ps1"
@@ -622,6 +626,7 @@ function Install-FractalServer ($protocol_branch) {
     $webClient.DownloadFile($shared_libs_url, $shared_libs_name)
 
     Write-Output "Unzip the .tar.gz File and Remove shared-libs.tar.gz & /lib"
+    Get-Command tar
     tar -xvzf .\shared-libs.tar.gz
     Remove-Item -Path $shared_libs_name -Confirm:$false
     Remove-Item -Path "C:\lib" -Confirm:$false -Recurse

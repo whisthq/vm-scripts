@@ -73,4 +73,5 @@ jobs:
       working-directory: windows
       env:
           LOCAL: yes
+          NO_UPDATE: yes
 

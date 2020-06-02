@@ -35,7 +35,7 @@ If ($env:LOCAL  -eq 'no')  {
 } Else {
     Write-Output "Running Local: LOCAL=$env:LOCAL"
     Get-Location
-    $utils_script_name = "./utils.psm1"
+    $utils_script_name = "$PSScriptRoot/utils.psm1"
 }
 
 Import-Module "$utils_script_name"
