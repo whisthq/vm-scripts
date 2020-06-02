@@ -342,9 +342,9 @@ function Install-Chocolatey {
 function Choco-Install ($package) {
     If ($env:QUIET  -eq 'yes')  {
         Write-Output "Quietly.................."
-        choco install $package --force --no-progress
+        choco install $package -y --no-progress
     }else {
-        choco install $package --force
+        choco install $package -y
     }
 
 }
@@ -363,9 +363,9 @@ function Install-GoogleChrome {
     Write-Output 'Installing Google Chrome through Chrocolatey'
     If ($env:QUIET  -eq 'yes')  {
         Write-Output "Quietly.................."
-        choco install googlechrome --force --ignore-checksums --no-progress
+        choco install googlechrome -y --ignore-checksums --no-progress
     }else {
-        choco install googlechrome --force --ignore-checksums
+        choco install googlechrome -y --ignore-checksums
     }
 }
 
