@@ -746,6 +746,14 @@ function Install-Unison {
 
 function Enable-SSHServer {
     Write-Output "Adding OpenSSH Server Capability"
+    If ($env:LOCAL  -eq 'yes')  {
+        Write-Output "Local detected.  Skipping OpenSSH reconfiguration"
+        return
+    }
+    If ($env:VAGRANT  -eq 'yes')  {
+        Write-Output "Vagrant detected.  Skipping OpenSSH reconfiguration"
+        return
+    }
 
     Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0 -ErrorAction SilentlyContinue
     if (-not $?) {
