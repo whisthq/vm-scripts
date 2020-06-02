@@ -3,10 +3,11 @@
 $webClient = New-Object System.Net.WebClient
 
 function DownloadFile ($url, $path) {
+    Write-Output "Downloading $url to $path"
     If ($env:QUIET  -eq 'yes')  {
+        Write-Output "Quietly.................."
         $global:ProgressPreference = 'SilentlyContinue'    # Subsequent calls do not display UI.
     }
-    Write-Output "Downloading $url to $path"
     Invoke-WebRequest -URI $url -OutFile $path
     If ($env:QUIET  -eq 'yes')  {
         $global:ProgressPreference = 'Continue'            # Subsequent calls do display UI.
@@ -350,7 +351,12 @@ function Install-Discord {
 
 function Install-GoogleChrome {
     Write-Output 'Installing Google Chrome through Chrocolatey'
-    choco install googlechrome --force --ignore-checksums
+    If ($env:QUIET  -eq 'yes')  {
+        Write-Output "Quietly.................."
+        choco install googlechrome --force --ignore-checksums --no-progress
+    }else {
+        choco install googlechrome --force --ignore-checksums
+    }
 }
 
 function Install-EpicGamesLauncher {
@@ -459,7 +465,13 @@ function Install-Docker {
 
 function Install-Curl {
     Write-Output "Installing Curl through Chocolatey"
-    choco install curl --force
+    If ($env:QUIET  -eq 'yes')  {
+        Write-Output "Quietly.................."
+        choco install curl --force --no-progress
+    }else {
+        choco install curl --force
+    }
+
 }
 
 function Install-Atom {
