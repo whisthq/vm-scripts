@@ -64,7 +64,9 @@ jobs:
       run: |
         $pass = (ConvertTo-SecureString "password1234567." -AsPlainText -Force)
         New-LocalUser -FullName "Fractal" -Name "Fractal" -Password $pass -Description "Fractal Account"
-
+        Add-LocalGroupMember -Group "Administrators" -Member "Fractal"
+        $credentials = New-Object System.Management.Automation.PSCredential "Fractal", $pass
+        Start-Process powershell.exe -Credential $credentials
 
     - name: Runs cloud.ps1
       run: ./cloud.ps1

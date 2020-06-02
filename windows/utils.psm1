@@ -95,9 +95,6 @@ function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
 
 function Disable-Cursor {
     # makes the Windows cursor blank to avoid duplicate cursor issue
-    If ($env:LOCAL  -eq 'yes')  {
-        return
-    }
     Write-Output "Downloading the Blank Cursor File"
     $cursorPath = "C:\Program Files\Fractal\Assets\blank.cur"
     $cursorPath_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/blank.cur"
@@ -206,10 +203,6 @@ function Enable-RemotePowerShell ([SecureString] $certificate_password) {
 function Install-FractalWallpaper ($run_on_cloud, $credentials) {
     # sleep for 15 seconds to make sure previous operations completed
     Start-Sleep -s 15
-
-    If ($env:LOCAL  -eq 'yes')  {
-        return
-    }
 
     # first download the wallpaper
     Write-Output "Downloading Fractal Wallpaper"
@@ -627,10 +620,6 @@ function Install-FractalServer ($protocol_branch) {
     $shared_libs_url = "https://fractal-protocol-shared-libs.s3.amazonaws.com/shared-libs.tar.gz"
     $webClient.DownloadFile($shared_libs_url, $shared_libs_name)
 
-    If ($env:LOCAL  -eq 'yes')  {
-        return
-    }
-
     Write-Output "Unzip the .tar.gz File and Remove shared-libs.tar.gz & /lib"
     tar -xvzf .\shared-libs.tar.gz
     Remove-Item -Path $shared_libs_name -Confirm:$false
@@ -743,9 +732,7 @@ function Install-Unison {
 
 function Enable-SSHServer {
     Write-Output "Adding OpenSSH Server Capability"
-    If ($env:LOCAL  -eq 'yes')  {
-        return
-    }
+
     Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
     if (-not $?) {
         Write-Output "Add-WindowsCapability Failed, Trying DISM"
