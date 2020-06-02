@@ -2,6 +2,19 @@
 [Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
 $webClient = New-Object System.Net.WebClient
 
+function DownloadFile ($url, $path) {
+    Write-Output "Downloading $url to $path"
+    If ($env:QUIET  -eq 'yes')  {
+        Write-Output "Quietly.................."
+        $global:ProgressPreference = 'SilentlyContinue'    # Subsequent calls do not display UI.
+    }
+    Invoke-WebRequest -URI $url -OutFile $path
+    If ($env:QUIET  -eq 'yes')  {
+        $global:ProgressPreference = 'Continue'            # Subsequent calls do display UI.
+    }
+}
+
+
 function Test-RegistryValue {
     # https://www.jonathanmedd.net/2014/02/testing-for-the-presence-of-a-registry-key-and-value.html
     param (
@@ -45,12 +58,16 @@ function Invoke-RemotePowerShellCommand ([SecureString] $credentials, $command_a
 }
 
 function Update-Windows {
+    If ($env:NO_UPDATE  -eq 'yes')  {
+        Write-Output "Skipping Windows Update"
+        return
+    }
     $url = "https://gallery.technet.microsoft.com/scriptcenter/Execute-Windows-Update-fc6acb16/file/144365/1/PS_WinUpdate.zip"
     $compressed_file = "PS_WinUpdate.zip"
     $update_script = "PS_WinUpdate.ps1"
 
     Write-Output "Downloading Windows Update Powershell Script from $url"
-    $webClient.DownloadFile($url, "C:\$compressed_file")
+    DownloadFile $url "C:\$compressed_file"
     Unblock-File -Path "C:\$compressed_file"
 
     Write-Output "Extracting Windows Update Powershell Script"
@@ -72,13 +89,14 @@ function Update-Firewall {
 }
 
 function Disable-TCC {
-    If ($env:LOCAL  -eq 'yes')  {
-        return
-    }
     Write-Output "Disable TCC Mode on Nvidia Tesla GPU"
-    $nvsmi = "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe"
-    $gpu = & $nvsmi --format=csv,noheader --query-gpu=pci.bus_id
-    & $nvsmi -g $gpu -fdm 0
+    if((Test-Path -Path "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe") -eq $true) {
+        $nvsmi = "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe"
+        $gpu = & $nvsmi --format=csv,noheader --query-gpu=pci.bus_id
+        & $nvsmi -g $gpu -fdm 0
+    }else {
+        Write-Output "Skipping Disable-TCC, no nvidia-smi found"
+    }
 }
 
 function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
@@ -95,13 +113,10 @@ function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
 
 function Disable-Cursor {
     # makes the Windows cursor blank to avoid duplicate cursor issue
-    If ($env:LOCAL  -eq 'yes')  {
-        return
-    }
     Write-Output "Downloading the Blank Cursor File"
     $cursorPath = "C:\Program Files\Fractal\Assets\blank.cur"
     $cursorPath_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/blank.cur"
-    $webClient.DownloadFile($cursorPath_url, $cursorPath)
+    DownloadFile $cursorPath_url $cursorPath
 
     Write-Output "Opening the Windows Cursor Registry"
     $RegConnect = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey([Microsoft.Win32.RegistryHive]"CurrentUser","$env:COMPUTERNAME")
@@ -190,6 +205,10 @@ function Enable-RemotePowerShell ([SecureString] $certificate_password) {
 
     # the rest of this script configures a VM to allow remote powershell for userspace scripts
     Write-Output "Setting WinRM for PowerShell Remoting"
+    If ($env:VAGRANT  -eq 'yes')  {
+        Write-Output "Vagrant detected.  Skipping enable Remote Powershell"
+        return
+    }
     Start-Service WinRM
     Set-Item WSMan:\localhost\Client\TrustedHosts -Value "*" -Force
     New-ItemProperty -Name LocalAccountTokenFilterPolicy -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -PropertyType DWord -Value 1
@@ -207,15 +226,11 @@ function Install-FractalWallpaper ($run_on_cloud, $credentials) {
     # sleep for 15 seconds to make sure previous operations completed
     Start-Sleep -s 15
 
-    If ($env:LOCAL  -eq 'yes')  {
-        return
-    }
-
     # first download the wallpaper
     Write-Output "Downloading Fractal Wallpaper"
     $fractalwallpaper_name = "C:\Program Files\Fractal\Assets\wallpaper.png"
     $fractalwallpaper_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/wallpaper.png"
-    $webClient.DownloadFile($fractalwallpaper_url, $fractalwallpaper_name)
+    DownloadFile $fractalwallpaper_url $fractalwallpaper_name
 
     Write-Output "Setting Fractal Wallpaper"
     # if this script was meant to run on the cloud, we run via Remote-PS (to run from a webserver)
@@ -240,7 +255,7 @@ function Install-FractalService {
     Write-Output "Downloading Fractal Service"
     $fractalservice_name = "C:\Program Files\Fractal\FractalService.exe"
     $fractalservice_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/FractalService.exe"
-    $webClient.DownloadFile($fractalservice_url, $fractalservice_name)
+    DownloadFile $fractalservice_url $fractalservice_name
 
     # then install the service
     Write-Output "Enabling Fractal Service"
@@ -272,7 +287,7 @@ function Install-VirtualAudio {
     $hardware_id = "VBAudioVACWDM"
 
     Write-Output "Downloading Virtual Audio Driver"
-    $webClient.DownloadFile("http://vbaudio.jcedeveloppement.com/Download_CABLE/VBCABLE_Driver_Pack43.zip", "C:\$compressed_file")
+    DownloadFile "http://vbaudio.jcedeveloppement.com/Download_CABLE/VBCABLE_Driver_Pack43.zip" "C:\$compressed_file"
     Unblock-File -Path "C:\$compressed_file"
 
     Write-Output "Extracting Virtual Audio Driver"
@@ -282,7 +297,7 @@ function Install-VirtualAudio {
     $devcon = "C:\Program Files (x86)\Windows Kits\10\Tools\x64\devcon.exe"
 
     Write-Output "Downloading Windows Development Kit installer"
-    $webClient.DownloadFile("http://go.microsoft.com/fwlink/p/?LinkId=526733", "C:\$wdk_installer")
+    DownloadFile "http://go.microsoft.com/fwlink/p/?LinkId=526733" "C:\$wdk_installer"
 
     # installing in user session via $credentials
     Write-Output "Downloading and installing Windows Development Kit"
@@ -292,7 +307,7 @@ function Install-VirtualAudio {
     $url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/vb_cert.cer"
 
     Write-Output "Downloading VB certificate from $url"
-    $webClient.DownloadFile($url, "C:\$cert")
+    DownloadFile $url "C:\$cert"
 
     Write-Output "Importing VB certificate"
     Import-Certificate -FilePath "C:\$cert" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher"
@@ -313,34 +328,57 @@ function Install-VirtualAudio {
 
 function Install-Chocolatey {
     Write-Output "Installing Chocolatey"
-    Invoke-Expression ($webClient.DownloadString('https://chocolatey.org/install.ps1'))
-    chocolatey feature enable -n allowGlobalConfirmation
+    if (Get-Command chocolatey -errorAction SilentlyContinue) {
+        Write-Output "Chocolatey exists, skipping installation"
+        chocolatey feature enable -n allowGlobalConfirmation
+    }else{
+        $ProgressPreference = 'SilentlyContinue'    # Subsequent calls do not display UI.
+        Invoke-Expression ($webClient.DownloadString('https://chocolatey.org/install.ps1'))
+        $ProgressPreference = 'Continue'            # Subsequent calls do display UI.
+        chocolatey feature enable -n allowGlobalConfirmation
+    }
+}
+
+function Choco-Install ($package) {
+    If ($env:QUIET  -eq 'yes')  {
+        Write-Output "Quietly.................."
+        choco install $package -y --no-progress
+    }else {
+        choco install $package -y
+    }
+
 }
 
 function Install-Steam {
     Write-Output 'Installing Steam through Chrocolatey'
-    choco install steam --force
+    Choco-Install steam
 }
 
 function Install-Discord {
     Write-Output "Installing Discord through Chocolatey"
-    choco install discord --force
+    Choco-Install discord
 }
 
 function Install-GoogleChrome {
     Write-Output 'Installing Google Chrome through Chrocolatey'
-    choco install googlechrome --force --ignore-checksums
+    If ($env:QUIET  -eq 'yes')  {
+        Write-Output "Quietly.................."
+        choco install googlechrome -y --ignore-checksums --no-progress
+    }else {
+        choco install googlechrome -y --ignore-checksums
+    }
 }
 
 function Install-EpicGamesLauncher {
     Write-Output 'Installing Epic Games Launcher through Chrocolatey'
-    choco install epicgameslauncher --force
+    Choco-Install epicgameslauncher 
 }
 
 function Install-Blizzard {
     $blizzard_exe = "Battle.net-Setup.exe"
     Write-Output "Downloading Blizzard Battle.Net Launcher into path C:\$blizzard_exe"
-    $webClient.DownloadFile('https://www.battle.net/download/getInstallerForGame?os=win&locale=enUS&version=LIVE&gameProgram=BATTLENET_APP&id=634826696.1580926426', "C:\$blizzard_exe")    
+    DownloadFile 'https://www.battle.net/download/getInstallerForGame?os=win&locale=enUS&version=LIVE&gameProgram=BATTLENET_APP&id=634826696.1580926426' "C:\$blizzard_exe"
+
     Write-Output "Installing Blizzard Battle.Net Launcher"
     Start-Process -FilePath "C:\$blizzard_exe" -ArgumentList "/q" -Wait
 
@@ -350,27 +388,27 @@ function Install-Blizzard {
 
 function Install-Git {
     Write-Output "Installing Git through Chocolatey"
-    choco install git --force
+    Choco-Install git
 }
 
 function Install-OpenCV {
     Write-Output "Installing OpenCV through Chocolatey"
-    choco install opencv --force
+    Choco-Install opencv
 }
 
 function Install-Blender {
     Write-Output "Installing Blender through Chocolatey"
-    choco install blender --force
+    Choco-Install blender
 }
 
 function Install-AdobeAcrobat {
     Write-Output "Installing Adobe Acrobat Reader DC through Chocolatey"
-    choco install adobereader --force
+    Choco-Install adobereader
 }
 
 function Install-Skype {
     Write-Output "Installing Skype through Chocolatey"
-    choco install skype --force
+    Choco-Install skype
 }
 
 function Install-AdobeCreativeCloud {
@@ -407,107 +445,107 @@ function Install-Mathematica {
 
 function Install-Zoom {
     Write-Output "Installing Zoom through Chocolatey"
-    choco install zoom --force
+    Choco-Install zoom
 }
 
 function Install-Office {
     Write-Output "Installing Microsoft Office Suite through Chocolatey"
-    choco install microsoft-office-deployment --force
+    Choco-Install microsoft-office-deployment
 }
 
 function Install-CUDAToolkit {
     Write-Output "Installing CUDA Development Toolkit through Chocolatey"
-    choco install cuda --force
+    Choco-Install cuda
 }
 
 function Install-LLVM {
     Write-Output "Installing LLVM & Clang through Chocolatey"
-    choco install llvm --force
+    Choco-Install llvm
 }
 
 function Install-Anaconda {
     Write-Output "Installing Anaconda (Python 3) through Chocolatey"
-    choco install anaconda3 --force
+    Choco-Install anaconda3
 }
 
 function Install-Docker {
     Write-Output "Installing Docker through Chocolatey"
-    choco install docker --force
+    Choco-Install docker
 }
 
 function Install-Curl {
     Write-Output "Installing Curl through Chocolatey"
-    choco install curl --force
+    Choco-Install curl
 }
 
 function Install-Atom {
     Write-Output "Installing Atom through Chocolatey"
-    choco install atom --force
+    Choco-Install atom
 }
 
 function Install-Cinema4D {
     Write-Output "Installing Cinema4D through Chocolatey"
-    choco install cinebench --force
+    Choco-Install cinebench
 }
 
 function Install-GeForceExperience {
     Write-Output "Installing Nvidia GeForce Experience through Chocolatey"
-    choco install geforce-experience --force
+    Choco-Install geforce-experience
 }
 
 function Install-Lightworks {
     Write-Output "Installing Lightworks through Chocolatey"
-    choco install lightworks --force
+    Choco-Install lightworks
 }
 
 function Install-VSPro2019 {
     Write-Output "Installing Visual Studio Professional 2019 through Chocolatey"
-    choco install visualstudio2019professional --force
+    Choco-Install visualstudio2019professional
 }
 
 function Install-Cmake {
     Write-Output "Installing Cmake through Chocolatey"
-    choco install cmake --force
+    Choco-Install cmake
 }
 
 function Install-Cppcheck {
     Write-Output "Installing Cppcheck through Chocolatey"
-    choco install cppcheck --force
+    Choco-Install cppcheck
 }
 
 function Install-VisualRedist {
     Write-Output "Installing Visual C++ Redistribuable 2017 through Chocolatey"
-    choco install vcredist2017 --force
+    Choco-Install vcredist2017
 }
 
 function Install-VSCode {
     Write-Output "Installing Visual Studio Code through Chocolatey"
-    choco install vscode --force
+    Choco-Install vscode
 }
 
 function Install-Fusion360 {
     Write-Output "Installing Autodesk Fusion360 through Chocolatey"
-    choco install autodesk-fusion360 --force
+    Choco-Install autodesk-fusion360
 }
 
 function Install-Spotify {
     Write-Output "Installing Spotify through Chocolatey"
-    choco install spotify --force
+    Choco-Install spotify
 }
 
 function Install-GOG {
     Write-Output "Installing GOG through Chocolatey"
-    choco install goggalaxy --force
+    Choco-Install goggalaxy
 }
 
 function Install-7Zip {
     Write-Output "Installing 7-Zip through Chocolatey"
-    choco install 7zip --force
+    Choco-Install 7zip
 }
 
 function Install-WSL {
     Write-Output "Installing Windows Subsystem for Linux through Chocolatey"
-    choco install wsl --force
+    Choco-Install wsl
 }
 
 function Set-Time {
@@ -601,7 +639,7 @@ function Disable-HyperV {
     $extract_folder = "DeviceManagement"
 
     Write-Output "Downloading Device Management Powershell Script from $url"
-    $webClient.DownloadFile($url, "C:\$compressed_file")
+    DownloadFile $url "C:\$compressed_file"
     Unblock-File -Path "C:\$compressed_file"
 
     Write-Output "Extracting Device Management Powershell Script"
@@ -620,21 +658,20 @@ function Install-FractalServer ($protocol_branch) {
     Write-Output "Downloading Fractal Server"
     $fractalserver_name = "C:\Program Files\Fractal\FractalServer.exe"
     $fractalserver_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$protocol_branch/FractalServer.exe"
-    $webClient.DownloadFile($fractalserver_url, $fractalserver_name)
+    DownloadFile $fractalserver_url $fractalserver_name
 
     Write-Output "Download Shared FFmpeg Libs from S3"
     $shared_libs_name = "C:\shared-libs.tar.gz"
     $shared_libs_url = "https://fractal-protocol-shared-libs.s3.amazonaws.com/shared-libs.tar.gz"
-    $webClient.DownloadFile($shared_libs_url, $shared_libs_name)
-
-    If ($env:LOCAL  -eq 'yes')  {
-        return
-    }
+    DownloadFile $shared_libs_url $shared_libs_name
 
     Write-Output "Unzip the .tar.gz File and Remove shared-libs.tar.gz & /lib"
-    tar -xvzf .\shared-libs.tar.gz
-    Remove-Item -Path $shared_libs_name -Confirm:$false
-    Remove-Item -Path "C:\lib" -Confirm:$false -Recurse
+    Get-Command tar
+    # diverts stderr to null to avoid remote powershell issue
+    # https://stackoverflow.com/questions/2095088/error-when-calling-3rd-party-executable-from-powershell-when-using-an-ide/20950421
+    & cmd /c 'tar -xvzf .\shared-libs.tar.gz 2>&1'
+    Remove-Item -Path $shared_libs_name -Confirm:$false -ErrorAction SilentlyContinue
+    Remove-Item -Path "C:\lib" -Confirm:$false -Recurse -ErrorAction SilentlyContinue
 
     $arch = (Get-WmiObject Win32_Processor).AddressWidth
 
@@ -648,7 +685,7 @@ function Install-FractalServer ($protocol_branch) {
     Move-Item -Path "C:\share\$arch\Windows\postproc-55.dll" -Destination "C:\Program Files\Fractal\postproc-55.dll"
     Move-Item -Path "C:\share\$arch\Windows\swscale-5.dll" -Destination "C:\Program Files\Fractal\swscale-5.dll"
     Move-Item -Path "C:\share\$arch\Windows\swresample-3.dll" -Destination "C:\Program Files\Fractal\swresample-3.dll"
-    Remove-Item -Path "C:\share" -Confirm:$false -Recurse
+    Remove-Item -Path "C:\share" -Confirm:$false -Recurse -ErrorAction SilentlyContinue
 }
 
 function Install-FractalAutoUpdate ($protocol_branch) {
@@ -656,7 +693,7 @@ function Install-FractalAutoUpdate ($protocol_branch) {
     Write-Output "Downloading Fractal Auto Update script"
     $fractal_update_name = "C:\Program Files\Fractal\update.bat"
     $fractal_update_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$protocol_branch/update.bat"
-    $webClient.DownloadFile($fractal_update_url, $fractal_update_name)
+    DownloadFile $fractal_update_url $fractal_update_name
 }
 
 function Install-FractalExitScript {
@@ -664,19 +701,19 @@ function Install-FractalExitScript {
     Write-Output "Downloading Fractal Exit script"
     $fractal_exitbat_name = "C:\Program Files\Fractal\Exit\ExitFractal.bat"
     $fractal_exitbat_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ExitFractal.bat"
-    $webClient.DownloadFile($fractal_exitbat_url, $fractal_exitbat_name)
-
+    DownloadFile $fractal_exitbat_url $fractal_exitbat_name
+    
     # download vbs file for running .bat file without terminal
     Write-Output "Downloading Fractal Exit VBS helper script"
     $fractal_exitvbs_name = "C:\Program Files\Fractal\Exit\Exit.vbs"
     $fractal_exitvbs_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/Exit.vbs"
-    $webClient.DownloadFile($fractal_exitvbs_url, $fractal_exitvbs_name)
+    DownloadFile $fractal_exitvbs_url $fractal_exitvbs_name
 
     # download the Fractal logo for the icons
     Write-Output "Downloading Fractal Logo icon"
     $fractal_icon_name = "C:\Program Files\Fractal\Assets\logo.ico"
     $fractal_icon_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/logo.ico"
-    $webClient.DownloadFile($fractal_icon_url, $fractal_icon_name)
+    DownloadFile $fractal_icon_url $fractal_icon_name
 
     # create desktop shortcut 
     Write-Output "Creating Exit Fractal Desktop Shortcut"
@@ -701,7 +738,7 @@ function Install-NvidiaTeslaPublicDrivers {
     $url = "http://us.download.nvidia.com/tesla/442.50/442.50-tesla-desktop-win10-64bit-international.exe" # this URL needs to be updated periodically when a new driver version comes out
     
     Write-Output "Downloading Nvidia M60 driver from $url"
-    $webClient.DownloadFile($url, "C:\$driver_file")
+    DownloadFile $url "C:\$driver_file"
 
     Write-Output "Installing Nvidia M60 driver from $driver_file"
     Start-Process -FilePath "C:\$driver_file" -ArgumentList "-s", "-noreboot" -Wait
@@ -711,18 +748,19 @@ function Install-NvidiaTeslaPublicDrivers {
 }
 
 function Set-OptimalGPUSettings {
-    If ($env:LOCAL  -eq 'yes')  {
-        return
+    if((Test-Path -Path "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe") -eq $true) {
+        Write-Output "Setting Optimal Tesla M60 GPU Settings"
+        C:\'Program Files'\'NVIDIA Corporation'\NVSMI\.\nvidia-smi --auto-boost-default=0
+        C:\'Program Files'\'NVIDIA Corporation'\NVSMI\.\nvidia-smi -ac "2505,1177"
+    }else {
+        Write-Output "Skipping Set-OptimalGPUSettings, no nvidia-smi found"
     }
-    Write-Output "Setting Optimal Tesla M60 GPU Settings"
-    C:\'Program Files'\'NVIDIA Corporation'\NVSMI\.\nvidia-smi --auto-boost-default=0
-    C:\'Program Files'\'NVIDIA Corporation'\NVSMI\.\nvidia-smi -ac "2505,1177"
 }
 
 function Install-DirectX {
     $directx_exe = "directx_Jun2010_redist.exe"
     Write-Output "Downloading DirectX into path C:\$direct_exe"
-    $webClient.DownloadFile("https://download.microsoft.com/download/8/4/A/84A35BF1-DAFE-4AE8-82AF-AD2AE20B6B14/directx_Jun2010_redist.exe", "C:\$directx_exe")
+    DownloadFile "https://download.microsoft.com/download/8/4/A/84A35BF1-DAFE-4AE8-82AF-AD2AE20B6B14/directx_Jun2010_redist.exe" "C:\$directx_exe"
     
     Write-Output "Creating temporary DirectX directory in C:\"
     if((Test-Path -Path '\DirectX') -eq $true) {} Else {New-Item -Path '\DirectX' -ItemType directory | Out-Null}
@@ -738,15 +776,21 @@ function Install-Unison {
     Write-Output "Downloading Unison File Sync from S3 Bucket" 
     $unison_name = "C:\Program Files\Fractal\unison.exe"
     $unison_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/unison.exe"
-    $webClient.DownloadFile($unison_url, $unison_name)
+    DownloadFile $unison_url $unison_name
 }
 
 function Enable-SSHServer {
     Write-Output "Adding OpenSSH Server Capability"
     If ($env:LOCAL  -eq 'yes')  {
+        Write-Output "Local detected.  Skipping OpenSSH reconfiguration"
         return
     }
-    Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+    If ($env:VAGRANT  -eq 'yes')  {
+        Write-Output "Vagrant detected.  Skipping OpenSSH reconfiguration"
+        return
+    }
+
+    Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0 -ErrorAction SilentlyContinue
     if (-not $?) {
         Write-Output "Add-WindowsCapability Failed, Trying DISM"
         dism /online /Add-Capability /CapabilityName:OpenSSH.Server~~~~0.0.1.0
@@ -764,10 +808,10 @@ function Enable-SSHServer {
     # Get-Content -Path C:\ProgramData\ssh\administrators_authorized_keys    
 
     Write-Output "Downloading new OpenSSH Server Config and SSH Keys"     
-    $webClient.DownloadFile("https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/sshd_config", "C:\ProgramData\ssh\sshd_config")
-    $webClient.DownloadFile("https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key.pub", "C:\ProgramData\ssh\ssh_host_ecdsa_key.pub")
-    $webClient.DownloadFile("https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key", "C:\ProgramData\ssh_host_ecdsa_key")
-    $webClient.DownloadFile("https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/administrator_authorized_keys", "C:\ProgramData\ssh\administrator_authorized_keys")
+    DownloadFile "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/sshd_config" "C:\ProgramData\ssh\sshd_config"
+    DownloadFile "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key.pub" "C:\ProgramData\ssh\ssh_host_ecdsa_key.pub"
+    DownloadFile "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key" "C:\ProgramData\ssh_host_ecdsa_key"
+    DownloadFile "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/administrator_authorized_keys" "C:\ProgramData\ssh\administrator_authorized_keys"
 
     Write-Output "Enable Permissions on OpenSSH Config and SSH Keys Files"
     Set-FilePermission "C:\ProgramData\ssh\sshd_config"
