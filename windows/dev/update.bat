@@ -18,7 +18,6 @@ if errorlevel 1 (
 
   powershell -command "iwr -outf FractalServer.exe https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/%file%FractalServer.exe"
 
-  
   net stop Fractal
   taskkill /IM "FractalService.exe" /F
   taskkill /IM "FractalServer.exe" /F

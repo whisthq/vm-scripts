@@ -14,7 +14,6 @@ function DownloadFile ($url, $path) {
     }
 }
 
-
 function Test-RegistryValue {
     # https://www.jonathanmedd.net/2014/02/testing-for-the-presence-of-a-registry-key-and-value.html
     param (
