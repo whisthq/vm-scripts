@@ -66,8 +66,8 @@ Set-OptimalGPUSettings
 Install-Curl
 Install-PoshSSH
 Show-FileExtensions $run_on_cloud $credentials
-Install-FractalWallpaper $run_on_cloud $credentials
 Set-FractalDirectory
+Install-FractalWallpaper $run_on_cloud $credentials
 Install-FractalService
 Install-FractalServer $protocol_branch
 Install-FractalExitScript
