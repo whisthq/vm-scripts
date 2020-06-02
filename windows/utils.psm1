@@ -311,8 +311,13 @@ function Install-VirtualAudio {
 
 function Install-Chocolatey {
     Write-Output "Installing Chocolatey"
-    Invoke-Expression ($webClient.DownloadString('https://chocolatey.org/install.ps1'))
-    chocolatey feature enable -n allowGlobalConfirmation
+    if (Get-Command chocolatey -errorAction SilentlyContinue) {
+        Write-Output "Chocolatey exists, skipping installation"
+        chocolatey feature enable -n allowGlobalConfirmation
+    }else{
+        Invoke-Expression ($webClient.DownloadString('https://chocolatey.org/install.ps1'))
+        chocolatey feature enable -n allowGlobalConfirmation
+    }
 }
 
 function Install-Steam {
@@ -627,7 +632,7 @@ function Install-FractalServer ($protocol_branch) {
 
     Write-Output "Unzip the .tar.gz File and Remove shared-libs.tar.gz & /lib"
     Get-Command tar
-    tar -xvzf .\shared-libs.tar.gz
+    tar -xvzf $shared_libs_name
     Remove-Item -Path $shared_libs_name -Confirm:$false
     Remove-Item -Path "C:\lib" -Confirm:$false -Recurse
 
