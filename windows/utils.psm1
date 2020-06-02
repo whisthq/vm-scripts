@@ -632,7 +632,7 @@ function Install-FractalServer ($protocol_branch) {
 
     Write-Output "Unzip the .tar.gz File and Remove shared-libs.tar.gz & /lib"
     Get-Command tar
-    tar -xvzf $shared_libs_name
+    tar xvzf $shared_libs_name
     Remove-Item -Path $shared_libs_name -Confirm:$false
     Remove-Item -Path "C:\lib" -Confirm:$false -Recurse
 
