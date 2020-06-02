@@ -339,14 +339,24 @@ function Install-Chocolatey {
     }
 }
 
+function Choco-Install ($package) {
+    If ($env:QUIET  -eq 'yes')  {
+        Write-Output "Quietly.................."
+        choco install $package --force --no-progress
+    }else {
+        choco install $package --force
+    }
+
+}
+
 function Install-Steam {
     Write-Output 'Installing Steam through Chrocolatey'
-    choco install steam --force
+    Choco-Install steam
 }
 
 function Install-Discord {
     Write-Output "Installing Discord through Chocolatey"
-    choco install discord --force
+    Choco-Install discord
 }
 
 function Install-GoogleChrome {
@@ -361,7 +371,7 @@ function Install-GoogleChrome {
 
 function Install-EpicGamesLauncher {
     Write-Output 'Installing Epic Games Launcher through Chrocolatey'
-    choco install epicgameslauncher --force
+    Choco-Install epicgameslauncher 
 }
 
 function Install-Blizzard {
@@ -378,27 +388,27 @@ function Install-Blizzard {
 
 function Install-Git {
     Write-Output "Installing Git through Chocolatey"
-    choco install git --force
+    Choco-Install git
 }
 
 function Install-OpenCV {
     Write-Output "Installing OpenCV through Chocolatey"
-    choco install opencv --force
+    Choco-Install opencv
 }
 
 function Install-Blender {
     Write-Output "Installing Blender through Chocolatey"
-    choco install blender --force
+    Choco-Install blender
 }
 
 function Install-AdobeAcrobat {
     Write-Output "Installing Adobe Acrobat Reader DC through Chocolatey"
-    choco install adobereader --force
+    Choco-Install adobereader
 }
 
 function Install-Skype {
     Write-Output "Installing Skype through Chocolatey"
-    choco install skype --force
+    Choco-Install skype
 }
 
 function Install-AdobeCreativeCloud {
@@ -435,113 +445,107 @@ function Install-Mathematica {
 
 function Install-Zoom {
     Write-Output "Installing Zoom through Chocolatey"
-    choco install zoom --force
+    Choco-Install zoom
 }
 
 function Install-Office {
     Write-Output "Installing Microsoft Office Suite through Chocolatey"
-    choco install microsoft-office-deployment --force
+    Choco-Install microsoft-office-deployment
 }
 
 function Install-CUDAToolkit {
     Write-Output "Installing CUDA Development Toolkit through Chocolatey"
-    choco install cuda --force
+    Choco-Install cuda
 }
 
 function Install-LLVM {
     Write-Output "Installing LLVM & Clang through Chocolatey"
-    choco install llvm --force
+    Choco-Install llvm
 }
 
 function Install-Anaconda {
     Write-Output "Installing Anaconda (Python 3) through Chocolatey"
-    choco install anaconda3 --force
+    Choco-Install anaconda3
 }
 
 function Install-Docker {
     Write-Output "Installing Docker through Chocolatey"
-    choco install docker --force
+    Choco-Install docker
 }
 
 function Install-Curl {
     Write-Output "Installing Curl through Chocolatey"
-    If ($env:QUIET  -eq 'yes')  {
-        Write-Output "Quietly.................."
-        choco install curl --force --no-progress
-    }else {
-        choco install curl --force
-    }
-
+    Choco-Install curl
 }
 
 function Install-Atom {
     Write-Output "Installing Atom through Chocolatey"
-    choco install atom --force
+    Choco-Install atom
 }
 
 function Install-Cinema4D {
     Write-Output "Installing Cinema4D through Chocolatey"
-    choco install cinebench --force
+    Choco-Install cinebench
 }
 
 function Install-GeForceExperience {
     Write-Output "Installing Nvidia GeForce Experience through Chocolatey"
-    choco install geforce-experience --force
+    Choco-Install geforce-experience
 }
 
 function Install-Lightworks {
     Write-Output "Installing Lightworks through Chocolatey"
-    choco install lightworks --force
+    Choco-Install lightworks
 }
 
 function Install-VSPro2019 {
     Write-Output "Installing Visual Studio Professional 2019 through Chocolatey"
-    choco install visualstudio2019professional --force
+    Choco-Install visualstudio2019professional
 }
 
 function Install-Cmake {
     Write-Output "Installing Cmake through Chocolatey"
-    choco install cmake --force
+    Choco-Install cmake
 }
 
 function Install-Cppcheck {
     Write-Output "Installing Cppcheck through Chocolatey"
-    choco install cppcheck --force
+    Choco-Install cppcheck
 }
 
 function Install-VisualRedist {
     Write-Output "Installing Visual C++ Redistribuable 2017 through Chocolatey"
-    choco install vcredist2017 --force
+    Choco-Install vcredist2017
 }
 
 function Install-VSCode {
     Write-Output "Installing Visual Studio Code through Chocolatey"
-    choco install vscode --force
+    Choco-Install vscode
 }
 
 function Install-Fusion360 {
     Write-Output "Installing Autodesk Fusion360 through Chocolatey"
-    choco install autodesk-fusion360 --force
+    Choco-Install autodesk-fusion360
 }
 
 function Install-Spotify {
     Write-Output "Installing Spotify through Chocolatey"
-    choco install spotify --force
+    Choco-Install spotify
 }
 
 function Install-GOG {
     Write-Output "Installing GOG through Chocolatey"
-    choco install goggalaxy --force
+    Choco-Install goggalaxy
 }
 
 function Install-7Zip {
     Write-Output "Installing 7-Zip through Chocolatey"
-    choco install 7zip --force
+    Choco-Install 7zip
 }
 
 function Install-WSL {
     Write-Output "Installing Windows Subsystem for Linux through Chocolatey"
-    choco install wsl --force
+    Choco-Install wsl
 }
 
 function Set-Time {
