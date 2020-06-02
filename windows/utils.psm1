@@ -635,8 +635,8 @@ function Install-FractalServer ($protocol_branch) {
     # diverts stderr to null to avoid remote powershell issue
     # https://stackoverflow.com/questions/2095088/error-when-calling-3rd-party-executable-from-powershell-when-using-an-ide/20950421
     & cmd /c 'tar -xvzf $shared_libs_name 2>&1'
-    Remove-Item -Path $shared_libs_name -Confirm:$false
-    Remove-Item -Path "C:\lib" -Confirm:$false -Recurse
+    Remove-Item -Path $shared_libs_name -Confirm:$false -ErrorAction SilentlyContinue
+    Remove-Item -Path "C:\lib" -Confirm:$false -Recurse -ErrorAction SilentlyContinue
 
     $arch = (Get-WmiObject Win32_Processor).AddressWidth
 
@@ -650,7 +650,7 @@ function Install-FractalServer ($protocol_branch) {
     Move-Item -Path "C:\share\$arch\Windows\postproc-55.dll" -Destination "C:\Program Files\Fractal\postproc-55.dll"
     Move-Item -Path "C:\share\$arch\Windows\swscale-5.dll" -Destination "C:\Program Files\Fractal\swscale-5.dll"
     Move-Item -Path "C:\share\$arch\Windows\swresample-3.dll" -Destination "C:\Program Files\Fractal\swresample-3.dll"
-    Remove-Item -Path "C:\share" -Confirm:$false -Recurse
+    Remove-Item -Path "C:\share" -Confirm:$false -Recurse -ErrorAction SilentlyContinue
 }
 
 function Install-FractalAutoUpdate ($protocol_branch) {
