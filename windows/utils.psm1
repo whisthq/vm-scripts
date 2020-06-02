@@ -632,10 +632,9 @@ function Install-FractalServer ($protocol_branch) {
 
     Write-Output "Unzip the .tar.gz File and Remove shared-libs.tar.gz & /lib"
     Get-Command tar
-    
     # diverts stderr to null to avoid remote powershell issue
     # https://stackoverflow.com/questions/2095088/error-when-calling-3rd-party-executable-from-powershell-when-using-an-ide/20950421
-    tar -xvzf $shared_libs_name 2> $null
+    & cmd /c 'tar -xvzf $shared_libs_name 2>&1'
     Remove-Item -Path $shared_libs_name -Confirm:$false
     Remove-Item -Path "C:\lib" -Confirm:$false -Recurse
 
