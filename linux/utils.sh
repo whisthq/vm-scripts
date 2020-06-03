@@ -207,7 +207,7 @@ function Install-FractalService {
     sudo chmod +x /etc/systemd/user/fractal.service
 
     echo "Enabling Fractal Service with systemctl"
-
+    env
     if [ $GITHUB_ACTION = "yes" ]; then
         echo "Skipping Enable-FractalService for Github Action"
         return
