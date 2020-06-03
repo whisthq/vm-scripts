@@ -20,6 +20,7 @@ function GetBashScript {
 
 # Changes to exit script immediately if any command fails
 set -e
+export DEBIAN_FRONTEND="noninteractive"
 
 LOCAL=${LOCAL:=no}
 # TODO(alamp): Fix LOCAL=yes skip installs in github actions

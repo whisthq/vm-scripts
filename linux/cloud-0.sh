@@ -11,6 +11,7 @@ function GetBashScript {
 
 # Changes to exit script immediately if any command fails
 set -e
+export DEBIAN_FRONTEND="noninteractive"
 
 # Run sudo so it's not prompted in the following commands and install basic packages
 if [ $LOCAL = no ]; then

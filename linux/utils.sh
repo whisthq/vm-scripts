@@ -207,6 +207,11 @@ function Install-FractalService {
     sudo chmod +x /etc/systemd/user/fractal.service
 
     echo "Enabling Fractal Service with systemctl"
+
+    if [ $GITHUB_ACTION = yes ]; then
+        echo "Skipping Enable-FractalService for Github Action"
+        return
+    fi
     # Starts a pam systemd process for the user if not started
     # https://unix.stackexchange.com/questions/423632/systemctl-user-not-available-for-www-data-user
     export FRACTAL_UID=`id -u fractal`
