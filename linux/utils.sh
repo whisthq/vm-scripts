@@ -208,7 +208,7 @@ function Install-FractalService {
 
     echo "Enabling Fractal Service with systemctl"
 
-    if [ $GITHUB_ACTION = yes ]; then
+    if [ $GITHUB_ACTION = "yes" ]; then
         echo "Skipping Enable-FractalService for Github Action"
         return
     fi
@@ -263,7 +263,7 @@ function Enable-SSHKey {
     # yes | ssh-keygen -f sshkey -q -N """"
     # cp sshkey.pub "$HOME/.ssh/authorized_keys"
     echo "Download SSH Administrator Authorized Key"
-    if [ $LOCAL = yes ]; then
+    if [ $LOCAL = "yes" ]; then
         echo "Skipping Enable-SSHKey LOCAL flag set"
         return
     fi
@@ -434,7 +434,7 @@ function Install-Lightworks {
     echo "Installing Lightworks"
     sudo wget -q "https://downloads.lwks.com/v14-5/lightworks-14.5.0-amd64.deb"
     sudo dpkg -i "lightworks-14.5.0-amd64.deb"
-    yes | sudo apt-get -f install
+    sudo apt-get -y -f install
     sudo dpkg -i "lightworks-14.5.0-amd64.deb"
     sudo rm -f "lightworks-14.5.0-amd64.deb"
 }
