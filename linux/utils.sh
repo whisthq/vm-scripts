@@ -208,7 +208,7 @@ function Install-FractalService {
 
     echo "Enabling Fractal Service with systemctl"
     env
-    if [ $GITHUB_ACTION = "yes" ]; then
+    if [[ $GITHUB_ACTION = "yes" ]]; then
         echo "Skipping Enable-FractalService for Github Action"
         return
     fi
@@ -263,7 +263,7 @@ function Enable-SSHKey {
     # yes | ssh-keygen -f sshkey -q -N """"
     # cp sshkey.pub "$HOME/.ssh/authorized_keys"
     echo "Download SSH Administrator Authorized Key"
-    if [ $LOCAL = "yes" ]; then
+    if [[ $LOCAL = "yes" ]]; then
         echo "Skipping Enable-SSHKey LOCAL flag set"
         return
     fi
