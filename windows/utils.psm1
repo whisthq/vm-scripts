@@ -4,12 +4,12 @@ $webClient = New-Object System.Net.WebClient
 
 function DownloadFile ($url, $path) {
     Write-Output "Downloading $url to $path"
-    If ($env:QUIET  -eq 'yes')  {
+    if ($env:QUIET -eq 'yes')  {
         Write-Output "Quietly.................."
         $global:ProgressPreference = 'SilentlyContinue'    # Subsequent calls do not display UI.
     }
     Invoke-WebRequest -URI $url -OutFile $path
-    If ($env:QUIET  -eq 'yes')  {
+    if ($env:QUIET -eq 'yes')  {
         $global:ProgressPreference = 'Continue'            # Subsequent calls do display UI.
     }
 }
@@ -57,7 +57,7 @@ function Invoke-RemotePowerShellCommand ([SecureString] $credentials, $command_a
 }
 
 function Update-Windows {
-    If ($env:NO_UPDATE  -eq 'yes')  {
+    if ($env:NO_UPDATE -eq 'yes')  {
         Write-Output "Skipping Windows Update"
         return
     }
@@ -89,11 +89,11 @@ function Update-Firewall {
 
 function Disable-TCC {
     Write-Output "Disable TCC Mode on Nvidia Tesla GPU"
-    if((Test-Path -Path "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe") -eq $true) {
+    if ((Test-Path -Path "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe") -eq $true) {
         $nvsmi = "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe"
         $gpu = & $nvsmi --format=csv,noheader --query-gpu=pci.bus_id
         & $nvsmi -g $gpu -fdm 0
-    }else {
+    } else {
         Write-Output "Skipping Disable-TCC, no nvidia-smi found"
     }
 }
@@ -204,8 +204,8 @@ function Enable-RemotePowerShell ([SecureString] $certificate_password) {
 
     # the rest of this script configures a VM to allow remote powershell for userspace scripts
     Write-Output "Setting WinRM for PowerShell Remoting"
-    If ($env:VAGRANT  -eq 'yes')  {
-        Write-Output "Vagrant detected.  Skipping enable Remote Powershell"
+    if ($env:VAGRANT -eq 'yes')  {
+        Write-Output "Vagrant detected. Skipping enable Remote Powershell"
         return
     }
     Start-Service WinRM
@@ -241,13 +241,11 @@ function Install-FractalWallpaper ($run_on_cloud, $credentials) {
     }
     # else we run the command directly
     else {
-        if((Test-Path -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System") -eq $true) {} Else {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null}
-        if((Test-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Value Wallpaper) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -Value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -PropertyType String -Value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null}
-        if((Test-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Value WallpaperStyle) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -Value 2 | Out-Null} Else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -PropertyType String -Value 2 | Out-Null}
+        if((Test-Path -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System") -eq $true) {} else {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null}
+        if((Test-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Value Wallpaper) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -Value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null} else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -PropertyType String -Value "C:\Program Files\Fractal\Assets\wallpaper.png" | Out-Null}
+        if((Test-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Value WallpaperStyle) -eq $true) {Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -Value 2 | Out-Null} else {New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -PropertyType String -Value 2 | Out-Null}
     }
 }
-
-
 
 function Install-FractalService {
     # first download the service executable
@@ -330,7 +328,7 @@ function Install-Chocolatey {
     if (Get-Command chocolatey -errorAction SilentlyContinue) {
         Write-Output "Chocolatey exists, skipping installation"
         chocolatey feature enable -n allowGlobalConfirmation
-    }else{
+    } else {
         $ProgressPreference = 'SilentlyContinue'    # Subsequent calls do not display UI.
         Invoke-Expression ($webClient.DownloadString('https://chocolatey.org/install.ps1'))
         $ProgressPreference = 'Continue'            # Subsequent calls do display UI.
@@ -339,13 +337,12 @@ function Install-Chocolatey {
 }
 
 function Choco-Install ($package) {
-    If ($env:QUIET  -eq 'yes')  {
+    if ($env:QUIET -eq 'yes')  {
         Write-Output "Quietly.................."
         choco install $package -y --no-progress
-    }else {
+    } else {
         choco install $package -y
     }
-
 }
 
 function Install-Steam {
@@ -360,10 +357,10 @@ function Install-Discord {
 
 function Install-GoogleChrome {
     Write-Output 'Installing Google Chrome through Chrocolatey'
-    If ($env:QUIET  -eq 'yes')  {
+    if ($env:QUIET -eq 'yes')  {
         Write-Output "Quietly.................."
         choco install googlechrome -y --ignore-checksums --no-progress
-    }else {
+    } else {
         choco install googlechrome -y --ignore-checksums
     }
 }
@@ -555,7 +552,7 @@ function Set-Time {
 
 function Disable-NetworkWindow {
     Write-Output "Disabling New Network Window"
-    if((Test-RegistryValue -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Network" -Value NewNetworkWindowOff) -eq $true) {} Else {New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Network" -Name "NewNetworkWindowOff" | Out-Null}
+    if((Test-RegistryValue -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Network" -Value NewNetworkWindowOff) -eq $true) {} else {New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Network" -Name "NewNetworkWindowOff" | Out-Null}
 }
 
 function Set-MousePrecision ($run_on_cloud, $credentials) {
@@ -563,9 +560,8 @@ function Set-MousePrecision ($run_on_cloud, $credentials) {
     # if this script was meant to run on the cloud, we run via Remote-PS (to run from a webserver)    
     if ($run_on_cloud) {
         Invoke-RemotePowerShellCommand $credentials 'Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name MouseSpeed -Value 1 | Out-Null'
-    }
-    # else we run the command directly
-    else {
+    } else {
+        # else we run the command directly
         Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name MouseSpeed -Value 1 | Out-Null
     }
 }
@@ -575,22 +571,21 @@ function Enable-MouseKeys ($run_on_cloud, $credentials) {
     # if this script was meant to run on the cloud, we run via Remote-PS (to run from a webserver)    
     if ($run_on_cloud) {
         Invoke-RemotePowerShellCommand $credentials 'Set-ItemProperty -Path "HKCU:\Control Panel\Accessibility\MouseKeys" -Name Flags -Value 63 | Out-Null'
-    }
-    # else we run the command directly
-    else {
+    } else {
+        # else we run the command directly
         Set-ItemProperty -Path "HKCU:\Control Panel\Accessibility\MouseKeys" -Name Flags -Value 63 | Out-Null
     }
 }
 
 function Disable-Logout {
     Write-Output "Disabling Logout Option in Start Menu"
-    if((Test-RegistryValue -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Value StartMenuLogOff ) -eq $true) {Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name StartMenuLogOff -Value 1 | Out-Null} Else {New-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name StartMenuLogOff -Value 1 | Out-Null}
+    if((Test-RegistryValue -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Value StartMenuLogOff ) -eq $true) {Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name StartMenuLogOff -Value 1 | Out-Null} else {New-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name StartMenuLogOff -Value 1 | Out-Null}
 }
     
 function Disable-Lock {
     Write-Output "Disable Lock Option in Start Menu"
-    if((Test-Path -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System") -eq $true) {} Else {New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies" -Name Software | Out-Null}
-    if((Test-RegistryValue -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Value DisableLockWorkstation) -eq $true) {Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name DisableLockWorkstation -Value 1 | Out-Null } Else {New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name DisableLockWorkstation -Value 1 | Out-Null}
+    if((Test-Path -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System") -eq $true) {} else {New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies" -Name Software | Out-Null}
+    if((Test-RegistryValue -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Value DisableLockWorkstation) -eq $true) {Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name DisableLockWorkstation -Value 1 | Out-Null } else {New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name DisableLockWorkstation -Value 1 | Out-Null}
 }
 
 function Disable-Shutdown {
@@ -609,22 +604,21 @@ function Show-FileExtensions ($run_on_cloud, $credentials) {
     # if this script was meant to run on the cloud, we run via Remote-PS (to run from a webserver)    
     if ($run_on_cloud) {
         Invoke-RemotePowerShellCommand $credentials 'Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name HideFileExt -Value 0 | Out-Null'
-    }
-    # else we run the command directly
-    else {
+    } else {
+        # else we run the command directly
         Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name HideFileExt -Value 0 | Out-Null
     }
 }
   
 function Set-FractalDirectory {
     Write-Output "Creating Fractal Directory in C:\Program Files\"
-    if((Test-Path -Path 'C:\Program Files\Fractal') -eq $true) {} Else {New-Item -Path 'C:\Program Files\Fractal' -ItemType directory | Out-Null}
+    if((Test-Path -Path 'C:\Program Files\Fractal') -eq $true) {} else {New-Item -Path 'C:\Program Files\Fractal' -ItemType directory | Out-Null}
 
     Write-Output "Creating Fractal Asset Subdirectory in C:\Program Files\"
-    if((Test-Path -Path 'C:\Program Files\Fractal\Assets') -eq $true) {} Else {New-Item -Path 'C:\Program Files\Fractal\Assets' -ItemType directory | Out-Null}
+    if((Test-Path -Path 'C:\Program Files\Fractal\Assets') -eq $true) {} else {New-Item -Path 'C:\Program Files\Fractal\Assets' -ItemType directory | Out-Null}
 
     Write-Output "Creating Fractal Exit Subdirectory in C:\Program Files\"
-    if((Test-Path -Path 'C:\Program Files\Fractal\Exit') -eq $true) {} Else {New-Item -Path 'C:\Program Files\Fractal\Exit' -ItemType directory | Out-Null}
+    if((Test-Path -Path 'C:\Program Files\Fractal\Exit') -eq $true) {} else {New-Item -Path 'C:\Program Files\Fractal\Exit' -ItemType directory | Out-Null}
 }
 
 function Install-DotNetFramework {
@@ -747,11 +741,11 @@ function Install-NvidiaTeslaPublicDrivers {
 }
 
 function Set-OptimalGPUSettings {
-    if((Test-Path -Path "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe") -eq $true) {
+    if ((Test-Path -Path "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe") -eq $true) {
         Write-Output "Setting Optimal Tesla M60 GPU Settings"
         C:\'Program Files'\'NVIDIA Corporation'\NVSMI\.\nvidia-smi --auto-boost-default=0
         C:\'Program Files'\'NVIDIA Corporation'\NVSMI\.\nvidia-smi -ac "2505,1177"
-    }else {
+    } else {
         Write-Output "Skipping Set-OptimalGPUSettings, no nvidia-smi found"
     }
 }
@@ -762,7 +756,7 @@ function Install-DirectX {
     DownloadFile "https://download.microsoft.com/download/8/4/A/84A35BF1-DAFE-4AE8-82AF-AD2AE20B6B14/directx_Jun2010_redist.exe" "C:\$directx_exe"
     
     Write-Output "Creating temporary DirectX directory in C:\"
-    if((Test-Path -Path '\DirectX') -eq $true) {} Else {New-Item -Path '\DirectX' -ItemType directory | Out-Null}
+    if((Test-Path -Path '\DirectX') -eq $true) {} else {New-Item -Path '\DirectX' -ItemType directory | Out-Null}
 
     Write-Output "Installing DirectX"
     Start-Process -FilePath "C:\$directx_exe" "/T:C:\DirectX /Q" -Wait
@@ -780,12 +774,12 @@ function Install-Unison {
 
 function Enable-SSHServer {
     Write-Output "Adding OpenSSH Server Capability"
-    If ($env:LOCAL  -eq 'yes')  {
-        Write-Output "Local detected.  Skipping OpenSSH reconfiguration"
+    if ($env:LOCAL  -eq 'yes')  {
+        Write-Output "Local detected. Skipping OpenSSH reconfiguration"
         return
     }
-    If ($env:VAGRANT  -eq 'yes')  {
-        Write-Output "Vagrant detected.  Skipping OpenSSH reconfiguration"
+    if ($env:VAGRANT  -eq 'yes')  {
+        Write-Output "Vagrant detected. Skipping OpenSSH reconfiguration"
         return
     }
 
@@ -834,5 +828,3 @@ function Enable-SSHServer {
     (Get-Content ($FilePath)) | Foreach-Object {$_ -replace '^PasswordAuthentication yes', ("PasswordAuthentication no")} | Set-Content  ($Filepath)
     Add-Content $FilePath "`nAuthenticationMethods publickey"
 }
-
-

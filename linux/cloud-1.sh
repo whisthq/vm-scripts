@@ -126,5 +126,5 @@ if [ $LOCAL = no ]; then
     sudo rm -f "utils.sh"
     $(sleep 1; sudo reboot) &
 elif [ $LOCAL = yes ]; then
-    echo Skipping reboot
+    echo "Skipping reboot"
 fi
