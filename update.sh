@@ -2,12 +2,12 @@
 
 # update Linux scripts
 aws s3 cp linux/utils.sh s3://fractal-cloud-setup-s3bucket/utils.sh && \
-aws s3 cp linux/creative.sh s3://fractal-cloud-setup-s3bucket/utils.sh && \
-aws s3 cp linux/softwaredev.sh s3://fractal-cloud-setup-s3bucket/utils.sh && \
-aws s3 cp linux/engineering.sh s3://fractal-cloud-setup-s3bucket/utils.sh && \
-aws s3 cp linux/productivity.sh s3://fractal-cloud-setup-s3bucket/utils.sh && \
-aws s3 cp linux/datascience.sh s3://fractal-cloud-setup-s3bucket/utils.sh && \
-aws s3 cp linux/gaming.sh s3://fractal-cloud-setup-s3bucket/utils.sh && \
+aws s3 cp linux/creative.sh s3://fractal-cloud-setup-s3bucket/creative.sh && \
+aws s3 cp linux/softwaredev.sh s3://fractal-cloud-setup-s3bucket/softwaredev.sh && \
+aws s3 cp linux/engineering.sh s3://fractal-cloud-setup-s3bucket/engineering.sh && \
+aws s3 cp linux/productivity.sh s3://fractal-cloud-setup-s3bucket/productivity.sh && \
+aws s3 cp linux/datascience.sh s3://fractal-cloud-setup-s3bucket/datascience.sh && \
+aws s3 cp linux/gaming.sh s3://fractal-cloud-setup-s3bucket/gaming.sh && \
 curl -X POST --data-urlencode "payload={\"channel\": \"#general\", \"username\": \"fractal-bot\", \"text\": \"Linux Setup-Scripts Updated in AWS S3\", \"icon_emoji\": \":ghost:\"}" https://hooks.slack.com/services/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
 
 # update Windows scripts
