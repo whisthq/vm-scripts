@@ -217,9 +217,13 @@ function Install-FractalService {
     export FRACTAL_UID=`id -u fractal`
     sudo install -d -o fractal /run/user/$FRACTAL_UID
     sudo systemctl start user@$FRACTAL_UID
+    echo sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user enable fractal
     sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user status fractal
-    sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user enable fractal
+    echo Starting fractal service
+    sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user start fractal
+    echo Fractal service status
     sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user status fractal
+    echo Finished starting fractal service
 }
 
 function Install-FractalServer {
