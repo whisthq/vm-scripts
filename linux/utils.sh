@@ -208,7 +208,7 @@ function Install-FractalService {
 
     echo "Enabling Fractal Service with systemctl"
     env
-    if [[ $GITHUB_ACTION = "yes" ]]; then
+    if [[ $FRACTAL_GITHUB_ACTION = "yes" ]]; then
         echo "Skipping Enable-FractalService for Github Action"
         return
     fi

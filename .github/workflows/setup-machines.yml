@@ -37,14 +37,14 @@ jobs:
       working-directory: linux
       env:
           LOCAL: yes
-          GITHUB_ACTION: yes
+          FRACTAL_GITHUB_ACTION: yes
           
     - name: Runs cloud-1.sh
       run: ./cloud-1.sh
       working-directory: linux
       env:
           LOCAL: yes
-          GITHUB_ACTION: yes
+          FRACTAL_GITHUB_ACTION: yes
 
   setup-windows:
     runs-on: windows-latest
