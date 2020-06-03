@@ -25,7 +25,9 @@ if [ $LOCAL = no ]; then
     GetBashScript "utils.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/utils.sh"
 fi
 
-source ./utils.sh
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+echo $DIR
+source $DIR/utils.sh
 
 # Run all the basic command to setup Gnome and Linux virtual display
 echo Installing virtual display

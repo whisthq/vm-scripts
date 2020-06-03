@@ -35,7 +35,7 @@ If ($env:LOCAL  -eq 'no')  {
 } Else {
     Write-Output "Running Local: LOCAL=$env:LOCAL"
     Get-Location
-    $utils_script_name = "./utils.psm1"
+    $utils_script_name = "$PSScriptRoot/utils.psm1"
 }
 
 Import-Module "$utils_script_name"
@@ -66,8 +66,8 @@ Set-OptimalGPUSettings
 Install-Curl
 Install-PoshSSH
 Show-FileExtensions $run_on_cloud $credentials
-Install-FractalWallpaper $run_on_cloud $credentials
 Set-FractalDirectory
+Install-FractalWallpaper $run_on_cloud $credentials
 Install-FractalService
 Install-FractalServer $protocol_branch
 Install-FractalExitScript
@@ -155,8 +155,10 @@ if ($productivity_install) {
 }
 
 # Clean PowerShell install script and restart
-Write-Output "Cleaning up Utils script script"
-Remove-Item -Path $utils_script_name -Confirm:$false -ErrorAction SilentlyContinue
+If ($env:LOCAL  -eq 'no')  {
+    Write-Output "Cleaning up Utils script script"
+    Remove-Item -Path $utils_script_name -Confirm:$false -ErrorAction SilentlyContinue
+}
 
 If ($LOCAL  -eq 'no')  {
     Restart-Computer -Force

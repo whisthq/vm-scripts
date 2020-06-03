@@ -57,8 +57,8 @@ function Install-FractalLinuxInputDriver {
 
     # symlink file
     # do this as root AFTER fractal-input.rules has been moved to the final install directory
-    sudo groupadd fractal
-    sudo usermod -a -G fractal Fractal # (the -a is VERY important, else you overwrite a user's groups)
+    sudo groupadd fractal || echo "fractal group already existed"
+    sudo usermod -a -G fractal fractal || echo "fractal already in fractal group" # (the -a is VERY important, else you overwrite a user's groups)
     sudo ln -sf /usr/share/fractal/fractal-input.rules /etc/udev/rules.d/90-fractal-input.rules
 }
 
@@ -79,7 +79,10 @@ function Install-AutodeskMaya {
     sudo tar xvf Autodesk_Maya_2017_EN_JP_ZH_Linux_64bit.tgz
 
     # Install Dependencies
-    sudo apt-get install -y libssl1.0.0 gcc  libssl-dev libjpeg62 alien csh tcsh libaudiofile-dev libglw1-mesa elfutils libglw1-mesa-dev mesa-utils xfstt xfonts-100dpi xfonts-75dpi ttf-mscorefonts-installer libfam0 libfam-dev libcurl4-openssl-dev libtbb-dev
+    sudo apt-get install -y libssl1.0.0 gcc  libssl-dev libjpeg62 \
+      alien csh tcsh libaudiofile-dev libglw1-mesa elfutils libglw1-mesa-dev \
+      mesa-utils xfstt xfonts-100dpi xfonts-75dpi ttf-mscorefonts-installer \
+      libfam0 libfam-dev libcurl4-openssl-dev libtbb-dev
     sudo apt-get install -y libtbb-dev 
     sudo wget -q http://launchpadlibrarian.net/183708483/libxp6_1.0.2-2_amd64.deb
     sudo wget -q http://mirrors.kernel.org/ubuntu/pool/main/libp/libpng/libpng12-0_1.2.54-1ubuntu1_amd64.deb
@@ -141,13 +144,10 @@ function Install-FractalExitScript {
     echo "Downloading Fractal Logo icon"
     sudo wget -q -O /usr/share/fractal/assets/logo.png "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/logo.png"
 
-    # Skips step if local
-    if [ $LOCAL = yes ]; then
-        return
-    fi
     # download Exit Fractal Desktop Shortcut
     echo "Creating Exit-Fractal Desktop Shortcut"
-    sudo wget -q "$HOME/Exit-Fractal.desktop" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/Exit-Fractal.desktop"
+    sudo wget -q -O "$HOME/Exit-Fractal.desktop" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/Exit-Fractal.desktop"
+    sudo mkdir -p "$HOME/.local/share/applications/"
     sudo mv "$HOME/Exit-Fractal.desktop" "$HOME/.local/share/applications/Exit-Fractal.desktop"
 
     # create Ubuntu dock shortcut
@@ -156,13 +156,13 @@ function Install-FractalExitScript {
 }
 
 function Install-FractalAutoUpdate {
-    # Skips step if local
-    if [ $LOCAL = yes ]; then
-        return
-    fi
     # no need to download version, update.sh will download it
     echo "Downloading Fractal Auto Update Script"
-    sudo wget -q -O /usr/share/fractal/update.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/update.sh"
+    ls -al /usr/share/fractal 
+    echo "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/update.sh"
+
+    # TODO: Update.sh missing https://github.com/fractalcomputers/setup-scripts/issues/10
+    sudo wget -q -O /usr/share/fractal/update.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/update.sh" || echo "Update.sh missing.  Please add when updated"
 }
 
 function Install-NvidiaTeslaPublicDrivers {
@@ -182,34 +182,39 @@ function Install-NvidiaTeslaPublicDrivers {
 
 function Set-OptimalGPUSettings {
     echo "Setting Optimal Tesla M60 GPU Settings"
-    # Skips nvidia-smi if LOCAL-yes
-    if [ $LOCAL = yes ]; then
-        return
+    if ! [ -x "$(command -v nvidia-smi)"]; then
+        sudo nvidia-smi --auto-boost-default=0
+        sudo nvidia-smi -ac "2505,1177"
+    else
+        echo "Nvidia-smi does not exist, skipping Set-OptimalGPUSettings"
     fi
-    sudo nvidia-smi --auto-boost-default=0
-    sudo nvidia-smi -ac "2505,1177"
 }
 
 function Disable-TCC {
     echo "Disabling TCC Mode on Nvidia Tesla GPU"
-    # Skips nvidia-smi if LOCAL-yes
-    if [ $LOCAL = yes ]; then
-        return
+
+    if ! [ -x "$(command -v nvidia-smi)"]; then
+        sudo nvidia-smi -g 0 -fdm 0 
+    else
+        echo "Nvidia-smi does not exist, skipping Disable-TCC"
     fi
-    sudo nvidia-smi -g 0 -fdm 0 
 }
 
 function Install-FractalService {
     # then start Fractal with Fractal Service for auto-restart
-
+    echo "Installing Fractal Service"
     sudo wget -q -O /etc/systemd/user/fractal.service "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/fractal.service"
     sudo chmod +x /etc/systemd/user/fractal.service
 
-    # Skips enabling
-    if [ $LOCAL = yes ]; then
-        return
-    fi
-    systemctl --user enable fractal
+    echo "Enabling Fractal Service with systemctl"
+    # Starts a pam systemd process for the user if not started
+    # https://unix.stackexchange.com/questions/423632/systemctl-user-not-available-for-www-data-user
+    export FRACTAL_UID=`id -u fractal`
+    sudo install -d -o fractal /run/user/$FRACTAL_UID
+    sudo systemctl start user@$FRACTAL_UID
+    sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user status fractal
+    sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user start fractal
+    sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user status fractal
 }
 
 function Install-FractalServer {
@@ -218,7 +223,7 @@ function Install-FractalServer {
     sudo wget -q -O /usr/share/fractal/FractalServer "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/FractalServer"
     sudo wget -q -O /usr/share/fractal/FractalServer.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/FractalServer.sh"
 
-    sudo chgrp Fractal -R /usr/share/fractal
+    sudo chgrp fractal -R /usr/share/fractal
     sudo chmod g+rw -R /usr/share/fractal
     sudo chmod g+x /usr/share/fractal/FractalServer # make FractalServer executable
     sudo chmod g+x /usr/share/fractal/FractalServer.sh # make FractalServer executable
@@ -235,16 +240,10 @@ function Install-7Zip {
 
 function Set-FractalDirectory {
     echo "Creating Fractal Directory in /usr/share"
-    sudo [ -d /usr/share/fractal ] || sudo mkdir /usr/share/fractal
-
     echo "Creating Fractal Asset Subdirectory in /usr/share/fractal"
-    sudo [ -d /usr/share/fractal/assets ] || sudo mkdir /usr/share/fractal/assets
-
     echo "Creating Fractal Exit Subdirectory in /usr/share/fractal"
-    sudo [ -d /usr/share/fractal/exit ] || sudo mkdir /usr/share/fractal/exit
-
     echo "Creating Fractal Sync Subdirectory in /usr/share/fractal"
-    sudo [ -d /usr/share/fractal/sync ] || sudo mkdir /usr/share/fractal/sync
+    sudo mkdir -p /usr/share/fractal/assets /usr/share/fractal/exit /usr/share/fractal/sync
 }
 
 function Install-Unison {
@@ -258,11 +257,12 @@ function Enable-SSHKey {
     # echo "Generating SSH Key"
     # yes | ssh-keygen -f sshkey -q -N """"
     # cp sshkey.pub "$HOME/.ssh/authorized_keys"
-    # Skips step if local
+    echo "Download SSH Administrator Authorized Key"
     if [ $LOCAL = yes ]; then
+        echo "Skipping Enable-SSHKey LOCAL flag set"
         return
     fi
-    echo "Download SSH Administrator Authorized Key"
+
     sudo wget -q -O /tmp/administrator_authorized_keys "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/administrator_authorized_keys"
     sudo cp /tmp/administrator_authorized_keys "$HOME/.ssh/authorized_keys"
     sudo chmod 600 "$HOME/.ssh/authorized_keys" # activate
@@ -283,10 +283,6 @@ function Install-FractalWallpaper {
 
     # then set the wallpaper
     echo "Setting Fractal Wallpaper"
-    # Skips step if local
-    if [ $LOCAL = yes ]; then
-        return
-    fi
     gsettings set org.gnome.desktop.background picture-uri /usr/share/fractal/assets/wallpaper.png
 }
 
