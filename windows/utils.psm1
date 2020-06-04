@@ -398,6 +398,61 @@ function Install-OpenCV {
     Choco-Install opencv
 }
 
+function Install-Firefox {
+    Write-Output "Installing Mozilla Firefox through Chocolatey"
+    Choco-Install firefox
+}
+
+function Install-VLC {
+    Write-Output "Installing VLC through Chocolatey"
+    Choco-Install vlc
+}
+
+function Install-Gimp {
+    Write-Output "Installing Gimp through Chocolatey"
+    Choco-Install gimp
+}
+
+function Install-Dropbox {
+    Write-Output "Installing Dropbox through Chocolatey"
+    Choco-Install dropbox
+}
+
+function Install-NodeJS {
+    Write-Output "Installing NodeJS through Chocolatey"
+    Choco-Install nodejs
+}
+
+function Install-AndroidStudio {
+    Write-Output "Installing Android Studio through Chocolatey"
+    Choco-Install androidstudio
+}
+
+function Install-Telegram {
+    Write-Output "Installing Telegram through Chocolatey"
+    Choco-Install telegram.install
+}
+
+function Install-Whatsapp {
+    Write-Output "Installing Whatsapp through Chocolatey"
+    Choco-Install whatsapp
+}
+
+function Install-GitHubDesktop {
+    Write-Output "Installing GitHub Desktop through Chocolatey"
+    Choco-Install github-desktop
+}
+
+function Install-Unity {
+    Write-Output "Installing Unity through Chocolatey"
+    Choco-Install unity
+}
+
+function Install-SublimeText {
+    Write-Output "Installing Sublime Text 3 through Chocolatey"
+    Choco-Install sublimetext3
+}
+
 function Install-Blender {
     Write-Output "Installing Blender through Chocolatey"
     Choco-Install blender
