@@ -11,6 +11,7 @@ function GetBashScript {
 
 # Changes to exit script immediately if any command fails
 set -e
+export DEBIAN_FRONTEND="noninteractive"
 
 # Run sudo so it's not prompted in the following commands and install basic packages
 if [ $LOCAL = no ]; then
@@ -25,7 +26,9 @@ if [ $LOCAL = no ]; then
     GetBashScript "utils.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/utils.sh"
 fi
 
-source ./utils.sh
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+echo $DIR
+source $DIR/utils.sh
 
 # Run all the basic command to setup Gnome and Linux virtual display
 echo Installing virtual display

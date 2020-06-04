@@ -26,29 +26,25 @@ jobs:
 
     - name: Setup fractal user
       run: |
-        sudo useradd Fractal \
-        && echo 'Fractal:password1234567' | sudo chpasswd 
-    
-    - name: Install tree
-      run: |
-        sudo apt-get install tree
-        tree
-        tree /home
-        env
+        sudo useradd fractal || echo "fractal user already exists"
+        echo 'fractal:password1234567.' | sudo chpasswd && echo "Set password"
+        sudo mkhomedir_helper fractal
+
+        echo $HOME
 
     - name: Runs cloud-0.sh
       run: ./cloud-0.sh
       working-directory: linux
       env:
-          DEBIAN_FRONTEND: "noninteractive"
           LOCAL: yes
-    
+          FRACTAL_GITHUB_ACTION: yes
+          
     - name: Runs cloud-1.sh
       run: ./cloud-1.sh
       working-directory: linux
       env:
-          DEBIAN_FRONTEND: "noninteractive"
           LOCAL: yes
+          FRACTAL_GITHUB_ACTION: yes
 
   setup-windows:
     runs-on: windows-latest

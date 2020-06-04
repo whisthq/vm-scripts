@@ -4,12 +4,12 @@ $webClient = New-Object System.Net.WebClient
 
 function DownloadFile ($url, $path) {
     Write-Output "Downloading $url to $path"
-    if ($env:QUIET -eq 'yes')  {
+    If ($env:QUIET  -eq 'yes')  {
         Write-Output "Quietly.................."
         $global:ProgressPreference = 'SilentlyContinue'    # Subsequent calls do not display UI.
     }
     Invoke-WebRequest -URI $url -OutFile $path
-    if ($env:QUIET -eq 'yes')  {
+    If ($env:QUIET  -eq 'yes')  {
         $global:ProgressPreference = 'Continue'            # Subsequent calls do display UI.
     }
 }
@@ -57,7 +57,7 @@ function Invoke-RemotePowerShellCommand ([SecureString] $credentials, $command_a
 }
 
 function Update-Windows {
-    if ($env:NO_UPDATE -eq 'yes')  {
+    If ($env:NO_UPDATE  -eq 'yes')  {
         Write-Output "Skipping Windows Update"
         return
     }
@@ -89,11 +89,11 @@ function Update-Firewall {
 
 function Disable-TCC {
     Write-Output "Disable TCC Mode on Nvidia Tesla GPU"
-    if ((Test-Path -Path "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe") -eq $true) {
+    if((Test-Path -Path "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe") -eq $true) {
         $nvsmi = "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe"
         $gpu = & $nvsmi --format=csv,noheader --query-gpu=pci.bus_id
         & $nvsmi -g $gpu -fdm 0
-    } else {
+    }else {
         Write-Output "Skipping Disable-TCC, no nvidia-smi found"
     }
 }
@@ -103,6 +103,11 @@ function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
     Set-LocalUser -Name $admin_username -PasswordNeverExpires $true -AccountNeverExpires
 
     Write-Output "Make the admin login at startup"
+    If ($env:VAGRANT  -eq 'yes')  {
+        Write-Output "Vagrant detected.  Skipping enable Autologin to Fractal account"
+        return
+    }
+
     $registry = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
     Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -Type String
     Set-ItemProperty $registry "DefaultDomainName" -Value "$env:COMPUTERNAME" -Type String 
@@ -204,8 +209,8 @@ function Enable-RemotePowerShell ([SecureString] $certificate_password) {
 
     # the rest of this script configures a VM to allow remote powershell for userspace scripts
     Write-Output "Setting WinRM for PowerShell Remoting"
-    if ($env:VAGRANT -eq 'yes')  {
-        Write-Output "Vagrant detected. Skipping enable Remote Powershell"
+    If ($env:VAGRANT  -eq 'yes')  {
+        Write-Output "Vagrant detected.  Skipping enable Remote Powershell"
         return
     }
     Start-Service WinRM
@@ -328,7 +333,7 @@ function Install-Chocolatey {
     if (Get-Command chocolatey -errorAction SilentlyContinue) {
         Write-Output "Chocolatey exists, skipping installation"
         chocolatey feature enable -n allowGlobalConfirmation
-    } else {
+    }else{
         $ProgressPreference = 'SilentlyContinue'    # Subsequent calls do not display UI.
         Invoke-Expression ($webClient.DownloadString('https://chocolatey.org/install.ps1'))
         $ProgressPreference = 'Continue'            # Subsequent calls do display UI.
@@ -337,12 +342,13 @@ function Install-Chocolatey {
 }
 
 function Choco-Install ($package) {
-    if ($env:QUIET -eq 'yes')  {
+    If ($env:QUIET  -eq 'yes')  {
         Write-Output "Quietly.................."
         choco install $package -y --no-progress
-    } else {
+    }else {
         choco install $package -y
     }
+
 }
 
 function Install-Steam {
@@ -357,10 +363,10 @@ function Install-Discord {
 
 function Install-GoogleChrome {
     Write-Output 'Installing Google Chrome through Chrocolatey'
-    if ($env:QUIET -eq 'yes')  {
+    If ($env:QUIET  -eq 'yes')  {
         Write-Output "Quietly.................."
         choco install googlechrome -y --ignore-checksums --no-progress
-    } else {
+    }else {
         choco install googlechrome -y --ignore-checksums
     }
 }
@@ -741,11 +747,11 @@ function Install-NvidiaTeslaPublicDrivers {
 }
 
 function Set-OptimalGPUSettings {
-    if ((Test-Path -Path "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe") -eq $true) {
+    if((Test-Path -Path "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe") -eq $true) {
         Write-Output "Setting Optimal Tesla M60 GPU Settings"
         C:\'Program Files'\'NVIDIA Corporation'\NVSMI\.\nvidia-smi --auto-boost-default=0
         C:\'Program Files'\'NVIDIA Corporation'\NVSMI\.\nvidia-smi -ac "2505,1177"
-    } else {
+    }else {
         Write-Output "Skipping Set-OptimalGPUSettings, no nvidia-smi found"
     }
 }
@@ -774,12 +780,12 @@ function Install-Unison {
 
 function Enable-SSHServer {
     Write-Output "Adding OpenSSH Server Capability"
-    if ($env:LOCAL  -eq 'yes')  {
-        Write-Output "Local detected. Skipping OpenSSH reconfiguration"
+    If ($env:LOCAL  -eq 'yes')  {
+        Write-Output "Local detected.  Skipping OpenSSH reconfiguration"
         return
     }
-    if ($env:VAGRANT  -eq 'yes')  {
-        Write-Output "Vagrant detected. Skipping OpenSSH reconfiguration"
+    If ($env:VAGRANT  -eq 'yes')  {
+        Write-Output "Vagrant detected.  Skipping OpenSSH reconfiguration"
         return
     }
 
