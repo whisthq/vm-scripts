@@ -10,3 +10,4 @@ Install-3DSMaxDesign
 Install-AdobeCreativeCloud
 Install-DaVinciResolve
 Install-Lightworks
+Install-Unity

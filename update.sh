@@ -19,3 +19,7 @@ aws s3 cp windows/productivity.ps1 s3://fractal-cloud-setup-s3bucket/productivit
 aws s3 cp windows/datascience.ps1 s3://fractal-cloud-setup-s3bucket/datascience.ps1 && \
 aws s3 cp windows/gaming.ps1 s3://fractal-cloud-setup-s3bucket/gaming.ps1 && \
 curl -X POST --data-urlencode "payload={\"channel\": \"#general\", \"username\": \"fractal-bot\", \"text\": \"Windows Setup-Scripts Updated in AWS S3\", \"icon_emoji\": \":ghost:\"}" https://hooks.slack.com/services/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
+
+# update Linux service
+aws s3 cp linux/FractalServer.sh s3://fractal-cloud-setup-s3bucket/FractalServer.sh && \
+curl -X POST --data-urlencode "payload={\"channel\": \"#general\", \"username\": \"fractal-bot\", \"text\": \"Linux Service Updated in AWS S3\", \"icon_emoji\": \":ghost:\"}" https://hooks.slack.com/services/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

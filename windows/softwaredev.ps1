@@ -14,3 +14,7 @@ Install-LLVM
 Install-Cmake
 Install-Cppcheck
 Install-CUDAToolkit
+Install-AndroidStudio
+Install-GitHubDesktop
+Install-SublimeText
+Install-NodeJS

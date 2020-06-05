@@ -27,6 +27,7 @@ In addition to the OS-specific scripts, which install the minimum required to ma
   - 3DS Max Design (can't be installed without a subscription)
   - DaVinci Resolve (can't be installed without a subscription)
   - Lightworks
+  - Unity
 
 - Engineering Script
   - Solidworks (can't be installed without a subscription)
@@ -46,12 +47,17 @@ In addition to the OS-specific scripts, which install the minimum required to ma
   - Cmake
   - Cppcheck
   - LLVM & Clang-format
+  - Android Studio
+  - GitHub Desktop (Windows only)
+  - Sublime Text
+  - NodeJS
 
 - Data Science Script
   - Git
   - Anaconda & R Studio
   - OpenCV
   - Curl
+  - Gimp
 
 - Productivity Script
   - Slack
@@ -59,6 +65,11 @@ In addition to the OS-specific scripts, which install the minimum required to ma
   - Adobe Acrobat Reader DC
   - Skype
   - Zoom
+  - Telegram
+  - Whatsapp
+  - Firefox
+  - VLC
+  - Dropbox
 
 ## Peer-to-Peer Setup Scripts
 

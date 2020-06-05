@@ -4,12 +4,12 @@ $webClient = New-Object System.Net.WebClient
 
 function DownloadFile ($url, $path) {
     Write-Output "Downloading $url to $path"
-    If ($env:QUIET  -eq 'yes')  {
+    if ($env:QUIET -eq 'yes')  {
         Write-Output "Quietly.................."
         $global:ProgressPreference = 'SilentlyContinue'    # Subsequent calls do not display UI.
     }
     Invoke-WebRequest -URI $url -OutFile $path
-    If ($env:QUIET  -eq 'yes')  {
+    if ($env:QUIET -eq 'yes')  {
         $global:ProgressPreference = 'Continue'            # Subsequent calls do display UI.
     }
 }
@@ -25,8 +25,7 @@ function Test-RegistryValue {
     try {
         Get-ItemProperty -Path $Path | Select-Object -ExpandProperty $Value -ErrorAction Stop | Out-Null
         return $true
-    }
-    catch {
+    } catch {
         return $false
     }
 }
@@ -57,7 +56,7 @@ function Invoke-RemotePowerShellCommand ([SecureString] $credentials, $command_a
 }
 
 function Update-Windows {
-    If ($env:NO_UPDATE  -eq 'yes')  {
+    if ($env:NO_UPDATE -eq 'yes')  {
         Write-Output "Skipping Windows Update"
         return
     }
@@ -89,11 +88,11 @@ function Update-Firewall {
 
 function Disable-TCC {
     Write-Output "Disable TCC Mode on Nvidia Tesla GPU"
-    if((Test-Path -Path "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe") -eq $true) {
+    if ((Test-Path -Path "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe") -eq $true) {
         $nvsmi = "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe"
         $gpu = & $nvsmi --format=csv,noheader --query-gpu=pci.bus_id
         & $nvsmi -g $gpu -fdm 0
-    }else {
+    } else {
         Write-Output "Skipping Disable-TCC, no nvidia-smi found"
     }
 }
@@ -103,8 +102,8 @@ function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
     Set-LocalUser -Name $admin_username -PasswordNeverExpires $true -AccountNeverExpires
 
     Write-Output "Make the admin login at startup"
-    If ($env:VAGRANT  -eq 'yes')  {
-        Write-Output "Vagrant detected.  Skipping enable Autologin to Fractal account"
+    if ($env:VAGRANT -eq 'yes')  {
+        Write-Output "Vagrant detected. Skipping enable Autologin to Fractal account"
         return
     }
 
@@ -209,7 +208,7 @@ function Enable-RemotePowerShell ([SecureString] $certificate_password) {
 
     # the rest of this script configures a VM to allow remote powershell for userspace scripts
     Write-Output "Setting WinRM for PowerShell Remoting"
-    If ($env:VAGRANT  -eq 'yes')  {
+    if ($env:VAGRANT  -eq 'yes')  {
         Write-Output "Vagrant detected.  Skipping enable Remote Powershell"
         return
     }
@@ -333,7 +332,7 @@ function Install-Chocolatey {
     if (Get-Command chocolatey -errorAction SilentlyContinue) {
         Write-Output "Chocolatey exists, skipping installation"
         chocolatey feature enable -n allowGlobalConfirmation
-    }else{
+    } else {
         $ProgressPreference = 'SilentlyContinue'    # Subsequent calls do not display UI.
         Invoke-Expression ($webClient.DownloadString('https://chocolatey.org/install.ps1'))
         $ProgressPreference = 'Continue'            # Subsequent calls do display UI.
@@ -342,10 +341,10 @@ function Install-Chocolatey {
 }
 
 function Choco-Install ($package) {
-    If ($env:QUIET  -eq 'yes')  {
+    if ($env:QUIET -eq 'yes')  {
         Write-Output "Quietly.................."
         choco install $package -y --no-progress
-    }else {
+    } else {
         choco install $package -y
     }
 
@@ -363,10 +362,10 @@ function Install-Discord {
 
 function Install-GoogleChrome {
     Write-Output 'Installing Google Chrome through Chrocolatey'
-    If ($env:QUIET  -eq 'yes')  {
+    if ($env:QUIET -eq 'yes')  {
         Write-Output "Quietly.................."
         choco install googlechrome -y --ignore-checksums --no-progress
-    }else {
+    } else {
         choco install googlechrome -y --ignore-checksums
     }
 }
@@ -396,6 +395,61 @@ function Install-Git {
 function Install-OpenCV {
     Write-Output "Installing OpenCV through Chocolatey"
     Choco-Install opencv
+}
+
+function Install-Firefox {
+    Write-Output "Installing Mozilla Firefox through Chocolatey"
+    Choco-Install firefox
+}
+
+function Install-VLC {
+    Write-Output "Installing VLC through Chocolatey"
+    Choco-Install vlc
+}
+
+function Install-Gimp {
+    Write-Output "Installing Gimp through Chocolatey"
+    Choco-Install gimp
+}
+
+function Install-Dropbox {
+    Write-Output "Installing Dropbox through Chocolatey"
+    Choco-Install dropbox
+}
+
+function Install-NodeJS {
+    Write-Output "Installing NodeJS through Chocolatey"
+    Choco-Install nodejs
+}
+
+function Install-AndroidStudio {
+    Write-Output "Installing Android Studio through Chocolatey"
+    Choco-Install androidstudio
+}
+
+function Install-Telegram {
+    Write-Output "Installing Telegram through Chocolatey"
+    Choco-Install telegram.install
+}
+
+function Install-Whatsapp {
+    Write-Output "Installing Whatsapp through Chocolatey"
+    Choco-Install whatsapp
+}
+
+function Install-GitHubDesktop {
+    Write-Output "Installing GitHub Desktop through Chocolatey"
+    Choco-Install github-desktop
+}
+
+function Install-Unity {
+    Write-Output "Installing Unity through Chocolatey"
+    Choco-Install unity
+}
+
+function Install-SublimeText {
+    Write-Output "Installing Sublime Text 3 through Chocolatey"
+    Choco-Install sublimetext3
 }
 
 function Install-Blender {
@@ -747,11 +801,11 @@ function Install-NvidiaTeslaPublicDrivers {
 }
 
 function Set-OptimalGPUSettings {
-    if((Test-Path -Path "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe") -eq $true) {
+    if ((Test-Path -Path "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe") -eq $true) {
         Write-Output "Setting Optimal Tesla M60 GPU Settings"
         C:\'Program Files'\'NVIDIA Corporation'\NVSMI\.\nvidia-smi --auto-boost-default=0
         C:\'Program Files'\'NVIDIA Corporation'\NVSMI\.\nvidia-smi -ac "2505,1177"
-    }else {
+    } else {
         Write-Output "Skipping Set-OptimalGPUSettings, no nvidia-smi found"
     }
 }
@@ -780,11 +834,11 @@ function Install-Unison {
 
 function Enable-SSHServer {
     Write-Output "Adding OpenSSH Server Capability"
-    If ($env:LOCAL  -eq 'yes')  {
+    if ($env:LOCAL -eq 'yes')  {
         Write-Output "Local detected.  Skipping OpenSSH reconfiguration"
         return
     }
-    If ($env:VAGRANT  -eq 'yes')  {
+    if ($env:VAGRANT -eq 'yes')  {
         Write-Output "Vagrant detected.  Skipping OpenSSH reconfiguration"
         return
     }

@@ -8,3 +8,4 @@ Install-OpenCV
 Install-Curl
 Install-Make
 Install-GCC
+Install-Gimp
