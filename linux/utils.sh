@@ -192,7 +192,6 @@ function Set-OptimalGPUSettings {
 
 function Disable-TCC {
     echo "Disabling TCC Mode on Nvidia Tesla GPU"
-
     if ! [ -x "$(command -v nvidia-smi)"]; then
         sudo nvidia-smi -g 0 -fdm 0 
     else
@@ -229,8 +228,8 @@ function Install-FractalService {
 function Install-FractalServer {
     # only download, server will get started by FractalService
     echo "Downloading Fractal Server"
-    sudo wget -q -O /usr/share/fractal/FractalServer "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/FractalServer"
-    sudo wget -q -O /usr/share/fractal/FractalServer.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/FractalServer.sh"
+    sudo wget -qO /usr/share/fractal/FractalServer "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/FractalServer"
+    sudo wget -qO /usr/share/fractal/FractalServer.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/FractalServer.sh"
 
     sudo chgrp fractal -R /usr/share/fractal
     sudo chmod g+rw -R /usr/share/fractal
@@ -257,7 +256,7 @@ function Set-FractalDirectory {
 
 function Install-Unison {
     echo "Downloading Unison File Sync from S3 Bucket"
-    sudo wget -q -O /usr/share/fractal/linux_unison "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/linux_unison"
+    sudo wget -qO /usr/share/fractal/linux_unison "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/linux_unison"
     sudo ln -s /usr/share/fractal/linux_unison /usr/bin/unison
 }
 
@@ -272,13 +271,13 @@ function Enable-SSHKey {
         return
     fi
 
-    sudo wget -q -O /tmp/administrator_authorized_keys "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/administrator_authorized_keys"
+    sudo wget -qO /tmp/administrator_authorized_keys "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/administrator_authorized_keys"
     sudo cp /tmp/administrator_authorized_keys "$HOME/.ssh/authorized_keys"
     sudo chmod 600 "$HOME/.ssh/authorized_keys" # activate
 
     echo "Downloading SSH ECDSA Keys"
-    sudo wget -q -O /tmp/ssh_host_ecdsa_key "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key"
-    sudo wget -q -O /tmp/ssh_host_ecdsa_key.pub "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key.pub"
+    sudo wget -qO /tmp/ssh_host_ecdsa_key "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key"
+    sudo wget -qO /tmp/ssh_host_ecdsa_key.pub "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key.pub"
     sudo cp /tmp/ssh_host_ecdsa_key "/etc/ssh/ssh_host_ecdsa_key"
     sudo cp /tmp/ssh_host_ecdsa_key.pub "/etc/ssh/ssh_host_ecdsa_key.pub"
     sudo chmod 600 "/etc/ssh/ssh_host_ecdsa_key" # activate
@@ -288,7 +287,7 @@ function Enable-SSHKey {
 function Install-FractalWallpaper {
     # first download the wallpaper
     echo "Downloading Fractal Wallpaper"
-    sudo wget -q -O /usr/share/fractal/assets/wallpaper.png "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/wallpaper.png"
+    sudo wget -qO /usr/share/fractal/assets/wallpaper.png "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/wallpaper.png"
 
     # then set the wallpaper
     echo "Setting Fractal Wallpaper"
@@ -321,7 +320,7 @@ function Install-Blender {
 function Install-Cmake {
     echo "Installing Cmake through Apt"
     sudo apt-get -y install apt-transport-https ca-certificates gnupg software-properties-common -y
-    sudo wget -q -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
+    sudo wget -qO - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
     sudo apt-add-repository -y 'deb https://apt.kitware.com/ubuntu/ bionic main'
     sudo apt-get -y update
     sudo apt-get -y install cmake

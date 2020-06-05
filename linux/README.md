@@ -31,7 +31,7 @@ There are two Linux cloud scripts, `cloud-0.sh` and `cloud-1.sh`, which both nee
 - Set Auto-Login
 - Disable Automatic Lock Screen
 
-You can simply run `./setup-linux.sh [IP ADDRESS]` to run those two scripts on a specific VM/container from any device.
+You can simply run `./setup-linux.sh [IP ADDRESS]` from a Linux computer to run those two scripts on a specific VM/container from any device.
 
 ### Linux Ubuntu Peer-to-Peer Scripts
 
