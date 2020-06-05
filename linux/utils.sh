@@ -42,18 +42,18 @@ function Install-VirtualDisplay {
 
 function Install-CustomGDMConfiguration {
    echo "Installing Custom Gnome Display Manager Configuration"
-   sudo wget -q -O /etc/gdm3/custom.conf "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/custom.conf"
+   sudo wget -qO /etc/gdm3/custom.conf "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/custom.conf"
 }
 
 function Install-CustomX11Configuration {
    echo "Installing Custom X11 Configuration"
-   sudo wget -q -O /usr/share/X11/xorg.conf.d/01-dummy.conf "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/01-dummy.conf"
+   sudo wget -qO /usr/share/X11/xorg.conf.d/01-dummy.conf "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/01-dummy.conf"
 }
 
 function Install-FractalLinuxInputDriver {
     # first download the driver symlink file
     echo "Installing Fractal Linux Input Driver"
-    sudo wget -q -O /usr/share/fractal/fractal-input.rules "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/fractal-input.rules"
+    sudo wget -qO /usr/share/fractal/fractal-input.rules "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/fractal-input.rules"
 
     # symlink file
     # do this as root AFTER fractal-input.rules has been moved to the final install directory
@@ -65,7 +65,7 @@ function Install-FractalLinuxInputDriver {
 function Disable-Shutdown {
     # based on: https://askubuntu.com/questions/453479/how-to-disable-shutdown-reboot-from-lightdm-in-14-04
     echo "Disabling Shutdown Option in Start Menu"
-    sudo wget -q -O /etc/polkit-1/localauthority/50-local.d/restrict-login-powermgmt.pkla "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/restrict-login-powermgmt.pkla"
+    sudo wget -qO /etc/polkit-1/localauthority/50-local.d/restrict-login-powermgmt.pkla "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/restrict-login-powermgmt.pkla"
 }
 
 function Install-AutodeskMaya {
@@ -131,22 +131,22 @@ function Install-AutodeskMaya {
     # Cleanup
     echo "Maya was installed successfully"
     cd ..
-    sudo rm -f -r maya2017Install
+    sudo rm -rf maya2017Install
     cd ~
 }
 
 function Install-FractalExitScript {
     # download exit Bash script
     echo "Downloading Fractal Exit script"
-    sudo wget -q -O /usr/share/fractal/exit/exit.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/exit.sh"
+    sudo wget -qO /usr/share/fractal/exit/exit.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/exit.sh"
 
     # download the Fractal logo for the icons
     echo "Downloading Fractal Logo icon"
-    sudo wget -q -O /usr/share/fractal/assets/logo.png "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/logo.png"
+    sudo wget -qO /usr/share/fractal/assets/logo.png "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/logo.png"
 
     # download Exit Fractal Desktop Shortcut
     echo "Creating Exit-Fractal Desktop Shortcut"
-    sudo wget -q -O "$HOME/Exit-Fractal.desktop" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/Exit-Fractal.desktop"
+    sudo wget -qO "$HOME/Exit-Fractal.desktop" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/Exit-Fractal.desktop"
     sudo mkdir -p "$HOME/.local/share/applications/"
     sudo mv "$HOME/Exit-Fractal.desktop" "$HOME/.local/share/applications/Exit-Fractal.desktop"
 
@@ -162,7 +162,7 @@ function Install-FractalAutoUpdate {
     echo "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/update.sh"
 
     # TODO: Update.sh missing https://github.com/fractalcomputers/setup-scripts/issues/10
-    sudo wget -q -O /usr/share/fractal/update.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/update.sh" || echo "Update.sh missing.  Please add when updated"
+    sudo wget -qO /usr/share/fractal/update.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/update.sh" || echo "Update.sh missing.  Please add when updated"
 }
 
 function Install-NvidiaTeslaPublicDrivers {
@@ -366,6 +366,65 @@ function Install-GoogleChrome {
     sudo wget -q "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
     sudo apt-get -y install ./google-chrome-stable_current_amd64.deb
     sudo rm -f "google-chrome-stable_current_amd64.deb"
+}
+
+function Install-Firefox {
+    echo "Installing Firefox through Apt"
+    sudo apt-get -y install firefox
+}
+
+function Install-Dropbox {
+    echo "Installing Dropbox"
+    cd ~ && wget -O - "https://www.dropbox.com/download?plat=lnx.x86_64" | tar xzf -
+    ~/.dropbox-dist/dropboxd
+}
+
+function Install-VLC {
+    echo "Installing VLC through Apt"
+    sudo apt-get -y install vlc
+}
+
+function Install-Gimp {
+    echo "Installing Gimp through Apt"
+    sudo apt-get -y install gimp
+}
+
+function Install-NodeJS {
+    echo "Installing NodeJS through Apt"
+    sudo apt-get -y install nodejs
+}
+
+function Install-AndroidStudio {
+    echo "Installing Android Studio through Snap"
+    sudo snap install android-studio --classic
+}
+
+function Install-GitHubDesktop {
+    echo "GitHub Desktop does not run on Linux Ubuntu and thus cannot be installed"
+}
+
+function Install-Unity {
+    echo "Installing Unity as AppImage"
+    sudo wget -qO $HOME/Documents/UnityHub.AppImage https://public-cdn.cloud.unity3d.com/hub/prod/UnityHub.AppImage
+    sudo chmod +x $HOME/Documents/UnityHub.AppImage
+}
+
+function Install-SublimeText {
+    echo "Installing Sublime Text 3 through Apt"
+    sudo wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
+    sudo apt-get -y install apt-transport-https
+    echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
+    sudo apt-get -y update
+    sudo apt-get -y install sublime-text
+}
+
+function Install-Telegram {
+    echo "Installing Telegram through Snap"
+    sudo snap install telegram-desktop --classoc
+}
+
+function Install-Whatsapp {
+    echo "Whatsapp does not run on Linux Ubuntu and thus cannot be installed"    
 }
 
 function Install-Curl {

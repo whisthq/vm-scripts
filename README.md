@@ -48,7 +48,7 @@ In addition to the OS-specific scripts, which install the minimum required to ma
   - Cppcheck
   - LLVM & Clang-format
   - Android Studio
-  - GitHub Desktop
+  - GitHub Desktop (Windows only)
   - Sublime Text
   - NodeJS
 
