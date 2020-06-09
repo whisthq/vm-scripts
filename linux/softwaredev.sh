@@ -18,3 +18,8 @@ Install-AndroidStudio
 Install-GitHubDesktop
 Install-SublimeText
 Install-NodeJS
+Install-Python2
+Install-Python3
+Install-MinGW
+Install-GDB
+Install-Valgrind

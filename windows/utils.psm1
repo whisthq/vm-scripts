@@ -378,7 +378,7 @@ function Install-EpicGamesLauncher {
 function Install-Blizzard {
     $blizzard_exe = "Battle.net-Setup.exe"
     Write-Output "Downloading Blizzard Battle.Net Launcher into path C:\$blizzard_exe"
-    DownloadFile 'https://www.battle.net/download/getInstallerForGame?os=win&locale=enUS&version=LIVE&gameProgram=BATTLENET_APP&id=634826696.1580926426' "C:\$blizzard_exe"
+    DownloadFile 'https://www.battle.net/download/getInstallerForGame?os=win"&"locale=enUS"&"version=LIVE"&"gameProgram=BATTLENET_APP"&"id=634826696.1580926426' "C:\$blizzard_exe"
 
     Write-Output "Installing Blizzard Battle.Net Launcher"
     Start-Process -FilePath "C:\$blizzard_exe" -ArgumentList "/q" -Wait
@@ -425,6 +425,29 @@ function Install-NodeJS {
 function Install-AndroidStudio {
     Write-Output "Installing Android Studio through Chocolatey"
     Choco-Install androidstudio
+}
+
+function Install-Python2 {
+    Write-Output "Installing Python 2 through Chocolatey"
+    Choco-Install python2
+}
+
+function Install-Python3 {
+    Write-Output "Installing Python 3 through Chocolatey"
+    Choco-Install python
+}
+
+function Install-MinGW {
+    Write-Output "Installing MinGW through Chocolatey"
+    Choco-Install mingw
+}
+
+function Install-GDB {
+    Write-Output "GDB can only be installed on Linux"
+}
+
+function Install-Valgrind {
+    Write-Output "Valgrind can only be installed on Linux"
 }
 
 function Install-Telegram {

@@ -402,6 +402,30 @@ function Install-GitHubDesktop {
     echo "GitHub Desktop does not run on Linux Ubuntu and thus cannot be installed"
 }
 
+function Install-Python2 {
+    echo "Installing Python 2 through Apt"
+    sudo apt-get -y install python2
+}
+
+function Install-Python3 {
+    echo "Installing Python 3.6 through Apt"
+    sudo apt-get -y install python3.6
+}
+
+function Install-MinGW {
+    echo "MinGW does not run on Linux Ubuntu and thus cannot be installed"
+}
+
+function Install-GDB {
+    echo "Installing GDB through Apt"
+    sudo apt-get -y install libc6-dbg gdb
+}
+
+function Install-Valgrind {
+    echo "Installing Valgrind through Apt"
+    sudo apt-get -y install valgrind
+}
+
 function Install-Unity {
     echo "Installing Unity as AppImage"
     sudo wget -qO $HOME/Documents/UnityHub.AppImage https://public-cdn.cloud.unity3d.com/hub/prod/UnityHub.AppImage

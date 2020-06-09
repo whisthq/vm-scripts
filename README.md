@@ -51,6 +51,11 @@ In addition to the OS-specific scripts, which install the minimum required to ma
   - GitHub Desktop (Windows only)
   - Sublime Text
   - NodeJS
+  - Python 2
+  - Python 3
+  - MinGW (Windows only)
+  - GDB (Linux only)
+  - Valgrind (Linux only)
 
 - Data Science Script
   - Git
