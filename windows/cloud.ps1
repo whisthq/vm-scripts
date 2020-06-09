@@ -155,11 +155,8 @@ if ($productivity_install) {
 }
 
 # Clean PowerShell install script and restart
-if ($env:LOCAL  -eq 'no')  {
+if ($env:LOCAL -eq 'no')  {
     Write-Output "Cleaning up Utils script script"
     Remove-Item -Path $utils_script_name -Confirm:$false -ErrorAction SilentlyContinue
-}
-
-if ($LOCAL -eq 'no')  {
     Restart-Computer -Force
 }

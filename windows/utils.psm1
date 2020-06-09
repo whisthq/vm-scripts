@@ -427,6 +427,29 @@ function Install-AndroidStudio {
     Choco-Install androidstudio
 }
 
+function Install-Python2 {
+    Write-Output "Installing Python 2 through Chocolatey"
+    Choco-Install python2
+}
+
+function Install-Python3 {
+    Write-Output "Installing Python 3 through Chocolatey"
+    Choco-Install python
+}
+
+function Install-MinGW {
+    Write-Output "Installing MinGW through Chocolatey"
+    Choco-Install mingw
+}
+
+function Install-GDB {
+    Write-Output "GDB can only be installed on Linux"
+}
+
+function Install-Valgrind {
+    Write-Output "Valgrind can only be installed on Linux"
+}
+
 function Install-Telegram {
     Write-Output "Installing Telegram through Chocolatey"
     Choco-Install telegram.install
