@@ -378,7 +378,7 @@ function Install-EpicGamesLauncher {
 function Install-Blizzard {
     $blizzard_exe = "Battle.net-Setup.exe"
     Write-Output "Downloading Blizzard Battle.Net Launcher into path C:\$blizzard_exe"
-    DownloadFile 'https://www.battle.net/download/getInstallerForGame?os=win&locale=enUS&version=LIVE&gameProgram=BATTLENET_APP&id=634826696.1580926426' "C:\$blizzard_exe"
+    DownloadFile 'https://www.battle.net/download/getInstallerForGame?os=win"&"locale=enUS"&"version=LIVE"&"gameProgram=BATTLENET_APP"&"id=634826696.1580926426' "C:\$blizzard_exe"
 
     Write-Output "Installing Blizzard Battle.Net Launcher"
     Start-Process -FilePath "C:\$blizzard_exe" -ArgumentList "/q" -Wait
