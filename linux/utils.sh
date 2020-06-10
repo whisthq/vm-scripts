@@ -231,7 +231,7 @@ function Install-FractalServer {
     sudo wget -qO /usr/share/fractal/FractalServer "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/FractalServer"
     sudo wget -qO /usr/share/fractal/FractalServer.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/FractalServer.sh"
 
-    sudo chgrp fractal -R /usr/share/fractal
+    sudo chgrp Fractal -R /usr/share/fractal
     sudo chmod g+rw -R /usr/share/fractal
     sudo chmod g+x /usr/share/fractal/FractalServer # make FractalServer executable
     sudo chmod g+x /usr/share/fractal/FractalServer.sh # make FractalServer executable
