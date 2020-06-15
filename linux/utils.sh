@@ -202,7 +202,7 @@ function Disable-TCC {
 function Install-FractalService {
     # then start Fractal with Fractal Service for auto-restart
     echo "Installing Fractal Service"
-    sudo wget -q -O /etc/systemd/user/fractal.service "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/fractal.service"
+    sudo wget -q -O /etc/systemd/user/fractal.service "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/fractal.service"
     sudo chmod +x /etc/systemd/user/fractal.service
 
     echo "Enabling Fractal Service with systemctl"
@@ -216,12 +216,13 @@ function Install-FractalService {
     export FRACTAL_UID=`id -u fractal`
     sudo install -d -o fractal /run/user/$FRACTAL_UID
     sudo systemctl start user@$FRACTAL_UID
-    echo sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user enable fractal
-    sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user status fractal
+    echo Enabling fractal service
+    sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user enable fractal
+    # sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user status fractal
     echo Starting fractal service
     sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user start fractal
     echo Fractal service status
-    sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user status fractal
+    # sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user status fractal
     echo Finished starting fractal service
 }
 
@@ -238,7 +239,7 @@ function Install-FractalServer {
 
     # download the libraries
     echo "Downloading FFmpeg Libraries and Dependencies"
-    sudo apt-get install libavcodec-dev libavdevice-dev libx11-dev libxtst-dev libxdamage-dev libasound2-dev xclip -y
+    sudo apt-get install libx11-dev libxtst-dev libxdamage-dev libasound2-dev xclip -y
 }
 
 function Install-7Zip {
@@ -271,7 +272,7 @@ function Enable-SSHKey {
         return
     fi
 
-    sudo wget -qO /tmp/administrator_authorized_keys "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/administrator_authorized_keys"
+    sudo wget -qO /tmp/administrator_authorized_keys "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/administrators_authorized_keys"
     sudo cp /tmp/administrator_authorized_keys "$HOME/.ssh/authorized_keys"
     sudo chmod 600 "$HOME/.ssh/authorized_keys" # activate
 
