@@ -14,6 +14,7 @@ set -e
 export DEBIAN_FRONTEND="noninteractive"
 
 # Run sudo so it's not prompted in the following commands and install basic packages
+LOCAL=${LOCAL:=no}
 if [ $LOCAL = no ]; then
     printf "password1234567." | sudo apt-get -y install wget python python3
 else
@@ -21,7 +22,6 @@ else
 fi
 
 # Download utils Bash script with helper functions and import it
-LOCAL=${LOCAL:=no}
 if [ $LOCAL = no ]; then
     GetBashScript "utils.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/utils.sh"
 fi

@@ -7,9 +7,6 @@ Type=simple
 ExecStart=/bin/bash /usr/share/fractal/FractalServer.sh
 Restart=always
 RestartSec=3
-User=fractal
-Group=fractal
-
 
 [Install]
 WantedBy=default.target

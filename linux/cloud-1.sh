@@ -50,7 +50,7 @@ Install-CustomGDMConfiguration
 Install-CustomX11Configuration
 Set-FractalDirectory
 Install-FractalServer $protocol_branch
-Install-FractalService 
+Install-FractalService $protocol_branch
 Install-FractalExitScript
 Install-FractalAutoUpdate $protocol_branch
 Install-FractalLinuxInputDriver
