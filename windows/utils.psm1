@@ -60,6 +60,7 @@ function Update-Windows {
         Write-Output "Skipping Windows Update"
         return
     }
+
     $url = "https://gallery.technet.microsoft.com/scriptcenter/Execute-Windows-Update-fc6acb16/file/144365/1/PS_WinUpdate.zip"
     $compressed_file = "PS_WinUpdate.zip"
     $update_script = "PS_WinUpdate.ps1"
@@ -251,11 +252,11 @@ function Install-FractalWallpaper ($run_on_cloud, $credentials) {
     }
 }
 
-function Install-FractalService {
+function Install-FractalService ($protocol_branch) {
     # first download the service executable
     Write-Output "Downloading Fractal Service"
     $fractalservice_name = "C:\Program Files\Fractal\FractalService.exe"
-    $fractalservice_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/FractalService.exe"
+    $fractalservice_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$protocol_branch/FractalService.exe"
     DownloadFile $fractalservice_url $fractalservice_name
 
     # then install the service
@@ -338,6 +339,7 @@ function Install-Chocolatey {
         $ProgressPreference = 'Continue'            # Subsequent calls do display UI.
         chocolatey feature enable -n allowGlobalConfirmation
     }
+    refreshenv # to ensure the choco path is set properly
 }
 
 function Choco-Install ($package) {
@@ -347,7 +349,6 @@ function Choco-Install ($package) {
     } else {
         choco install $package -y
     }
-
 }
 
 function Install-Steam {
@@ -858,11 +859,11 @@ function Install-Unison {
 function Enable-SSHServer {
     Write-Output "Adding OpenSSH Server Capability"
     if ($env:LOCAL -eq 'yes')  {
-        Write-Output "Local detected.  Skipping OpenSSH reconfiguration"
+        Write-Output "Local detected. Skipping OpenSSH reconfiguration"
         return
     }
     if ($env:VAGRANT -eq 'yes')  {
-        Write-Output "Vagrant detected.  Skipping OpenSSH reconfiguration"
+        Write-Output "Vagrant detected. Skipping OpenSSH reconfiguration"
         return
     }
 

@@ -8,7 +8,7 @@ Install-Skype
 Install-Zoom
 Install-AdobeAcrobat
 Install-Telegram
-Install-Whatsapp
+Install-WhatsApp
 Install-VLC
 Install-Dropbox
 Install-Firefox

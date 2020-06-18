@@ -1,5 +1,6 @@
 #!/bin/bash
-# This script gets called by 'cloud.sh'
+
+# Helper script to install creative applications
 source ./utils.sh
 
 Install-Blender

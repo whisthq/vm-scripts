@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # This script gets run by a Fractal Cloud Computer to enable Cloud streaming
 # This script should only get run on Linux Ubuntu computers
 # This script is part 2 of 2 scripts needed to enable Cloud streaming
@@ -22,8 +23,8 @@ function GetBashScript {
 set -e
 export DEBIAN_FRONTEND="noninteractive"
 
+# Whether to run these functions locally or on a cloud VM/container
 LOCAL=${LOCAL:=no}
-# TODO(alamp): Fix LOCAL=yes skip installs in github actions
 
 # Download utils Bash script with helper functions and import it
 if [ $LOCAL = no ]; then
@@ -41,8 +42,6 @@ Update-Linux
 Set-Time
 Install-7Zip
 Install-Curl
-# Install-Spotify
-Install-GoogleChrome
 Install-NvidiaTeslaPublicDrivers
 Disable-TCC
 Set-OptimalGPUSettings
@@ -124,7 +123,6 @@ fi
 
 # Clean Bash install script and restart
 echo "Cleaning up Utils script"
-
 if [ $LOCAL = no ]; then
     sudo rm -f "utils.sh"
     $(sleep 1; sudo reboot) &

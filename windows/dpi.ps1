@@ -1,10 +1,14 @@
-# This script gets run (as Administrator) by a webserver to update the DPI of a Windows VM
-# Usage: run-dpi.ps1 ["DPI"]
+# This script gets run (as Administrator) remotely by a webserver to update the DPI of a Windows VM
+# Usage: run-dpi.ps1 [DPI] [VM-PASSWORD]
+
+# These are default parameters, $admin_username and $certificate_password never change and don't need to
+# be passed in. You need to pass in admin_password, otherwise this default password will not work unless
+# it is the same password as the VM, which it should not be
 param (
-    [string]        $admin_username = "Fractal",
+    [string]        $dpi = "96",
     [SecureString]  $admin_password = (ConvertTo-SecureString "password1234567." -AsPlainText -Force),
-    [SecureString]  $certificate_password = (ConvertTo-SecureString "certificate-password1234567." -AsPlainText -Force),
-    [string]        $dpi = "96"
+    [string]        $admin_username = "Fractal",
+    [SecureString]  $certificate_password = (ConvertTo-SecureString "certificate-password1234567." -AsPlainText -Force)
 )
 
 # Set the execution policy to enable running Powershell modules and scripts
@@ -12,9 +16,9 @@ Set-ExecutionPolicy RemoteSigned -Force
 
 # Helper function to download the PowerShell scripts from S3 buckets
 function Get-PowerShellScript ($script_name, $script_url) {
-    Write-Output "Downloading Powershell script $script_name from $script_url"
+    Write-Output "Downloading Powershell Script $script_name from $script_url"
     [Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
-    $webClient = new-object System.Net.WebClient
+    $webClient = New-Object System.Net.WebClient
     $webClient.DownloadFile($script_url, $script_name)
 }
 
@@ -44,6 +48,6 @@ elseif ($dpi == "144") {
 }
 
 # Clean PowerShell install script and restart
-Write-Output "Cleaning up Utils script script"
+Write-Output "Cleaning up Utils Script"
 Remove-Item -Path $utils_script_name -Confirm:$false
 Restart-Computer -Force

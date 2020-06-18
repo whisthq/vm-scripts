@@ -1,16 +1,14 @@
 # Fractal Linux Ubuntu Setup Scripts
 
-This subfolder is responsible for all the Linux-related system scripts to set up a computer, virtual machine or container for Fractal streaming.
+This subfolder is responsible for all the Linux-related system scripts to set up a computer, virtual machine or container as a server for Fractal streaming.
 
 ### Linux Ubuntu Cloud Scripts
 
-There are two Linux cloud scripts, `cloud-0.sh` and `cloud-1.sh`, which both need to be run one after another, since the packages installed in `cloud-0.sh` require rebooting. The cloud scripts can be run both locally via SSH with X redirection (`ssh -X`) or via a webserver. The following tasks are performed by the cloud scripts:
+There are two Linux cloud scripts, `cloud-0.sh` and `cloud-1.sh`, which both need to be run one after another, since the packages installed in `cloud-0.sh` require rebooting. The cloud scripts can be run both locally via SSH with X redirection (`ssh -X fractal@[IP ADDRESS]`) or via a webserver. The following tasks are performed by the cloud scripts:
 
 - Update Linux
 - Set Automatic Time & Timezone
 - Install 7-Zip
-- Install Spotify
-- Install Google Chrome
 - Install Nvidia Tesla Public Drivers (in addition to GRID drivers, includes Cuda Toolkit 10.2)
 - Disable Tesla TCC mode to enable Tesla Graphics (WDM mode)
 - Set Optimal Tesla M60 GPU Settings
@@ -31,7 +29,7 @@ There are two Linux cloud scripts, `cloud-0.sh` and `cloud-1.sh`, which both nee
 - Set Auto-Login
 - Disable Automatic Lock Screen
 
-You can simply run `./setup-linux.sh [IP ADDRESS]` from a Linux computer to run those two scripts on a specific VM/container from any device.
+You can simply run `./setup-linux.sh [IP ADDRESS] [VM/CONTAINER PASSWORD]` from a Linux computer to run those two scripts on a specific VM/container from any device.
 
 ### Linux Ubuntu Peer-to-Peer Scripts
 

@@ -1,5 +1,6 @@
 # This script gets run by the Fractal Electron app to enable Peer-to-Peer streaming
-# This script should only get run on Windows computers
+# It is run on user's computers being transformed into Fractal streaming servers
+# This script only runs on Windows computers
 
 # Set the execution policy to enable running Powershell modules and scripts
 Set-ExecutionPolicy RemoteSigned -Force
@@ -8,7 +9,7 @@ Set-ExecutionPolicy RemoteSigned -Force
 function GetPowerShellScript ($script_name, $script_url) {
     Write-Output "Downloading Powershell script $script_name from $script_url"
     [Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
-    $webClient = new-object System.Net.WebClient
+    $webClient = New-Object System.Net.WebClient
     $webClient.DownloadFile($script_url, $script_name)
 }
 
@@ -21,7 +22,7 @@ Import-Module "$utils_script_name"
 # Run all the basic commands to setup Fractal for Peer-to-Peer streaming
 Update-Firewall
 Set-FractalDirectory
-Install-FractalService
+Install-FractalService "master" # install the master branch, could be staging or dev as well
 Install-FractalServer "master" # install the master branch, could be staging or dev as well
 Install-FractalExitScript
 Install-FractalAutoUpdate "master" # install the master branch, could be staging or dev as well

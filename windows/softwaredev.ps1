@@ -1,4 +1,4 @@
-# This script gets called by `general.ps1`
+# Helper script to install software development applications
 $script_name = "utils.psm1"
 Import-Module "C:\$script_name"
 

@@ -1,6 +1,7 @@
 #!/bin/bash
+
 # This file contains the functions called in the Bash scripts
-# Upload using `upload.sh`
+# You need to source this file via source ./utils.sh
 
 function Update-Linux {
     echo "Updating Linux Ubuntu"
@@ -25,7 +26,7 @@ function Disable-AutomaticLockScreen {
 }
 
 function Enable-FractalFirewallRule {
-    echo "Creating Fractal Firewall Rule"
+    echo "Creating Fractal Firewall Rules"
     yes | sudo ufw enable
     yes | sudo ufw allow 22 # SSH
     yes | sudo ufw allow 80 # HTTP
@@ -58,7 +59,7 @@ function Install-FractalLinuxInputDriver {
     # symlink file
     # do this as root AFTER fractal-input.rules has been moved to the final install directory
     sudo groupadd fractal || echo "fractal group already existed"
-    sudo usermod -a -G fractal fractal || echo "fractal already in fractal group" # (the -a is VERY important, else you overwrite a user's groups)
+    sudo usermod -aG fractal fractal || echo "fractal already in fractal group" # (the -a is VERY important, else you overwrite a user's groups)
     sudo ln -sf /usr/share/fractal/fractal-input.rules /etc/udev/rules.d/90-fractal-input.rules
 }
 
@@ -156,28 +157,59 @@ function Install-FractalExitScript {
 }
 
 function Install-FractalAutoUpdate {
+
+
+
+    #TODO
+
+
     # no need to download version, update.sh will download it
     echo "Downloading Fractal Auto Update Script"
     ls -al /usr/share/fractal 
     echo "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/update.sh"
+    sudo wget -qO /usr/share/fractal/update.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/Linux/update.sh"
 
-    # TODO: Update.sh missing https://github.com/fractalcomputers/setup-scripts/issues/10
-    sudo wget -qO /usr/share/fractal/update.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/update.sh" || echo "Update.sh missing.  Please add when updated"
+
+
 }
 
 function Install-NvidiaTeslaPublicDrivers {
     echo "Installing Nvidia Public Driver (GRID already installed at deployment through Azure)"
+
+    echo "Checking for Ubuntu 18.04 vs Ubuntu 20.04..."
+    release=$(lsb_release -r)
+    release_num=$(cut -f2 <<< $release)
+    echo "Found Ubuntu $release_num; Installing approriate Nvidia Drivers"
+
+    # define proper variables
+    if [ $release_num == "18.04" ]; then
+        keypath="http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub"
+        downloadpath="http://us.download.nvidia.com/tesla/440.64.00/nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb"
+        filepath="nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb"
+    elif [ $release_num == "20.04" ]; then
+        # Ubuntu 18 and 20 drivers are the same for now!
+        keypath="http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub"
+        downloadpath="http://us.download.nvidia.com/tesla/440.64.00/nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb"
+        filepath="nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb"
+    else
+        echo "Neither 18.04 nor 20.04, no Nvidia driver installed"
+    fi
+
     echo "Installing Nvidia CUDA GPG Key"
     sudo apt-key adv --fetch-keys  http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
+    sudo apt-key adv --fetch-keys $keypath
 
     echo "Downloading Nvidia M60 Driver from Nvidia Website"
     sudo wget -q http://us.download.nvidia.com/tesla/440.64.00/nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb
-    
+    sudo wget -q $downloadpath
+
     echo "Installing Nvidia M60 Driver"
     sudo dpkg -i nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb
+    sudo dpkg -i $filepath
 
     echo "Cleaning up Nvidia Public Drivers Installation"
     sudo rm -f nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb
+    sudo rm -f $filepath
 }
 
 function Set-OptimalGPUSettings {
@@ -204,6 +236,15 @@ function Install-FractalService {
     echo "Installing Fractal Service"
     sudo wget -q -O /etc/systemd/user/fractal.service "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/fractal.service"
     sudo chmod +x /etc/systemd/user/fractal.service
+
+
+    # sudo wget -qO /etc/systemd/user/fractal.service "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/fractal.service"
+    # sudo wget -qO /usr/share/fractal/FractalServer.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/FractalServer.sh"
+
+    # sudo chmod +x /etc/systemd/user/fractal.service # make fractal.service executable
+    # sudo chmod g+x /usr/share/fractal/FractalServer.sh # make FractalServer.sh executable
+
+
 
     echo "Enabling Fractal Service with systemctl"
     env
@@ -444,11 +485,11 @@ function Install-SublimeText {
 
 function Install-Telegram {
     echo "Installing Telegram through Snap"
-    sudo snap install telegram-desktop --classoc
+    sudo snap install telegram-desktop --classic
 }
 
-function Install-Whatsapp {
-    echo "Whatsapp does not run on Linux Ubuntu and thus cannot be installed"    
+function Install-WhatsApp {
+    echo "WhatsApp does not run on Linux Ubuntu and thus cannot be installed"    
 }
 
 function Install-Curl {

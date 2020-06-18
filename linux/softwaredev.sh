@@ -1,5 +1,6 @@
 #!/bin/bash
-# This script gets called by 'cloud.sh'
+
+# Helper script to install software development applications
 source ./utils.sh
 
 Install-VSPro2019

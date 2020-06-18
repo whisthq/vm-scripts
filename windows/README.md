@@ -4,9 +4,9 @@ This subfolder is responsible for all the Windows-related system scripts to set 
 
 ## Windows DPI Scripts
 
-The DPI script `dpi.ps1` is meant to be called from a webserver, along with the argument `96` or `144` depending on the respective DPI to set. It will use Remote-PowerShell to change the DPI of any windows VM or computer.
+The DPI script `dpi.ps1` is meant to be called from a webserver, along with the argument `96` or `144` depending on the respective DPI to set. It will use Remote-PowerShell to change the DPI of any Windows VM or computer.
 
-Usage: ```dpi.ps1 "96"``` or ```dpi.ps1 "144"```
+Usage: ```dpi.ps1 [VM-PASSWORD] 96``` or ```dpi.ps1 [VM-PASSWORD] 144```
 
 ### Windows Cloud Scripts
 
@@ -28,8 +28,6 @@ There is one Windows cloud script, `cloud.ps1`, which can be run both locally fr
 - Show File Extensions
 - Set the Windows DPI to 150% to enable 4K Streaming
 - Install 7-Zip
-- Install Spotify
-- Install Google Chrome
 - Install Nvidia Tesla Public Drivers (in addition to GRID drivers, includes Cuda Toolkit 10.2)
 - Disable Tesla TCC mode to enable Tesla Graphics (WDM mode)
 - Set Optimal Tesla M60 GPU Settings

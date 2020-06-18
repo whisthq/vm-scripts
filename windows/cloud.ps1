@@ -68,7 +68,7 @@ Install-PoshSSH
 Show-FileExtensions $run_on_cloud $credentials
 Set-FractalDirectory
 Install-FractalWallpaper $run_on_cloud $credentials
-Install-FractalService
+Install-FractalService $protocol_branch
 Install-FractalServer $protocol_branch
 Install-FractalExitScript
 Install-FractalAutoUpdate $protocol_branch
