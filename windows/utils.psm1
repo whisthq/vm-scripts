@@ -2,7 +2,7 @@
 [Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
 $webClient = New-Object System.Net.WebClient
 
-function DownloadFile ($url, $path) {
+function Get-File ($url, $path) {
     Write-Output "Downloading $url to $path"
     if ($env:QUIET -eq 'yes')  {
         Write-Output "Quietly.................."
@@ -66,7 +66,7 @@ function Update-Windows {
     $update_script = "PS_WinUpdate.ps1"
 
     Write-Output "Downloading Windows Update Powershell Script from $url"
-    DownloadFile $url "C:\$compressed_file"
+    Get-File $url "C:\$compressed_file"
     Unblock-File -Path "C:\$compressed_file"
 
     Write-Output "Extracting Windows Update Powershell Script"
@@ -120,7 +120,7 @@ function Disable-Cursor {
     Write-Output "Downloading the Blank Cursor File"
     $cursorPath = "C:\Program Files\Fractal\Assets\blank.cur"
     $cursorPath_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/blank.cur"
-    DownloadFile $cursorPath_url $cursorPath
+    Get-File $cursorPath_url $cursorPath
 
     Write-Output "Opening the Windows Cursor Registry"
     $RegConnect = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey([Microsoft.Win32.RegistryHive]"CurrentUser","$env:COMPUTERNAME")
@@ -209,10 +209,11 @@ function Enable-RemotePowerShell ([SecureString] $certificate_password) {
 
     # the rest of this script configures a VM to allow remote powershell for userspace scripts
     Write-Output "Setting WinRM for PowerShell Remoting"
-    if ($env:VAGRANT  -eq 'yes')  {
-        Write-Output "Vagrant detected.  Skipping enable Remote Powershell"
+    if ($env:VAGRANT -eq 'yes')  {
+        Write-Output "Vagrant detected. Skipping Enable-RemotePowershell"
         return
     }
+
     Start-Service WinRM
     Set-Item WSMan:\localhost\Client\TrustedHosts -Value "*" -Force
     New-ItemProperty -Name LocalAccountTokenFilterPolicy -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -PropertyType DWord -Value 1
@@ -234,7 +235,7 @@ function Install-FractalWallpaper ($run_on_cloud, $credentials) {
     Write-Output "Downloading Fractal Wallpaper"
     $fractalwallpaper_name = "C:\Program Files\Fractal\Assets\wallpaper.png"
     $fractalwallpaper_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/wallpaper.png"
-    DownloadFile $fractalwallpaper_url $fractalwallpaper_name
+    Get-File $fractalwallpaper_url $fractalwallpaper_name
 
     Write-Output "Setting Fractal Wallpaper"
     # if this script was meant to run on the cloud, we run via Remote-PS (to run from a webserver)
@@ -256,12 +257,12 @@ function Install-FractalService ($protocol_branch) {
     # first download the service executable
     Write-Output "Downloading Fractal Service"
     $fractalservice_name = "C:\Program Files\Fractal\FractalService.exe"
-    $fractalservice_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$protocol_branch/FractalService.exe"
-    DownloadFile $fractalservice_url $fractalservice_name
+    $fractalservice_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$protocol_branch/Windows/FractalService.exe"
+    Get-File $fractalservice_url $fractalservice_name
 
     # then install the service
     Write-Output "Enabling Fractal Service"
-    cmd.exe /c 'sc.exe Create "Fractal" binPath= "\"C:\Program Files\Fractal\FractalService.exe\"" start= "auto"' | Out-Null
+    cmd.exe /c 'sc.exe Create "Fractal" binPath="\"C:\Program Files\Fractal\FractalService.exe\"" start="auto"' | Out-Null
     cmd.exe /c 'sc.exe description "Fractal" "Fractal Service"' | Out-Null
     sc.exe Start 'Fractal' | Out-Null
 }
@@ -289,7 +290,7 @@ function Install-VirtualAudio {
     $hardware_id = "VBAudioVACWDM"
 
     Write-Output "Downloading Virtual Audio Driver"
-    DownloadFile "http://vbaudio.jcedeveloppement.com/Download_CABLE/VBCABLE_Driver_Pack43.zip" "C:\$compressed_file"
+    Get-File "http://vbaudio.jcedeveloppement.com/Download_CABLE/VBCABLE_Driver_Pack43.zip" "C:\$compressed_file"
     Unblock-File -Path "C:\$compressed_file"
 
     Write-Output "Extracting Virtual Audio Driver"
@@ -299,7 +300,7 @@ function Install-VirtualAudio {
     $devcon = "C:\Program Files (x86)\Windows Kits\10\Tools\x64\devcon.exe"
 
     Write-Output "Downloading Windows Development Kit installer"
-    DownloadFile "http://go.microsoft.com/fwlink/p/?LinkId=526733" "C:\$wdk_installer"
+    Get-File "http://go.microsoft.com/fwlink/p/?LinkId=526733" "C:\$wdk_installer"
 
     # installing in user session via $credentials
     Write-Output "Downloading and installing Windows Development Kit"
@@ -309,7 +310,7 @@ function Install-VirtualAudio {
     $url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/vb_cert.cer"
 
     Write-Output "Downloading VB certificate from $url"
-    DownloadFile $url "C:\$cert"
+    Get-File $url "C:\$cert"
 
     Write-Output "Importing VB certificate"
     Import-Certificate -FilePath "C:\$cert" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher"
@@ -379,7 +380,7 @@ function Install-EpicGamesLauncher {
 function Install-Blizzard {
     $blizzard_exe = "Battle.net-Setup.exe"
     Write-Output "Downloading Blizzard Battle.Net Launcher into path C:\$blizzard_exe"
-    DownloadFile 'https://www.battle.net/download/getInstallerForGame?os=win"&"locale=enUS"&"version=LIVE"&"gameProgram=BATTLENET_APP"&"id=634826696.1580926426' "C:\$blizzard_exe"
+    Get-File 'https://www.battle.net/download/getInstallerForGame?os=win"&"locale=enUS"&"version=LIVE"&"gameProgram=BATTLENET_APP"&"id=634826696.1580926426' "C:\$blizzard_exe"
 
     Write-Output "Installing Blizzard Battle.Net Launcher"
     Start-Process -FilePath "C:\$blizzard_exe" -ArgumentList "/q" -Wait
@@ -456,8 +457,8 @@ function Install-Telegram {
     Choco-Install telegram.install
 }
 
-function Install-Whatsapp {
-    Write-Output "Installing Whatsapp through Chocolatey"
+function Install-WhatsApp {
+    Write-Output "Installing WhatsApp through Chocolatey"
     Choco-Install whatsapp
 }
 
@@ -641,7 +642,7 @@ function Disable-NetworkWindow {
 
 function Set-MousePrecision ($run_on_cloud, $credentials) {
     Write-Output "Enabling Enhanced Pointer Precision"
-    # if this script was meant to run on the cloud, we run via Remote-PS (to run from a webserver)    
+    # if this script was meant to run on the cloud, we run via Remote-PS (to run remotely from a webserver)    
     if ($run_on_cloud) {
         Invoke-RemotePowerShellCommand $credentials 'Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name MouseSpeed -Value 1 | Out-Null'
     } else {
@@ -685,7 +686,7 @@ function Install-PoshSSH {
 
 function Show-FileExtensions ($run_on_cloud, $credentials) {
     Write-Output "Setting File Extensions"
-    # if this script was meant to run on the cloud, we run via Remote-PS (to run from a webserver)    
+    # if this script was meant to run on the cloud, we run via Remote-PS (to run remotely from a webserver)    
     if ($run_on_cloud) {
         Invoke-RemotePowerShellCommand $credentials 'Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name HideFileExt -Value 0 | Out-Null'
     } else {
@@ -716,7 +717,7 @@ function Disable-HyperV {
     $extract_folder = "DeviceManagement"
 
     Write-Output "Downloading Device Management Powershell Script from $url"
-    DownloadFile $url "C:\$compressed_file"
+    Get-File $url "C:\$compressed_file"
     Unblock-File -Path "C:\$compressed_file"
 
     Write-Output "Extracting Device Management Powershell Script"
@@ -734,13 +735,13 @@ function Install-FractalServer ($protocol_branch) {
     # only download, server will get started by service -- download the master branch for users
     Write-Output "Downloading Fractal Server"
     $fractalserver_name = "C:\Program Files\Fractal\FractalServer.exe"
-    $fractalserver_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$protocol_branch/FractalServer.exe"
-    DownloadFile $fractalserver_url $fractalserver_name
+    $fractalserver_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$protocol_branch/Windows/FractalServer.exe"
+    Get-File $fractalserver_url $fractalserver_name
 
     Write-Output "Download Shared FFmpeg Libs from S3"
     $shared_libs_name = "C:\shared-libs.tar.gz"
     $shared_libs_url = "https://fractal-protocol-shared-libs.s3.amazonaws.com/shared-libs.tar.gz"
-    DownloadFile $shared_libs_url $shared_libs_name
+    Get-File $shared_libs_url $shared_libs_name
 
     Write-Output "Unzip the .tar.gz File and Remove shared-libs.tar.gz & /lib"
     Get-Command tar
@@ -769,8 +770,8 @@ function Install-FractalAutoUpdate ($protocol_branch) {
     # no need to download version, update.bat will download it
     Write-Output "Downloading Fractal Auto Update script"
     $fractal_update_name = "C:\Program Files\Fractal\update.bat"
-    $fractal_update_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$protocol_branch/update.bat"
-    DownloadFile $fractal_update_url $fractal_update_name
+    $fractal_update_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$protocol_branch/Windows/update.bat"
+    Get-File $fractal_update_url $fractal_update_name
 }
 
 function Install-FractalExitScript {
@@ -778,26 +779,26 @@ function Install-FractalExitScript {
     Write-Output "Downloading Fractal Exit script"
     $fractal_exitbat_name = "C:\Program Files\Fractal\Exit\ExitFractal.bat"
     $fractal_exitbat_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ExitFractal.bat"
-    DownloadFile $fractal_exitbat_url $fractal_exitbat_name
+    Get-File $fractal_exitbat_url $fractal_exitbat_name
     
     # download vbs file for running .bat file without terminal
     Write-Output "Downloading Fractal Exit VBS helper script"
     $fractal_exitvbs_name = "C:\Program Files\Fractal\Exit\Exit.vbs"
     $fractal_exitvbs_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/Exit.vbs"
-    DownloadFile $fractal_exitvbs_url $fractal_exitvbs_name
+    Get-File $fractal_exitvbs_url $fractal_exitvbs_name
 
     # download the Fractal logo for the icons
     Write-Output "Downloading Fractal Logo icon"
     $fractal_icon_name = "C:\Program Files\Fractal\Assets\logo.ico"
     $fractal_icon_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/logo.ico"
-    DownloadFile $fractal_icon_url $fractal_icon_name
+    Get-File $fractal_icon_url $fractal_icon_name
 
     # create desktop shortcut 
     Write-Output "Creating Exit Fractal Desktop Shortcut"
     $WshShell = New-Object -comObject WScript.Shell
     $Shortcut = $WshShell.CreateShortcut("$env:Public\Desktop\Exit Fractal.lnk")
     $Shortcut.TargetPath = "C:\Program Files\Fractal\Exit\Exit.vbs"
-    $Shortcut.IconLocation="C:\Program Files\Fractal\Assets\logo.ico"
+    $Shortcut.IconLocation = "C:\Program Files\Fractal\Assets\logo.ico"
     $Shortcut.Save()
 
     # create start menu shortcut
@@ -815,7 +816,7 @@ function Install-NvidiaTeslaPublicDrivers {
     $url = "http://us.download.nvidia.com/tesla/442.50/442.50-tesla-desktop-win10-64bit-international.exe" # this URL needs to be updated periodically when a new driver version comes out
     
     Write-Output "Downloading Nvidia M60 driver from $url"
-    DownloadFile $url "C:\$driver_file"
+    Get-File $url "C:\$driver_file"
 
     Write-Output "Installing Nvidia M60 driver from $driver_file"
     Start-Process -FilePath "C:\$driver_file" -ArgumentList "-s", "-noreboot" -Wait
@@ -837,7 +838,7 @@ function Set-OptimalGPUSettings {
 function Install-DirectX {
     $directx_exe = "directx_Jun2010_redist.exe"
     Write-Output "Downloading DirectX into path C:\$direct_exe"
-    DownloadFile "https://download.microsoft.com/download/8/4/A/84A35BF1-DAFE-4AE8-82AF-AD2AE20B6B14/directx_Jun2010_redist.exe" "C:\$directx_exe"
+    Get-File "https://download.microsoft.com/download/8/4/A/84A35BF1-DAFE-4AE8-82AF-AD2AE20B6B14/directx_Jun2010_redist.exe" "C:\$directx_exe"
     
     Write-Output "Creating temporary DirectX directory in C:\"
     if((Test-Path -Path '\DirectX') -eq $true) {} else {New-Item -Path '\DirectX' -ItemType directory | Out-Null}
@@ -853,7 +854,7 @@ function Install-Unison {
     Write-Output "Downloading Unison File Sync from S3 Bucket" 
     $unison_name = "C:\Program Files\Fractal\unison.exe"
     $unison_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/unison.exe"
-    DownloadFile $unison_url $unison_name
+    Get-File $unison_url $unison_name
 }
 
 function Enable-SSHServer {
@@ -885,10 +886,10 @@ function Enable-SSHServer {
     # Get-Content -Path C:\ProgramData\ssh\administrators_authorized_keys    
 
     Write-Output "Downloading new OpenSSH Server Config and SSH Keys"     
-    DownloadFile "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/sshd_config" "C:\ProgramData\ssh\sshd_config"
-    DownloadFile "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key.pub" "C:\ProgramData\ssh\ssh_host_ecdsa_key.pub"
-    DownloadFile "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key" "C:\ProgramData\ssh_host_ecdsa_key"
-    DownloadFile "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/administrator_authorized_keys" "C:\ProgramData\ssh\administrator_authorized_keys"
+    Get-File "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/sshd_config" "C:\ProgramData\ssh\sshd_config"
+    Get-File "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key.pub" "C:\ProgramData\ssh\ssh_host_ecdsa_key.pub"
+    Get-File "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key" "C:\ProgramData\ssh_host_ecdsa_key"
+    Get-File "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/administrator_authorized_keys" "C:\ProgramData\ssh\administrator_authorized_keys"
 
     Write-Output "Enable Permissions on OpenSSH Config and SSH Keys Files"
     Set-FilePermission "C:\ProgramData\ssh\sshd_config"

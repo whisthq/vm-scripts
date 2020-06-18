@@ -221,53 +221,37 @@ function Disable-TCC {
 }
 
 function Install-FractalService {
-
-
-
-
-    # TODO
-
-
-    # then start Fractal with Fractal Service for auto-restart
     echo "Installing Fractal Service"
-    sudo wget -q -O /etc/systemd/user/fractal.service "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/fractal.service"
+    sudo wget -qO /etc/systemd/user/fractal.service "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/Linux/fractal.service"
     sudo chmod +x /etc/systemd/user/fractal.service
 
-
-    # sudo wget -qO /etc/systemd/user/fractal.service "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/fractal.service"
-    # sudo wget -qO /usr/share/fractal/FractalServer.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/FractalServer.sh"
-
-    # sudo chmod +x /etc/systemd/user/fractal.service # make fractal.service executable
-    # sudo chmod g+x /usr/share/fractal/FractalServer.sh # make FractalServer.sh executable
-
-
-
-    echo "Enabling Fractal Service with systemctl"
     env
     if [[ $FRACTAL_GITHUB_ACTION = "yes" ]]; then
         echo "Skipping Enable-FractalService for Github Action"
         return
     fi
-    # Starts a pam systemd process for the user if not started
+
+    # start a pam systemd process for the user if not started
     # https://unix.stackexchange.com/questions/423632/systemctl-user-not-available-for-www-data-user
+    echo "Start Pam Systemd Process for User fractal"
     export FRACTAL_UID=`id -u fractal`
     sudo install -d -o fractal /run/user/$FRACTAL_UID
     sudo systemctl start user@$FRACTAL_UID
-    echo Enabling fractal service
+
+    echo "Enabling Fractal Service"
     sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user enable fractal
-    # sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user status fractal
-    echo Starting fractal service
+
+    echo "Starting Fractal Service"
     sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user start fractal
-    echo Fractal service status
-    # sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user status fractal
-    echo Finished starting fractal service
+
+    echo "Finished Starting Fractal Service"
 }
 
 function Install-FractalServer {
-    # only download, server will get started by FractalService
+    # only download, the FractalServer will get started by the Fractal Service
     echo "Downloading Fractal Server"
-    sudo wget -qO /usr/share/fractal/FractalServer "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/FractalServer"
-    sudo wget -qO /usr/share/fractal/FractalServer.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/FractalServer.sh"
+    sudo wget -qO /usr/share/fractal/FractalServer "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/Linux/FractalServer"
+    sudo wget -qO /usr/share/fractal/FractalServer.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/Linux/FractalServer.sh"
 
     sudo chgrp fractal -R /usr/share/fractal
     sudo chmod g+rw -R /usr/share/fractal
@@ -275,8 +259,22 @@ function Install-FractalServer {
     sudo chmod g+x /usr/share/fractal/FractalServer.sh # make FractalServer executable
 
     # download the libraries
-    echo "Downloading FFmpeg Libraries and Dependencies"
+    echo "Downloading FFmpeg Dependencies"
     sudo apt-get install libx11-dev libxtst-dev libxdamage-dev libasound2-dev xclip -y
+
+    # libraries to install FFmpeg system libs -- we use our own now
+    # sudo apt-get install libavcodec-dev libavdevice-dev
+
+    echo "Downloading Fractal FFmpeg .so from AWS S3"
+
+
+
+
+
+
+
+
+
 }
 
 function Install-7Zip {
