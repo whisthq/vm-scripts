@@ -157,20 +157,12 @@ function Install-FractalExitScript {
 }
 
 function Install-FractalAutoUpdate {
-
-
-
-    #TODO
-
-
     # no need to download version, update.sh will download it
-    echo "Downloading Fractal Auto Update Script"
+    echo "Downloading Fractal Auto-update Script"
     ls -al /usr/share/fractal 
-    echo "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/update.sh"
+
+    echo "Downloading update.sh from https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/Linux/update.sh"
     sudo wget -qO /usr/share/fractal/update.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/Linux/update.sh"
-
-
-
 }
 
 function Install-NvidiaTeslaPublicDrivers {
@@ -192,23 +184,20 @@ function Install-NvidiaTeslaPublicDrivers {
         downloadpath="http://us.download.nvidia.com/tesla/440.64.00/nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb"
         filepath="nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb"
     else
-        echo "Neither 18.04 nor 20.04, no Nvidia driver installed"
+        echo "Running neither Ubuntu 18.04 nor 20.04, no Nvidia driver installed"
+        return
     fi
 
     echo "Installing Nvidia CUDA GPG Key"
-    sudo apt-key adv --fetch-keys  http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
     sudo apt-key adv --fetch-keys $keypath
 
     echo "Downloading Nvidia M60 Driver from Nvidia Website"
-    sudo wget -q http://us.download.nvidia.com/tesla/440.64.00/nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb
     sudo wget -q $downloadpath
 
     echo "Installing Nvidia M60 Driver"
-    sudo dpkg -i nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb
     sudo dpkg -i $filepath
 
     echo "Cleaning up Nvidia Public Drivers Installation"
-    sudo rm -f nvidia-driver-local-repo-ubuntu1804-440.64.00_1.0-1_amd64.deb
     sudo rm -f $filepath
 }
 
@@ -232,6 +221,13 @@ function Disable-TCC {
 }
 
 function Install-FractalService {
+
+
+
+
+    # TODO
+
+
     # then start Fractal with Fractal Service for auto-restart
     echo "Installing Fractal Service"
     sudo wget -q -O /etc/systemd/user/fractal.service "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/fractal.service"

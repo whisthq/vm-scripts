@@ -5,7 +5,7 @@
 
 sudo echo "login"
 
-if ! [[ $1 =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+if ! [[ $1 =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]] && ! [[ $2 =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
 	echo "Usage: ./setup-linux.sh [IP ADDRESS] [VM/CONTAINER PASSWORD]"
 	exit
 fi
@@ -34,4 +34,3 @@ while [[ $SSH_EXIT_STATUS -eq 255 ]]; do
 	echo "rm -rf ~/fractal-setup" | sudo sshpass -p "$2" ssh -o "StrictHostKeyChecking no" fractal@$1 /bin/bash
 	SSH_EXIT_STATUS=$?
 done
-
