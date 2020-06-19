@@ -265,16 +265,15 @@ function Install-FractalServer {
     # libraries to install FFmpeg system libs -- we use our own now
     # sudo apt-get install libavcodec-dev libavdevice-dev
 
-    echo "Downloading Fractal FFmpeg .so from AWS S3"
+    # our own Fractal FFmpeg Linux build, to put in the same folder as the FractalServer executable
+    echo "Downloading Fractal FFmpeg .so from AWS S3 and Moving to /usr/share/fractal/"
+    sudo wget -qO shared-libs.tar.gz "https://fractal-protocol-shared-libs.s3.amazonaws.com/shared-libs.tar.gz"
+    tar -xvf shared-libs.tar.gz
+    sudo mv share/64/Linux/* /usr/share/fractal/ # sudo required to avoid "permission denied" error
 
-
-
-
-
-
-
-
-
+    echo "Cleaning Downloaded Tar"
+    rm -rf shared-libs.tar.gz
+    rm -rf share 
 }
 
 function Install-7Zip {

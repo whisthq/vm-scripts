@@ -1,5 +1,5 @@
 # This script gets run (as Administrator) remotely by a webserver to update the DPI of a Windows VM
-# Usage: run-dpi.ps1 [DPI] [VM-PASSWORD]
+# Usage: run-dpi.ps1 [DPI] [VM/CONTAINER PASSWORD]
 
 # These are default parameters, $admin_username and $certificate_password never change and don't need to
 # be passed in. You need to pass in admin_password, otherwise this default password will not work unless

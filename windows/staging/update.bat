@@ -21,7 +21,6 @@ if errorlevel 1 (
 
   curl -s "https://fractal-protocol-shared-libs.s3.amazonaws.com/shared-libs.tar.gz" | tar xzf -
   xcopy /e /Y /c share\64\Windows\* "C:\Program Files\Fractal"
-  del /F share
 
   copy /Y "C:\Program Files\Fractal\FractalService.exe" "C:\Program Files\Fractal\OldFractalService.exe"
   sc config Fractal binPath="\"C:\Program Files\Fractal\OldFractalService.exe\""
@@ -41,3 +40,4 @@ if errorlevel 1 (
 )
 
 cd C:\Program Files\Fractal
+rmdir /S/Q fractal-protocol

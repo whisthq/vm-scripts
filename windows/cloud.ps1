@@ -1,10 +1,14 @@
 # This script gets run (as Administrator) by a Fractal Cloud Computer to enable Cloud streaming
 # This script should only get run on Windows computers
+# Usage: cloud.ps1 [VM/CONTAINER-PASSWORD]
+
+# The settings here will default to the values on the right, which should all be fine kept as is except
+# for the admin_password, which should be specificed based on the VM
 param (
-    [string]        $admin_username = "Fractal",
-    [SecureString]  $admin_password = (ConvertTo-SecureString "password1234567." -AsPlainText -Force),
-    [SecureString]  $certificate_password = (ConvertTo-SecureString "certificate-password1234567." -AsPlainText -Force),
+    [SecureString]  $admin_password         = (ConvertTo-SecureString "password1234567." -AsPlainText -Force),
     [string]        $protocol_branch        = "master", # protocol branch to pull, either master, staging or dev
+    [string]        $admin_username         = "Fractal",
+    [SecureString]  $certificate_password   = (ConvertTo-SecureString "certificate-password1234567." -AsPlainText -Force),
     [switch]        $run_on_cloud           = $false, # if true, this script uses PS-Remoting and needs to be run from webserver, else it doesn't use PS-Remoting and should be run from a PowerShell prompt on RDP
     [switch]        $creative_install       = $false,
     [switch]        $datascience_install    = $false,
@@ -59,7 +63,6 @@ Set-MousePrecision $run_on_cloud $credentials
 Set-Time
 Disable-NetworkWindow
 Install-7Zip
-Install-GoogleChrome
 # Install-NvidiaTeslaPublicDrivers
 Disable-TCC
 Set-OptimalGPUSettings
@@ -80,7 +83,7 @@ Disable-HyperV
 Disable-Lock
 Disable-Logout
 Disable-Shutdown
-Add-AutoLogin $admin_username $admin_password
+# Add-AutoLogin $admin_username $admin_password
 
 # Install creative packages
 if ($creative_install) {
