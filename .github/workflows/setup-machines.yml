@@ -12,7 +12,7 @@ jobs:
   # Linux scripts
   setup-linux:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     defaults:
       run:
         shell: bash
@@ -45,7 +45,7 @@ jobs:
   # Windows scripts
   setup-windows:
     runs-on: windows-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     defaults:
       run:
         shell: powershell
