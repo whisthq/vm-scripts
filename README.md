@@ -53,6 +53,7 @@ In addition to the OS-specific scripts, which install the minimum required to ma
   - NodeJS
   - Python 2
   - Python 3
+  - Postman
   - MinGW (Windows only)
   - GDB (Linux only)
   - Valgrind (Linux only)
@@ -100,3 +101,8 @@ If you get permission denied, or if this is your first time doing this for Fract
 - Format: `None`
 
 The service will then auto-update itself next time we push a server update, by pulling from AWS S3. 
+
+
+Windows username is Fractal
+
+Linux username is fractal

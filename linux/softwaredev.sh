@@ -24,3 +24,4 @@ Install-Python3
 Install-MinGW
 Install-GDB
 Install-Valgrind
+Install-Postman

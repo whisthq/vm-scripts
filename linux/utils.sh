@@ -433,6 +433,21 @@ function Install-AndroidStudio {
     sudo snap install android-studio --classic
 }
 
+function Install-Postman {
+    echo "Installing Postman through Snap"
+    sudo snap install postman
+}
+
+function Install-BraveBrowser {
+    echo "Installing Brave Browser through Snap"
+    sudo snap install brave
+}
+
+function Install-TorBrowser {
+    echo "Installing Tor Browser through Apt"
+    sudo apt-get -y install torbrowser-launcher
+}
+
 function Install-GitHubDesktop {
     echo "GitHub Desktop does not run on Linux Ubuntu and thus cannot be installed"
 }

@@ -589,6 +589,21 @@ function Install-Cmake {
     Choco-Install cmake
 }
 
+function Install-Postman {
+    Write-Output "Installing Postman through Chocolatey"
+    Choco-Install postman
+}
+
+function Install-BraveBrowser {
+    Write-Output "Installing Brave Browser through Chocolatey"
+    Choco-Install brave
+}
+
+function Install-TorBrowser {
+    Write-Output "Installing Tor Browser through Chocolatey"
+    Choco-Install tor-browser
+}
+
 function Install-Cppcheck {
     Write-Output "Installing Cppcheck through Chocolatey"
     Choco-Install cppcheck
