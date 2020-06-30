@@ -13,3 +13,4 @@ Install-VLC
 Install-Dropbox
 Install-Firefox
 Install-BraveBrowser
+Install-TorBrowser

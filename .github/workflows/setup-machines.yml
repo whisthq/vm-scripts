@@ -1,9 +1,7 @@
-# Installs cloud.ps1 and cloud-0.sh & cloud-1.sh to test VM scripts installation
+# This workflow installs cloud.ps1, on Windows, and cloud-0.sh & cloud-1.sh, on Linux, to test VM scripts installation
 
-name: Install Tests
+name: Install CI
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
 on:
   push:
     branches: [ master ]
@@ -30,14 +28,14 @@ jobs:
 
         echo $HOME
 
-    - name: Runs cloud-0.sh
+    - name: Run cloud-0.sh
       run: ./cloud-0.sh
       working-directory: linux
       env:
           LOCAL: yes
           FRACTAL_GITHUB_ACTION: yes
           
-    - name: Runs cloud-1.sh
+    - name: Run cloud-1.sh
       run: ./cloud-1.sh
       working-directory: linux
       env:
@@ -63,7 +61,7 @@ jobs:
         $credentials = New-Object System.Management.Automation.PSCredential "Fractal", $pass
         Start-Process powershell.exe -Credential $credentials
 
-    - name: Runs cloud.ps1
+    - name: Run cloud.ps1
       run: ./cloud.ps1
       working-directory: windows
       env:
