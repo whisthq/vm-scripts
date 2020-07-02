@@ -271,7 +271,17 @@ function Install-FractalServer {
     tar -xvf shared-libs.tar.gz
     sudo mv share/64/Linux/* /usr/share/fractal/ # sudo required to avoid "permission denied" error
 
-    echo "Cleaning Downloaded Tar"
+    # symlink Fractal FFmpeg .so libs to system libs location for standard Linux system runtime library loading
+    sudo ln -sf /usr/share/fractal/libavcodec.so /usr/local/lib/fractal-libavcodec.so
+    sudo ln -sf /usr/share/fractal/libavdevice.so /usr/local/lib/fractal-libavdevice.so
+    sudo ln -sf /usr/share/fractal/libavfilter.so /usr/local/lib/fractal-libavfilter.so
+    sudo ln -sf /usr/share/fractal/libavformat.so /usr/local/lib/fractal-libavformat.so
+    sudo ln -sf /usr/share/fractal/libavutil.so /usr/local/lib/fractal-libavutil.so
+    sudo ln -sf /usr/share/fractal/libpostproc.so /usr/local/lib/fractal-libpostproc.so
+    sudo ln -sf /usr/share/fractal/libswresample.so /usr/local/lib/fractal-libswresample.so
+    sudo ln -sf /usr/share/fractal/libswscale.so /usr/local/lib/fractal-libswscale.so
+
+    echo "Cleaning Up Downloaded Tar"
     rm -rf shared-libs.tar.gz
     rm -rf share 
 }
