@@ -4,7 +4,7 @@ This subfolder is responsible for all the Linux-related system scripts to set up
 
 ### Linux Ubuntu Cloud Scripts
 
-There are two Linux cloud scripts, `cloud-0.sh` and `cloud-1.sh`, which both need to be run one after another, since the packages installed in `cloud-0.sh` require rebooting. The cloud scripts can be run both locally via SSH with X redirection (`ssh -X fractal@[IP ADDRESS]`) or via a webserver. The following tasks are performed by the cloud scripts:
+There are two Linux cloud scripts, `cloud-0.sh` and `cloud-1.sh`, which both need to be run one after another, since the packages installed in `cloud-0.sh` require rebooting. The cloud scripts can be run both locally via SSH with X redirection, by running `ssh -X fractal@[IP ADDRESS]`, or via a webserver. We prepare specific base disks which we clone for production users, so these only need to be run once to format the base disk. On Linux Ubuntu cloud computers, the username is set to `fractal` for every single cloud computer. The following tasks are performed by the cloud scripts:
 
 - Update Linux
 - Set Automatic Time & Timezone
@@ -26,7 +26,7 @@ There are two Linux cloud scripts, `cloud-0.sh` and `cloud-1.sh`, which both nee
 - Download & Enable the Fractal Input Driver
 - Enable the SSH Server for File Sync (SSH Automatically Enabled on Linux)
 - Disable Shutdown in Start Menu
-- Set Auto-Login
+- Set Auto-Login (This is ran here even for user-specific password, as autologin does not require inputing the password on Linux)
 - Disable Automatic Lock Screen
 
 You can simply run `./setup-linux.sh [IP ADDRESS] [VM/CONTAINER PASSWORD]` from a Linux computer to run those two scripts on a specific VM/container from any device.

@@ -1,6 +1,6 @@
 # This script gets run (as Administrator) by a Fractal Cloud Computer to enable Cloud streaming
 # This script should only get run on Windows computers
-# Usage: cloud.ps1 [VM/CONTAINER-PASSWORD]
+# Usage: cloud.ps1 [VM/CONTAINER PASSWORD] [[OPTIONAL] PROTOCOL-BRANCH]
 
 # The settings here will default to the values on the right, which should all be fine kept as is except
 # for the admin_password, which should be specificed based on the VM
@@ -52,7 +52,7 @@ $credentials = New-Object System.Management.Automation.PSCredential $admin_usern
 Update-Windows
 Update-Firewall
 Install-Chocolatey
-Install-DotNetFramework # Installs 3/4 packages, reboot required for fourth package (not necessary)
+Install-DotNetFramework
 Install-DirectX
 Install-VisualRedist
 Install-VirtualAudio
@@ -63,7 +63,7 @@ Set-MousePrecision $run_on_cloud $credentials
 Set-Time
 Disable-NetworkWindow
 Install-7Zip
-# Install-NvidiaTeslaPublicDrivers
+# Install-NvidiaTeslaPublicDrivers # Not installing, only using GRID drivers for 4K resolution
 Disable-TCC
 Set-OptimalGPUSettings
 Install-Curl
@@ -83,7 +83,7 @@ Disable-HyperV
 Disable-Lock
 Disable-Logout
 Disable-Shutdown
-# Add-AutoLogin $admin_username $admin_password
+# Add-AutoLogin $admin_username $admin_password # Ran standalone in the main-webserver after disk creation
 
 # Install creative packages
 if ($creative_install) {
