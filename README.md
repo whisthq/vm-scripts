@@ -6,7 +6,7 @@ This repository contains the Fractal PowerShell and Bash scripts that get launch
 
 ## Cloud Setup Scripts
 
-The general cloud scripts, `cloud.ps1` for Windows, and `cloud-0.sh` & `cloud-1.sh` for Linux Ubuntu, always gets installed and sets up the cloud computer for optimal general usage with Fractal. The scripts will update the OS, download all the relevant drivers and Fractal libraries and executables, and install the basic software required for rapid onboarding on a new cloud computer. You can find the relevant scripts in `/windows` and `/linux`; they call a utils script, respectively `utils.psm1` and `utils.sh`, which is stored in AWS S3.
+The general cloud scripts, `cloud.ps1` for Windows, and `cloud-0.sh` & `cloud-1.sh` for Linux Ubuntu, always gets installed and sets up the cloud computer for optimal general usage with Fractal. The scripts will update the OS, download all the relevant drivers and Fractal libraries and executables, and install the basic software required for rapid onboarding on a new cloud computer. You can find the relevant scripts in `/windows` and `/linux`; they call a utils script, respectively `utils.psm1` and `utils.sh`, which is stored in AWS S3. Calling the cloud scripts requires the password of the VM or container as an argument. 
 
 ### Preparing a Base Virtual Machine Disk
 
