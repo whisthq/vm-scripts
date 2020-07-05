@@ -4,6 +4,8 @@ This subfolder is responsible for all the Windows-related system scripts to set 
 
 ## Windows Cloud Scripts
 
+Usage: `cloud.ps1 [VM/CONTAINER PASSWORD] [[OPTIONAL] PROTOCOL-BRANCH]`
+
 There is one Windows cloud script, `cloud.ps1`, which can be run both locally from a PowerShell terminal within RDP, or via a webserver. We prepare specific base disks which we clone for production users, so these only need to be run once to format the base disk. On Windows cloud computers, the username is set to `Fractal` for every single cloud computer. The following tasks are performed by the cloud script:
 
 - Update Windows
