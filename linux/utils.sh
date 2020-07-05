@@ -36,8 +36,13 @@ function Enable-FractalFirewallRule {
     yes | sudo ufw allow 32264 # Fractal Port Shared-TCP
 }
 
+function Install-VirtualDisplay-NoGnome {
+    echo "Installing Virtual Display Dummy" # for containers
+    sudo apt-get -y install xserver-xorg-video-dummy
+}
+
 function Install-VirtualDisplay {
-    echo "Installing Gnome and Virtual Display Dummy"
+    echo "Installing Gnome and Virtual Display Dummy" # for VMs
     sudo apt-get -y install gnome xserver-xorg-video-dummy ubuntu-gnome-desktop
 }
 

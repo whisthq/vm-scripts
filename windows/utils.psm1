@@ -348,7 +348,12 @@ function Choco-Install ($package) {
         Write-Output "Quietly.................."
         choco install $package -y --no-progress
     } else {
-        choco install $package -y
+        if ($package == 'spotify') {
+            choco install $package -y --execution-timeout=180 # Spotify glitches, cap at 3 minutes else move on
+        }
+        else {
+            choco install $package -y
+        }
     }
 }
 
@@ -723,7 +728,7 @@ function Set-FractalDirectory {
 
 function Install-DotNetFramework {
     Write-Output "Installing .Net Framework Core 4.8 through Chocolatey"
-    choco install dotnetfx --force
+    Choco-Install dotnetfx
 }
 
 function Disable-HyperV {
@@ -766,6 +771,7 @@ function Install-FractalServer ($protocol_branch) {
     Remove-Item -Path $shared_libs_name -Confirm:$false -ErrorAction SilentlyContinue
     Remove-Item -Path "C:\lib" -Confirm:$false -Recurse -ErrorAction SilentlyContinue
 
+    # retrieve arch for 32-bit or 64-bit libs
     $arch = (Get-WmiObject Win32_Processor).AddressWidth
 
     Write-Output "Move the FFmpeg .dlls to the Fractal Folder and Remove /share"
