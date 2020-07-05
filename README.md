@@ -10,14 +10,22 @@ The general cloud scripts, `cloud.ps1` for Windows, and `cloud-0.sh` & `cloud-1.
 
 ### Preparing a Base Virtual Machine Disk
 
+For our production virtual machines and containers, we create a base disk/image, which we simply clone/deploy every time a new user signs up, which saves us having to run these scripts every single time. However, we need to periodically prepare/improve those base disks/images. 
 
+#### Windows base disks:
 
+Here are the existing base Windows disks/containers:
+- Azure East US
+- Azure South Central US
+- Azure North Central US
 
+To create a Windows base disk, connect to the VM with the base disk attached over Microsoft RDP. You can then open a PowerShell terminal on Administrator mode, and copy/paste the content of `cloud.ps1` into the shell and wait for it to run. Once you are done, you should clean the bloatware on the VM, like Candy Crush and other useless software, and make sure that all residual installation files are properly deleted. Base disks should be as barebone as possible. 
 
+#### Linux base disks:
 
+There are currently no existing base Linux Ubuntu disks/containers deployed to production. 
 
-
-
+To create a Linux base disk, run the `./setup-linux.sh` script in `/linux` subfolder. Make sure to remove all unnecessary applications and detritus on the OS. It is recommended you then connect to the Linux base disk VM via Fractal and use the GUI to clean it up. Base disks should be as barebone as possible. 
 
 ### Application Install Scripts
 
@@ -89,8 +97,6 @@ In addition to the OS-specific scripts, which install the minimum required to ma
   - Firefox
   - VLC
   - Dropbox
-
----
 
 ## Peer-to-Peer Setup Scripts
 
