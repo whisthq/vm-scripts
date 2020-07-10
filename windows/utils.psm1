@@ -31,7 +31,7 @@ function Test-RegistryValue {
 }
 
 function Set-FilePermission ($file_path) {
-    # helper function for setting permissiosn of a file
+    # helper function for setting permissions of a file
     $acl = Get-Acl $file_path
     $acl.SetAccessRuleProtection($true, $false)
     $administratorsRule = New-Object system.security.accesscontrol.filesystemaccessrule("Administrators", "FullControl", "Allow")
