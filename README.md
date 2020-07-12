@@ -25,7 +25,7 @@ To create a Windows base disk, connect to the VM with the base disk attached ove
 
 There are currently no existing base Linux Ubuntu disks/containers deployed to production. 
 
-To create a Linux base disk, run the `./setup-linux.sh` script in `/linux` subfolder. Make sure to remove all unnecessary applications and detritus on the OS. It is recommended you then connect to the Linux base disk VM via Fractal and use the GUI to clean it up. Base disks should be as barebone as possible. 
+To create a Linux base disk, run the `./setup-linux.sh` script in `/linux` subfolder. Make sure to remove all unnecessary applications and detritus on the OS. It is recommended you then connect to the Linux base disk VM via Fractal and use the GUI to clean it up.
 
 ### Application Install Scripts
 
