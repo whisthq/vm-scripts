@@ -19,7 +19,7 @@ Here are the existing base Windows disks/containers:
 - Azure South Central US
 - Azure North Central US
 
-To create a Windows base disk, connect to the VM with the base disk attached over Microsoft RDP. You can then open a PowerShell terminal on Administrator mode, and copy/paste the content of `cloud.ps1` into the shell and wait for it to run. Once you are done, you should clean the bloatware on the VM, like Candy Crush and other useless software, and make sure that all residual installation files are properly deleted. Base disks should be as barebone as possible. 
+To create a Windows base disk, connect to the VM with the base disk attached over Microsoft RDP. You can then open a PowerShell terminal in Administrator mode, and copy/paste the content of `cloud.ps1` into the shell and wait for it to run. Once you are done, you should clean the bloatware on the VM, like Candy Crush and other useless software, and make sure that all residual installation files are properly deleted. Base disks should be as barebone as possible. 
 
 #### Linux base disks:
 
