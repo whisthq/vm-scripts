@@ -909,7 +909,7 @@ function Enable-SSHServer {
     Write-Output "Downloading new OpenSSH Server Config and SSH Keys"     
     Get-File "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/sshd_config" "C:\ProgramData\ssh\sshd_config"
     Get-File "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key.pub" "C:\ProgramData\ssh\ssh_host_ecdsa_key.pub"
-    Get-File "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key" "C:\ProgramData\ssh_host_ecdsa_key"
+    Get-File "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key" "C:\ProgramData\ssh\ssh_host_ecdsa_key"
     Get-File "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/administrator_authorized_keys" "C:\ProgramData\ssh\administrator_authorized_keys"
 
     Write-Output "Enable Permissions on OpenSSH Config and SSH Keys Files"
