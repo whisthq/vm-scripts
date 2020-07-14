@@ -915,7 +915,7 @@ function Enable-SSHServer {
     Write-Output "Enable Permissions on OpenSSH Config and SSH Keys Files"
     Set-FilePermission "C:\ProgramData\ssh\sshd_config"
     Set-FilePermission "C:\ProgramData\ssh\ssh_host_ecdsa_key.pub"
-    Set-FilePermission "C:\ProgramData\ssh_host_ecdsa_key"
+    Set-FilePermission "C:\ProgramData\ssh\ssh_host_ecdsa_key"
     Set-FilePermission "C:\ProgramData\ssh\administrator_authorized_keys"
 
     Write-Output "Starting the SSH Server"
