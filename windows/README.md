@@ -39,6 +39,7 @@ There is one Windows cloud script, `cloud.ps1`, which can be run both locally fr
 - Download & Set the Fractal wallpaper
 - Download the Unison File Sync executable
 - Enable the OpenSSH Server for File Sync
+- Disable UAC to avoid Administrators prompts
 - Disable Shutdown, Logout and Sleep in Start Menu
 - Set Auto-Login (This step is skipped, and is instead ran by the main-webserver to set a user-specific VM password)
 

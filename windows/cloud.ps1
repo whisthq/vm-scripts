@@ -78,6 +78,7 @@ Install-FractalAutoUpdate $protocol_branch
 Enable-FractalFirewallRule
 Install-Unison
 Enable-SSHServer
+Disable-UAC
 Disable-Cursor
 Disable-HyperV
 Disable-Lock

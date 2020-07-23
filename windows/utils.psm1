@@ -83,12 +83,12 @@ function Update-Windows {
 }
 
 function Update-Firewall {
-    Write-Output "Enable ICMP Ping in Firewall"
+    Write-Output "Enabling ICMP Ping in Firewall"
     Set-NetFirewallRule -DisplayName "File and Printer Sharing (Echo Request - ICMPv4-In)" -Enabled True
 }
 
 function Disable-TCC {
-    Write-Output "Disable TCC Mode on Nvidia Tesla GPU"
+    Write-Output "Disabling TCC Mode on Nvidia Tesla GPU"
     if ((Test-Path -Path "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe") -eq $true) {
         $nvsmi = "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe"
         $gpu = & $nvsmi --format=csv,noheader --query-gpu=pci.bus_id
@@ -96,6 +96,11 @@ function Disable-TCC {
     } else {
         Write-Output "Skipping Disable-TCC, no nvidia-smi found"
     }
+}
+
+function Disable-UAC {
+    Write-Output "Disabling UAC Prompt to Avoid Administrators Restrictions"
+    New-ItemProperty -Path "HKLM:Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name EnableLUA -PropertyType DWord -Value 0 -Force
 }
 
 function Add-AutoLogin ($admin_username, [SecureString] $admin_password) {
