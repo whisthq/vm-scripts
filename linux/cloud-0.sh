@@ -30,6 +30,9 @@ Install-VirtualDisplay # Requires rebooting
 
 echo "cloud-0.sh complete! Restarting!"
 
-# Clean Bash install script and restart
-sudo reboot
-
+# Restart if not local
+if [ $LOCAL = no ]; then
+    sudo reboot
+elif [ $LOCAL = yes ]; then
+    echo "Local Installation, Skipping Reboot"
+fi
