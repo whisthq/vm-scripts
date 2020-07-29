@@ -19,12 +19,6 @@ else
     sudo apt-get -y install wget python python3
 fi
 
-# Download utils Bash script with helper functions and import it
-if [ $LOCAL = no ]; then
-    echo "Downloading utils.sh Bash script from AWS S3"
-    sudo wget -qO "utils.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/utils.sh"
-fi
-
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 echo $DIR
 source $DIR/utils.sh
@@ -34,11 +28,8 @@ echo "Installing Virtual Display"
 Update-Linux
 Install-VirtualDisplay # Requires rebooting
 
+echo "cloud-0.sh complete! Restarting!"
+
 # Clean Bash install script and restart
-echo "Cleaning up Utils script"
-if [ $LOCAL = no ]; then
-    sudo rm -f "utils.sh"
-    sudo reboot
-elif [ $LOCAL = yes ]; then
-    echo "Local Installation, Skipping Reboot"
-fi
+sudo reboot
+

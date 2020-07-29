@@ -21,11 +21,6 @@ export DEBIAN_FRONTEND="noninteractive"
 # Whether to run these functions locally or on a cloud VM/container
 LOCAL=${LOCAL:=no}
 
-# Download utils Bash script with helper functions and import it
-if [ $LOCAL = no ]; then
-    sudo wget -qO "utils.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/utils.sh"
-fi
-
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 echo $DIR
 source $DIR/utils.sh
@@ -61,7 +56,6 @@ Disable-AutomaticLockScreen
 if [ "$creative_install" = true ] ; then
     # fetch the script, run it and clean
     echo "Launching Creative Install script"
-    sudo wget -qO "creative.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/creative.sh"
     sudo bash creative.sh
     echo "Cleaning up Creative Install script"
     sudo rm -rf creative.sh
@@ -71,7 +65,6 @@ fi
 if [ "$datascience_install" = true ] ; then
     # fetch the script, run it and clean
     echo "Launching Data Science Install script"
-    sudo wget -qO "datascience.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/datascience.sh"
     sudo bash datascience.sh
     echo "Cleaning up Data Science Install script"
     sudo rm -rf datascience.sh
@@ -81,7 +74,6 @@ fi
 if [ "$gaming_install" = true ] ; then
     # fetch the script, run it and clean
     echo "Launching Gaming Install script"
-    sudo wget -qO "gaming.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/gaming.sh"
     sudo bash gaming.sh
     echo "Cleaning up Gaming Install script"
     sudo rm -rf gaming.sh
@@ -91,7 +83,6 @@ fi
 if [ "$softwaredev_install" = true ] ; then
     # fetch the script, run it and clean
     echo "Launching Software Development Install script"
-    sudo wget -qO "softwaredev.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/softwaredev.sh"
     sudo bash softwaredev.sh
     echo "Cleaning up Software Development Install script"
     sudo rm -rf softwaredev.sh
@@ -101,7 +92,6 @@ fi
 if [ "$engineering_install" = true ] ; then
     # fetch the script, run it and clean
     echo "Launching Engineering Install script"
-    sudo wget -qO "engineering.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/engineering.sh"
     sudo bash engineering.sh
     echo "Cleaning up Engineering Install script"
     sudo rm -rf engineering.sh
@@ -111,11 +101,12 @@ fi
 if [ "$productivity_install" = true ] ; then
     # fetch the script, run it and clean
     echo "Launching Productivity Install script"
-    sudo wget -qO "productivity.sh" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/productivity.sh"
     sudo bash productivity.sh
     echo "Cleaning up Productivity Install script"
     sudo rm -rf productivity.sh
 fi
+
+echo "cloud-1.sh complete! Restarting!"
 
 # Clean Bash install script and restart
 echo "Cleaning up Utils script"
@@ -125,3 +116,4 @@ if [ $LOCAL = no ]; then
 elif [ $LOCAL = yes ]; then
     echo "Skipping reboot"
 fi
+
