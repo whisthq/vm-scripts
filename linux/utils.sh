@@ -251,7 +251,7 @@ function Install-FractalService {
 function Install-FractalServer {
     # only download, the FractalServer will get started by the Fractal Service
     echo "Downloading Fractal Server"
-    systemctl --user stop fractal
+    systemctl --user is-active fractal && systemctl --user stop fractal
     sudo wget -qO /usr/share/fractal/FractalServer "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/Linux/FractalServer"
     sudo wget -qO /usr/share/fractal/FractalServer.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/Linux/FractalServer.sh"
 
@@ -304,6 +304,7 @@ function Set-FractalDirectory {
 function Install-Unison {
     echo "Downloading Unison File Sync from S3 Bucket"
     sudo wget -qO /usr/share/fractal/linux_unison "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/linux_unison"
+    sudo rm /usr/bin/unison
     sudo ln -s /usr/share/fractal/linux_unison /usr/bin/unison
 }
 

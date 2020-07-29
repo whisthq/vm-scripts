@@ -8,7 +8,9 @@ if ! [[ $1 =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]] || ! [[ $2 =~ 
 	exit
 fi
 
-sudo apt install sshpass -y
+if [ $(dpkg-query -W -f='${Status}' sshpass 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+	sudo apt install sshpass -y
+fi
 
 echo "rm -rf ~/fractal-setup; mkdir ~/fractal-setup" | sshpass -p "$2" ssh -o "StrictHostKeyChecking no" fractal@$1 /bin/bash
 sshpass -p "$2" scp -o "StrictHostKeyChecking no" -r $PWD/* fractal@$1:~/fractal-setup
@@ -22,6 +24,7 @@ SSH_EXIT_STATUS=255
 while [[ $SSH_EXIT_STATUS -eq 255 ]]; do
 	echo "cd ~/fractal-setup; /bin/bash cloud-1.sh $2" | sshpass -p "$2" ssh -o "StrictHostKeyChecking no" fractal@$1 /bin/bash
 	SSH_EXIT_STATUS=$?
+	sleep 1
 done
 
 echo "Cleaning keygen"
@@ -33,5 +36,6 @@ SSH_EXIT_STATUS=255
 while [[ $SSH_EXIT_STATUS -eq 255 ]]; do
 	echo "rm -rf ~/fractal-setup" | sshpass -p "$2" ssh -o "StrictHostKeyChecking no" fractal@$1 /bin/bash
 	SSH_EXIT_STATUS=$?
+	sleep 1
 done
 
