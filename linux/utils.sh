@@ -304,7 +304,9 @@ function Set-FractalDirectory {
 function Install-Unison {
     echo "Downloading Unison File Sync from S3 Bucket"
     sudo wget -qO /usr/share/fractal/linux_unison "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/linux_unison"
-    sudo rm /usr/bin/unison
+    if [ -f "/usr/bin/unison" ]; then
+        sudo rm /usr/bin/unison
+    fi
     sudo ln -s /usr/share/fractal/linux_unison /usr/bin/unison
 }
 
