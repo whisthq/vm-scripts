@@ -258,6 +258,7 @@ function Install-FractalWallpaper ($run_on_cloud, $credentials) {
     }
 }
 
+# Note: Must Install-FractalServer first, or else race conditions will occur with FractalServer.exe (The Service will try running it before wget writes the full file)
 function Install-FractalService ($protocol_branch) {
     # first download the service executable
     Write-Output "Downloading Fractal Service"
