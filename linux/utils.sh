@@ -204,7 +204,7 @@ function Install-NvidiaTeslaPublicDrivers {
 
 function Set-OptimalGPUSettings {
     echo "Setting Optimal Tesla M60 GPU Settings"
-    if ! [[ -x "$(command -v nvidia-smi)" ]]; then
+    if [ -n "$(command -v nvidia-smi)" ]; then
         sudo nvidia-smi --auto-boost-default=0
         sudo nvidia-smi -ac "2505,1177"
     else
@@ -214,7 +214,7 @@ function Set-OptimalGPUSettings {
 
 function Disable-TCC {
     echo "Disabling TCC Mode on Nvidia Tesla GPU"
-    if ! [[ -x "$(command -v nvidia-smi)" ]]; then
+    if [ -n "$(command -v nvidia-smi)" ]; then
         sudo nvidia-smi -g 0 -fdm 0
     else
         echo "Nvidia-smi does not exist, skipping Disable-TCC"
