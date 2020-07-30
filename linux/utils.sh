@@ -28,8 +28,13 @@ function Disable-AutomaticLockScreen {
 function Enable-FractalFirewallRule {
     echo "Creating Fractal Firewall Rules"
     yes | sudo ufw enable
-    yes | sudo ufw default allow incoming
-    yes | sudo ufw default allow outgoing
+    
+    yes | sudo ufw allow 22 # SSH
+    yes | sudo ufw allow 80 # HTTP
+    yes | sudo ufw allow 443 # HTTPS
+    yes | sudo ufw allow 32262/tcp # Fractal Discovery Port
+    yes | sudo ufw allow 32263:32272/udp # Fractal UDP Ports
+    yes | sudo ufw allow 32273:32282/tcp # Fractal TCP Ports
 }
 
 function Install-VirtualDisplay-NoGnome {
