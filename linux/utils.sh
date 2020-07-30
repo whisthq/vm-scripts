@@ -28,7 +28,6 @@ function Disable-AutomaticLockScreen {
 function Enable-FractalFirewallRule {
     echo "Creating Fractal Firewall Rules"
     yes | sudo ufw enable
-    
     yes | sudo ufw allow 22 # SSH
     yes | sudo ufw allow 80 # HTTP
     yes | sudo ufw allow 443 # HTTPS
