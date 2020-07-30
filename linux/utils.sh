@@ -31,9 +31,9 @@ function Enable-FractalFirewallRule {
     yes | sudo ufw allow 22 # SSH
     yes | sudo ufw allow 80 # HTTP
     yes | sudo ufw allow 443 # HTTPS
-    yes | sudo ufw allow 32262 # Fractal Port Client->Server
-    yes | sudo ufw allow 32263 # Fractal Port Server->Client
-    yes | sudo ufw allow 32264 # Fractal Port Shared-TCP
+    yes | sudo ufw allow 32262/tcp # Fractal Discovery Port
+    yes | sudo ufw allow 32263:32272/udp # Fractal UDP Ports
+    yes | sudo ufw allow 32273:32282/tcp # Fractal TCP Ports
 }
 
 function Install-VirtualDisplay-NoGnome {
@@ -48,18 +48,18 @@ function Install-VirtualDisplay {
 
 function Install-CustomGDMConfiguration {
    echo "Installing Custom Gnome Display Manager Configuration"
-   sudo wget -qO /etc/gdm3/custom.conf "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/custom.conf"
+   sudo cp custom.conf /etc/gdm3/custom.conf
 }
 
 function Install-CustomX11Configuration {
    echo "Installing Custom X11 Configuration"
-   sudo wget -qO /usr/share/X11/xorg.conf.d/01-dummy.conf "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/01-dummy.conf"
+   sudo cp 01-dummy.conf /usr/share/X11/xorg.conf.d/01-dummy.conf
 }
 
 function Install-FractalLinuxInputDriver {
     # first download the driver symlink file
     echo "Installing Fractal Linux Input Driver"
-    sudo wget -qO /usr/share/fractal/fractal-input.rules "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/fractal-input.rules"
+    sudo cp fractal-input.rules /usr/share/fractal/fractal-input.rules
 
     # symlink file
     # do this as root AFTER fractal-input.rules has been moved to the final install directory
@@ -71,7 +71,7 @@ function Install-FractalLinuxInputDriver {
 function Disable-Shutdown {
     # based on: https://askubuntu.com/questions/453479/how-to-disable-shutdown-reboot-from-lightdm-in-14-04
     echo "Disabling Shutdown Option in Start Menu"
-    sudo wget -qO /etc/polkit-1/localauthority/50-local.d/restrict-login-powermgmt.pkla "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/restrict-login-powermgmt.pkla"
+    sudo cp restrict-login-powermgmt.pkla /etc/polkit-1/localauthority/50-local.d/restrict-login-powermgmt.pkla
 }
 
 function Install-AutodeskMaya {
@@ -90,8 +90,8 @@ function Install-AutodeskMaya {
       mesa-utils xfstt xfonts-100dpi xfonts-75dpi ttf-mscorefonts-installer \
       libfam0 libfam-dev libcurl4-openssl-dev libtbb-dev
     sudo apt-get install -y libtbb-dev 
-    sudo wget -q http://launchpadlibrarian.net/183708483/libxp6_1.0.2-2_amd64.deb
-    sudo wget -q http://mirrors.kernel.org/ubuntu/pool/main/libp/libpng/libpng12-0_1.2.54-1ubuntu1_amd64.deb
+    wget -q http://launchpadlibrarian.net/183708483/libxp6_1.0.2-2_amd64.deb
+    wget -q http://mirrors.kernel.org/ubuntu/pool/main/libp/libpng/libpng12-0_1.2.54-1ubuntu1_amd64.deb
 
     # Install Maya
     sudo alien -cv *.rpm
@@ -144,7 +144,7 @@ function Install-AutodeskMaya {
 function Install-FractalExitScript {
     # download exit Bash script
     echo "Downloading Fractal Exit script"
-    sudo wget -qO /usr/share/fractal/exit/exit.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/exit.sh"
+    sudo cp exit.sh /usr/share/fractal/exit/exit.sh
 
     # download the Fractal logo for the icons
     echo "Downloading Fractal Logo icon"
@@ -152,9 +152,9 @@ function Install-FractalExitScript {
 
     # download Exit Fractal Desktop Shortcut
     echo "Creating Exit-Fractal Desktop Shortcut"
-    sudo wget -qO "$HOME/Exit-Fractal.desktop" "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/Exit-Fractal.desktop"
-    sudo mkdir -p "$HOME/.local/share/applications/"
-    sudo mv "$HOME/Exit-Fractal.desktop" "$HOME/.local/share/applications/Exit-Fractal.desktop"
+    cp Exit-Fractal.desktop $HOME/Exit-Fractal.desktop
+    mkdir -p "$HOME/.local/share/applications/"
+    mv "$HOME/Exit-Fractal.desktop" "$HOME/.local/share/applications/Exit-Fractal.desktop"
 
     # create Ubuntu dock shortcut
     echo "Creating Exit-Fractal Favorites Bar Shortcut"
@@ -208,7 +208,7 @@ function Install-NvidiaTeslaPublicDrivers {
 
 function Set-OptimalGPUSettings {
     echo "Setting Optimal Tesla M60 GPU Settings"
-    if ! [ -x "$(command -v nvidia-smi)"]; then
+    if [ -n "$(command -v nvidia-smi)" ]; then
         sudo nvidia-smi --auto-boost-default=0
         sudo nvidia-smi -ac "2505,1177"
     else
@@ -218,8 +218,8 @@ function Set-OptimalGPUSettings {
 
 function Disable-TCC {
     echo "Disabling TCC Mode on Nvidia Tesla GPU"
-    if ! [ -x "$(command -v nvidia-smi)"]; then
-        sudo nvidia-smi -g 0 -fdm 0 
+    if [ -n "$(command -v nvidia-smi)" ]; then
+        sudo nvidia-smi -g 0 -fdm 0
     else
         echo "Nvidia-smi does not exist, skipping Disable-TCC"
     fi
@@ -227,7 +227,7 @@ function Disable-TCC {
 
 function Install-FractalService {
     echo "Installing Fractal Service"
-    sudo wget -qO /etc/systemd/user/fractal.service "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/Linux/fractal.service"
+    sudo cp fractal.service /etc/systemd/user/fractal.service
     sudo chmod +x /etc/systemd/user/fractal.service
 
     env
@@ -255,6 +255,7 @@ function Install-FractalService {
 function Install-FractalServer {
     # only download, the FractalServer will get started by the Fractal Service
     echo "Downloading Fractal Server"
+    systemctl --user is-active fractal && systemctl --user stop fractal
     sudo wget -qO /usr/share/fractal/FractalServer "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/Linux/FractalServer"
     sudo wget -qO /usr/share/fractal/FractalServer.sh "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/$1/Linux/FractalServer.sh"
 
@@ -288,7 +289,7 @@ function Install-FractalServer {
 
     echo "Cleaning Up Downloaded Tar"
     rm -rf shared-libs.tar.gz
-    rm -rf share 
+    rm -rf share
 }
 
 function Install-7Zip {
@@ -307,6 +308,9 @@ function Set-FractalDirectory {
 function Install-Unison {
     echo "Downloading Unison File Sync from S3 Bucket"
     sudo wget -qO /usr/share/fractal/linux_unison "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/linux_unison"
+    if [ -f "/usr/bin/unison" ]; then
+        sudo rm /usr/bin/unison
+    fi
     sudo ln -s /usr/share/fractal/linux_unison /usr/bin/unison
 }
 
@@ -321,9 +325,9 @@ function Enable-SSHKey {
         return
     fi
 
-    sudo wget -qO /tmp/administrator_authorized_keys "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/administrators_authorized_keys"
-    sudo cp /tmp/administrator_authorized_keys "$HOME/.ssh/authorized_keys"
-    sudo chmod 600 "$HOME/.ssh/authorized_keys" # activate
+    wget -qO /tmp/administrator_authorized_keys "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/administrators_authorized_keys"
+    cp /tmp/administrator_authorized_keys "$HOME/.ssh/authorized_keys"
+    chmod 600 "$HOME/.ssh/authorized_keys" # activate
 
     echo "Downloading SSH ECDSA Keys"
     sudo wget -qO /tmp/ssh_host_ecdsa_key "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/ssh_host_ecdsa_key"
@@ -332,6 +336,7 @@ function Enable-SSHKey {
     sudo cp /tmp/ssh_host_ecdsa_key.pub "/etc/ssh/ssh_host_ecdsa_key.pub"
     sudo chmod 600 "/etc/ssh/ssh_host_ecdsa_key" # activate
     sudo chmod 600 "/etc/ssh/ssh_host_ecdsa_key.pub" # activate
+    sudo cp sshd_config /etc/ssh/sshd_config
 }
 
 function Install-FractalWallpaper {
@@ -512,7 +517,7 @@ function Install-Telegram {
 }
 
 function Install-WhatsApp {
-    echo "WhatsApp does not run on Linux Ubuntu and thus cannot be installed"    
+    echo "WhatsApp does not run on Linux Ubuntu and thus cannot be installed"
 }
 
 function Install-Curl {
@@ -641,3 +646,4 @@ function Install-3DSMaxDesign {
 function Install-DaVinciResolve {
     echo "DaVinci Resolve does not run on Linux Ubuntu and thus cannot be installed"
 }
+

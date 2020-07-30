@@ -6,7 +6,7 @@ This subfolder is responsible for all the Linux-related system scripts to set up
 
 Usage: `./cloud-0.sh && ./cloud-1.sh [VM/CONTAINER PASSWORD] [[OPTIONAL] PROTOCOL-BRANCH]`
 
-There are two Linux cloud scripts, `cloud-0.sh` and `cloud-1.sh`, which both need to be run one after another, since the packages installed in `cloud-0.sh` require rebooting. The cloud scripts can be run both locally via SSH with X redirection, by running `ssh -X fractal@[IP ADDRESS]`, or via a webserver. We prepare specific base disks which we clone for production users, so these only need to be run once to format the base disk. On Linux Ubuntu cloud computers, the username is set to `fractal` for every single cloud computer. The following tasks are performed by the cloud scripts:
+There are two Linux cloud scripts, `cloud-0.sh` and `cloud-1.sh`, which both need to be run one after another, since the packages installed in `cloud-0.sh` require rebooting. The cloud scripts can be run both locally via SSH with X redirection, by running `ssh -X fractal@[IP ADDRESS]`, or via a webserver. We prepare specific base disks which we clone for production users, so these only need to be run once to format the base disk. On Linux Ubuntu cloud computers and containers, the username is set to `fractal` for every instance. The following tasks are performed by the cloud scripts:
 
 - Update Linux
 - Set Automatic Time & Timezone
