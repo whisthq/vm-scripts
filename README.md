@@ -6,7 +6,7 @@ This repository contains the Fractal PowerShell and Bash scripts that get launch
 
 ## Cloud Setup Scripts
 
-The general cloud scripts, `cloud.ps1` for Windows, and `cloud-0.sh` & `cloud-1.sh` for Linux Ubuntu, always gets installed and sets up the cloud computer for optimal general usage with Fractal. The scripts will update the OS, download all the relevant drivers and Fractal libraries and executables, and install the basic software required for rapid onboarding on a new cloud computer. You can find the relevant scripts in `/windows` and `/linux`; they call a utils script, respectively `utils.psm1` and `utils.sh`, which is stored in AWS S3. Calling the cloud scripts requires the password of the VM or container as an argument. 
+The general cloud scripts, `cloud.ps1` for Windows, and `cloud-0.sh` & `cloud-1.sh` for Linux Ubuntu, always gets installed and sets up the cloud computer for optimal general usage with Fractal. The scripts will update the OS, download all the relevant drivers and Fractal libraries and executables, and install the basic software required for rapid onboarding on a new cloud computer. You can find the relevant scripts in `/windows` and `/linux`; they call a utils script, respectively `utils.psm1`, which is also stored in AWS S3 (since the `cloud.ps1` script is run directly in the cloud VM/container via RDP) and `utils.sh`, which is only stored locally in this GitHub repository (since the `cloud-X.sh` scripts are run locally via SSH into the cloud VM/container). Calling the cloud scripts requires the password of the VM or container as an argument. 
 
 ### Preparing a Base Virtual Machine Disk
 
@@ -25,7 +25,7 @@ To create a Windows base disk, connect to the VM with the base disk attached ove
 
 There are currently no existing base Linux Ubuntu disks/containers deployed to production. 
 
-To create a Linux base disk, run the `./setup-linux.sh` script in `/linux` subfolder. Make sure to remove all unnecessary applications and detritus on the OS. It is recommended you then connect to the Linux base disk VM via Fractal and use the GUI to clean it up.
+To create a Linux base disk, run the `./setup-linux.sh` script in `/linux` subfolder -- it will call the respective `utils.sh` script hosted in this GitHub repository directly. Make sure to remove all unnecessary applications and detritus on the OS. It is recommended you then connect to the Linux base disk VM via Fractal and use the GUI to clean it up.
 
 ### Application Install Scripts
 
