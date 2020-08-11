@@ -252,11 +252,9 @@ function Install-FractalService {
 
     echo "Enabling Fractal Service"
     sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user enable fractal
+    sudo systemctl enable fractal-update-nvidia-busid
 
-    echo "Starting Fractal Service"
-    sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user start fractal
-
-    echo "Finished Starting Fractal Service"
+    echo "Finished Installing Fractal Service"
 }
 
 function Install-FractalServer {
