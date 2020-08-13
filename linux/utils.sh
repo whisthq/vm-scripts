@@ -53,7 +53,12 @@ function Install-CustomGDMConfiguration {
 
 function Install-CustomX11Configuration {
    echo "Installing Custom X11 Configuration"
-   sudo cp 01-dummy.conf /usr/share/X11/xorg.conf.d/01-dummy.conf
+   sudo cp 01-fractal-nvidia.conf /usr/share/X11/xorg.conf.d/01-fractal-nvidia.conf
+   sudo cp 02-fractal-dummy.conf /usr/share/X11/xorg.conf.d/02-fractal-dummy.conf
+   if [ -f /etc/X11/xorg.conf ]; then
+      echo "/etc/X11/xorg.conf found, moving to /etc/X11/xorg.conf.old. Fractal .conf files will be stored in /usr/share/X11/xorg.conf.d"
+      sudo mv /etc/X11/xorg.conf /etc/X11/xorg.conf.old
+   fi
 }
 
 function Install-FractalLinuxInputDriver {
@@ -229,6 +234,8 @@ function Install-FractalService {
     echo "Installing Fractal Service"
     sudo cp fractal.service /etc/systemd/user/fractal.service
     sudo chmod +x /etc/systemd/user/fractal.service
+    sudo cp fractal-update-nvidia-busid.service /etc/systemd/system/fractal-update-nvidia-busid.service
+    sudo chmod +x /etc/systemd/system/fractal-update-nvidia-busid.service
 
     env
     if [[ $FRACTAL_GITHUB_ACTION = "yes" ]]; then
@@ -245,11 +252,9 @@ function Install-FractalService {
 
     echo "Enabling Fractal Service"
     sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user enable fractal
+    sudo systemctl enable fractal-update-nvidia-busid
 
-    echo "Starting Fractal Service"
-    sudo -u fractal DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$FRACTAL_UID/bus systemctl --user start fractal
-
-    echo "Finished Starting Fractal Service"
+    echo "Finished Installing Fractal Service"
 }
 
 function Install-FractalServer {
