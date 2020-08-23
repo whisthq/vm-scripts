@@ -1,8 +1,6 @@
 #!/bin/bash
-
 # Use this script to remotely run cloud-0.sh and cloud-1.sh to set up a Linux VM with Fractal
 # This script needs to be run from a Linux computer
-
 if ! [[ $1 =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]] || ! [[ $2 =~ ^[0-9a-z\.]*$ ]]; then
 	echo "Usage: ./setup-linux.sh [IP ADDRESS] [VM/CONTAINER PASSWORD]"
 	exit
@@ -38,4 +36,3 @@ while [[ $SSH_EXIT_STATUS -eq 255 ]]; do
 	SSH_EXIT_STATUS=$?
 	sleep 1
 done
-

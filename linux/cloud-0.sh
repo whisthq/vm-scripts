@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # This script gets run on a Fractal Cloud Computer/Container to enable Cloud streaming
 # This script should only get run on Linux Ubuntu computers
 # This script is part 1 of 2 scripts needed to enable Cloud streaming

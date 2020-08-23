@@ -651,4 +651,3 @@ function Install-3DSMaxDesign {
 function Install-DaVinciResolve {
     echo "DaVinci Resolve does not run on Linux Ubuntu and thus cannot be installed"
 }
-

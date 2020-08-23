@@ -20,4 +20,3 @@ else
         cp ${XCONFIG} ${XCONFIG}.old
         sed -e 's|BusID.*|BusID          '\"${NEWBUSID}\"'|' ${XCONFIG}.old > ${XCONFIG}
 fi
-

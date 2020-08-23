@@ -9,13 +9,7 @@ param (
     [string]        $protocol_branch        = "master", # protocol branch to pull, either master, staging or dev
     [string]        $admin_username         = "Fractal",
     [SecureString]  $certificate_password   = (ConvertTo-SecureString "certificate-password1234567." -AsPlainText -Force),
-    [switch]        $run_on_cloud           = $false, # if true, this script uses PS-Remoting and needs to be run from webserver, else it doesn't use PS-Remoting and should be run from a PowerShell prompt on RDP
-    [switch]        $creative_install       = $false,
-    [switch]        $datascience_install    = $false,
-    [switch]        $gaming_install         = $false,
-    [switch]        $productivity_install   = $false,
-    [switch]        $softwaredev_install    = $false,
-    [switch]        $engineering_install    = $false
+    [switch]        $run_on_cloud           = $false # if true, this script uses PS-Remoting and needs to be run from webserver, else it doesn't use PS-Remoting and should be run from a PowerShell prompt on RDP
 )
 
 # Set the execution policy to enable running Powershell modules and scripts
@@ -85,78 +79,6 @@ Disable-Lock
 Disable-Logout
 Disable-Shutdown
 # Add-AutoLogin $admin_username $admin_password # Ran standalone in the main-webserver after disk creation
-
-# Install creative packages
-if ($creative_install) {
-    # fetch the script, run it and clean
-    Write-Output "Launching Creative Install script"
-    $creative_script_name = "C:\creative.ps1"
-    $creative_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/creative.ps1"
-    GetPowerShellScript $creative_script_name $creative_script_url
-    Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-file $creative_script_name") -Wait
-    Write-Output "Cleaning up Creative Install script"
-    Remove-Item -Path $creative_script_name -Confirm:$false
-}
-
-# Install data science packages
-if ($datascience_install) {
-    # fetch the script, run it and clean
-    Write-Output "Launching Data Science Install script"
-    $datascience_script_name = "C:\datascience.ps1"
-    $datascience_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/datascience.ps1"
-    Get-PowerShellScript $datascience_script_name $datascience_script_url
-    Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-file $datascience_script_name") -Wait
-    Write-Output "Cleaning up Data Science Install script"
-    Remove-Item -Path $datascience_script_name -Confirm:$false
-}
-
-# Install gaming packages
-if ($gaming_install) {
-    # fetch the script, run it and clean
-    Write-Output "Launching Gaming Install script"
-    $gaming_script_name = "C:\gaming.ps1"
-    $gaming_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/gaming.ps1"
-    Get-PowerShellScript $gaming_script_name $gaming_script_url
-    Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-file $gaming_script_name") -Wait
-    Write-Output "Cleaning up Gaming Install script"
-    Remove-Item -Path $gaming_script_name -Confirm:$false
-}
-
-# Install software development packages
-if ($softwaredev_install) {
-    # fetch the script, run it and clean
-    Write-Output "Launching Software Development Install script"
-    $softwaredev_script_name = "C:\softwaredev.ps1"
-    $softwaredev_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/softwaredev.ps1"
-    Get-PowerShellScript $softwaredev_script_name $softwaredev_script_url
-    Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-file $softwaredev_script_name") -Wait
-    Write-Output "Cleaning up Software Development Install script"
-    Remove-Item -Path $softwaredev_script_name -Confirm:$false
-}
-
-# Install engineering packages
-if ($engineering_install) {
-    # fetch the script, run it and clean
-    Write-Output "Launching Engineering Install script"
-    $engineering_script_name = "C:\engineering.ps1"
-    $engineering_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/engineering.ps1"
-    Get-PowerShellScript $engineering_script_name $engineering_script_url
-    Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-file $engineering_script_name") -Wait
-    Write-Output "Cleaning up Engineering Install script"
-    Remove-Item -Path $engineering_script_name -Confirm:$false
-}
-
-# Install productivity packages
-if ($productivity_install) {
-    # fetch the script, run it and clean
-    Write-Output "Launching Productivity Install script"
-    $productivity_script_name = "C:\productivity.ps1"
-    $productivity_script_url = "https://fractal-cloud-setup-s3bucket.s3.amazonaws.com/productivity.ps1"
-    Get-PowerShellScript $productivity_script_name $productivity_script_url
-    Start-Process Powershell.exe -Credential $credentials -ArgumentList ("-file $productivity_script_name") -Wait
-    Write-Output "Cleaning up Productivity Install script"
-    Remove-Item -Path $productivity_script_name -Confirm:$false
-}
 
 # Clean PowerShell install script and restart
 if ($env:LOCAL -eq 'no')  {

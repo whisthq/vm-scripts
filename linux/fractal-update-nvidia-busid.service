@@ -16,4 +16,3 @@ SyslogIdentifier=update-nvidia-bus-id
 
 [Install]
 WantedBy=multi-user.target
-

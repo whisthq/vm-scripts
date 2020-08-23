@@ -29,7 +29,7 @@ To create a Linux base disk, run the `./setup-linux.sh` script in `/linux` subfo
 
 ### Application Install Scripts
 
-In addition to the OS-specific scripts, which install the minimum required to make Fractal work optimally on cloud computers, there are usage-specific scripts to install specific applications. These scripts are meant for organization here, they are not actually run themselves. Instead, we have a PostgresSQL database table which contains per-application commands, as listed in `utils.psm1` and `utils.sh`, which are called when users select the application(s) they want to install on our website. They are listed in their own scripts and callable from the cloud scripts for testing purposes. Some of the softwares listed here cannot actually be installed through PowerShell/Bash, but are listed for potential manual install:
+In addition to the OS-specific scripts, which install the minimum required to make Fractal work optimally on cloud computers, there also are functions to install specific applications. These functions are listed in `utils.psm1` and `utils.sh`, and are stored in a PostgresSQL database table which contains per-application commands, which are called when users select the application(s) they want to install on our website. Some of the softwares listed here cannot actually be installed through PowerShell/Bash, but are listed for potential manual install:
 
 - Gaming Script
   - Nvidia GeForce (Windows only)

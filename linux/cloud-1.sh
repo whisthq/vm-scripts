@@ -1,18 +1,11 @@
 #!/bin/bash
-
 # This script gets run on a Fractal Cloud Computer/Container to enable Cloud streaming
 # This script should only get run on Linux Ubuntu computers
 # This script is part 2 of 2 scripts needed to enable Cloud streaming
 # Usage: ./cloud-1.sh [VM PASSWORD]
 
-# variable blocks for optional installs
-protocol_branch="master" # protocol branch to download, could also be dev or staging
-creative_install=false
-datascience_install=false
-gaming_install=false
-productivity_install=false
-softwaredev_install=false
-engineering_install=false
+# protocol branch to download, could also be dev or staging
+protocol_branch="master"
 
 # Changes to exit script immediately if any command fails
 set -e
@@ -52,60 +45,6 @@ Disable-Shutdown
 Add-AutoLogin
 Disable-AutomaticLockScreen
 
-# Install creative packages
-if [ "$creative_install" = true ] ; then
-    # fetch the script, run it and clean
-    echo "Launching Creative Install script"
-    sudo bash creative.sh
-    echo "Cleaning up Creative Install script"
-    sudo rm -rf creative.sh
-fi
-
-# Install data science packages
-if [ "$datascience_install" = true ] ; then
-    # fetch the script, run it and clean
-    echo "Launching Data Science Install script"
-    sudo bash datascience.sh
-    echo "Cleaning up Data Science Install script"
-    sudo rm -rf datascience.sh
-fi
-
-# Install gaming packages
-if [ "$gaming_install" = true ] ; then
-    # fetch the script, run it and clean
-    echo "Launching Gaming Install script"
-    sudo bash gaming.sh
-    echo "Cleaning up Gaming Install script"
-    sudo rm -rf gaming.sh
-fi
-
-# Install software development packages
-if [ "$softwaredev_install" = true ] ; then
-    # fetch the script, run it and clean
-    echo "Launching Software Development Install script"
-    sudo bash softwaredev.sh
-    echo "Cleaning up Software Development Install script"
-    sudo rm -rf softwaredev.sh
-fi
-
-# Install engineering packages
-if [ "$engineering_install" = true ] ; then
-    # fetch the script, run it and clean
-    echo "Launching Engineering Install script"
-    sudo bash engineering.sh
-    echo "Cleaning up Engineering Install script"
-    sudo rm -rf engineering.sh
-fi
-
-# Install engineering packages
-if [ "$productivity_install" = true ] ; then
-    # fetch the script, run it and clean
-    echo "Launching Productivity Install script"
-    sudo bash productivity.sh
-    echo "Cleaning up Productivity Install script"
-    sudo rm -rf productivity.sh
-fi
-
 echo "cloud-1.sh complete! Restarting!"
 
 # Clean Bash install script and restart
@@ -116,4 +55,3 @@ if [ $LOCAL = no ]; then
 elif [ $LOCAL = yes ]; then
     echo "Skipping reboot"
 fi
-
