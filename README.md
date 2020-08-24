@@ -31,7 +31,7 @@ To create a Linux base disk, run the `./setup-linux.sh` script in `/linux` subfo
 
 In addition to the OS-specific scripts, which install the minimum required to make Fractal work optimally on cloud computers, there also are functions to install specific applications. These functions are listed in `utils.psm1` and `utils.sh`, and are stored in a PostgresSQL database table which contains per-application commands, which are called when users select the application(s) they want to install on our website. Some of the softwares listed here cannot actually be installed through PowerShell/Bash, but are listed for potential manual install:
 
-- Gaming Script
+- Gaming Apps
   - Nvidia GeForce (Windows only)
   - Steam 
   - Discord
@@ -39,7 +39,7 @@ In addition to the OS-specific scripts, which install the minimum required to ma
   - GOG (Windows only)
   - Activision Blizzard (Windows only)
 
-- Creative Script
+- Creative Apps
   - Blender
   - Autodesk Maya
   - ZBrush (can't be installed without a subscription)
@@ -50,13 +50,13 @@ In addition to the OS-specific scripts, which install the minimum required to ma
   - Lightworks
   - Unity
 
-- Engineering Script
+- Engineering Apps
   - Solidworks (can't be installed without a subscription)
   - Autodesk Fusion 360 (Windows only)
   - Matlab (can't be installed without a subscription)
   - Mathematica (can't be installed without a subscription)
 
-- Software Development Script
+- Software Development Apps
   - Windows Developer Mode Activated (Windows only)
   - Visual Studio Professional 2019 (Windows Only)
   - Visual Studio Code
@@ -79,14 +79,14 @@ In addition to the OS-specific scripts, which install the minimum required to ma
   - GDB (Linux only)
   - Valgrind (Linux only)
 
-- Data Science Script
+- Data Science Apps
   - Git
   - Anaconda & R Studio
   - OpenCV
   - Curl
   - Gimp
 
-- Productivity Script
+- Productivity Apps
   - Slack
   - Microsoft Office Suite (Windows Only)
   - Adobe Acrobat Reader DC
