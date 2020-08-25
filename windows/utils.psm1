@@ -932,11 +932,4 @@ function Enable-SSHServer {
 
     Write-Output "Adding Unison Executable Path"
     [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine) + ";C:\Program Files\Fractal", [EnvironmentVariableTarget]::Machine)
-
-    # Config ssh to force public key and disable password log in. This change also makes openssh look for the key in $user\.ssh/authorized_keys
-    $FilePath = "C:\ProgramData\ssh\sshd_config"
-    (Get-Content ($FilePath)) | Foreach-Object {$_ -replace '^Match Group administrators', (" ")} | Set-Content  ($Filepath)
-    (Get-Content ($FilePath)) | Foreach-Object {$_ -replace '^       AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys', (" ")} | Set-Content  ($Filepath)
-    (Get-Content ($FilePath)) | Foreach-Object {$_ -replace '^PasswordAuthentication yes', ("PasswordAuthentication no")} | Set-Content  ($Filepath)
-    Add-Content $FilePath "`nAuthenticationMethods publickey"
 }
