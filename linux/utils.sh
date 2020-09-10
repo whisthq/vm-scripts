@@ -21,8 +21,8 @@ function Add-AutoLogin {
     # this action is done by Install-CustomGDMConfiguration
 }
 
-function Disable-AutomaticLockScreen {
-    echo "Disabling Automatic Lock Screen"
+function Disable-AutomaticLockScreen-Gnome {
+    echo "Disabling Automatic Lock Screen in Gnome"
     gsettings set org.gnome.desktop.lockdown disable-lock-screen 'true'
 }
 
