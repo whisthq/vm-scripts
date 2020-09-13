@@ -43,6 +43,7 @@ Enable-SSHKey
 Disable-Shutdown
 Add-AutoLogin
 Disable-AutomaticLockScreen-Gnome
+Disable-Logout-Gnome
 
 echo "cloud-1.sh complete! Restarting!"
 

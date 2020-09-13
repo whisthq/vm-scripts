@@ -30,7 +30,8 @@ For VMs, we prepare specific base disks which we clone for production users, so 
 - Enable the SSH Server for File Sync (SSH Automatically Enabled on Linux)
 - Disable Shutdown in Start Menu
 - Set Auto-Login (This is ran here even for user-specific password, as autologin does not require inputing the password on Linux)
-- Disable Automatic Gnome Lock Screen and Screensaver
+- Disable Automatic Gnome Lock Screen and Screensaver in Gnome
+- Disable User Logout and User Switching in Gnome
 
 You can simply run `./setup-linux.sh [VM/CONTAINER IP ADDRESS] [VM/CONTAINER PASSWORD]` from a Linux computer to run those two scripts on a specific VM/container from any device.
 
