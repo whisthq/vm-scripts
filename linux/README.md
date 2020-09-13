@@ -1,4 +1,4 @@
-# Fractal Linux Ubuntu Setup Scripts
+# Fractal Linux Ubuntu Scripts
 
 This subfolder is responsible for all the Linux-related system scripts to set up a computer, virtual machine or container as a server for Fractal streaming.
 
