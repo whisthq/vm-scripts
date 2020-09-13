@@ -11,8 +11,9 @@ function Update-Linux {
 }
 
 function Set-Time {
-    echo "Setting Automatic Time & Timezone via Gnome Clocks"
-    sudo apt-get -y install gnome-clocks
+    echo "Setting Automatic Time via timedatectl"
+    sudo apt-get install -y dbus
+    sudo timedatectl set-ntp true
 }
 
 function Add-AutoLogin {
@@ -20,8 +21,8 @@ function Add-AutoLogin {
     # this action is done by Install-CustomGDMConfiguration
 }
 
-function Disable-AutomaticLockScreen {
-    echo "Disabling Automatic Lock Screen"
+function Disable-AutomaticLockScreen-Gnome {
+    echo "Disabling Automatic Lock Screen in Gnome"
     gsettings set org.gnome.desktop.lockdown disable-lock-screen 'true'
 }
 
