@@ -1,4 +1,4 @@
-# Fractal Windows Setup Scripts
+# Fractal Windows Scripts
 
 This subfolder is responsible for all the Windows-related system scripts to set up a computer, virtual machine or container for Fractal streaming.
 
