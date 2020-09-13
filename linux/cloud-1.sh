@@ -30,6 +30,7 @@ Disable-TCC
 Set-OptimalGPUSettings
 Install-CustomGDMConfiguration
 Install-CustomX11Configuration
+Set-Time
 Set-FractalDirectory
 Install-FractalServer $protocol_branch
 Install-FractalService $protocol_branch

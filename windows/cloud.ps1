@@ -48,6 +48,7 @@ Update-Firewall
 Install-Chocolatey
 Install-DotNetFramework
 Install-DirectX
+Set-Time
 Install-VisualRedist
 Install-VirtualAudio
 Enable-Audio

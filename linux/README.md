@@ -18,6 +18,7 @@ For VMs, we prepare specific base disks which we clone for production users, so 
 - Install Gnome and Dummy Virtual Display
 - Set Custom Gnome Display Manager Configuration
 - Set Custom X11 Resolution Configuration
+- Set Time
 - Create Fractal Directory in /usr/share/
 - Download and Enable the Immortal Process Manager
 - Download the Fractal server executable

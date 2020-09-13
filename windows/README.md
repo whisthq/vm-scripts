@@ -16,6 +16,7 @@ For VMs, we prepare specific base disks which we clone for production users, so 
 - Install Visual C++ Redistribuable for Windows C++ libraries (vcruntime140.dll, etc.)
 - Install .Net Framework (4.7)
 - Install DirectX
+- Set Time
 - Enable Remote PowerShell
 - Install the Virtual Audio Driver
 - Enable Audio by Autostarting the Audio service
