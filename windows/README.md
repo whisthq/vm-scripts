@@ -6,7 +6,9 @@ This subfolder is responsible for all the Windows-related system scripts to set 
 
 Usage: `cloud.ps1 [VM/CONTAINER PASSWORD] [[OPTIONAL] PROTOCOL-BRANCH]`
 
-There is one Windows cloud script, `cloud.ps1`, which can be run both locally from a PowerShell terminal within RDP, or via a webserver. We prepare specific base disks which we clone for production users, so these only need to be run once to format the base disk. On Windows cloud computers, the username is set to `Fractal` for every single cloud computer. The following tasks are performed by the cloud script:
+There is one Windows cloud script, `cloud.ps1`, which can be run both locally from a PowerShell terminal directly in the VM via Microsoft RDP, or via a webserver sendng remote tasks to the VM/container. 
+
+For VMs, we prepare specific base disks which we clone for production users, so these only need to be run once to format the base disk, while for containers we have base images pre-built. On Windows cloud computers and containers, the username is set to `Fractal` for every single cloud computer. The following tasks are performed by the cloud script:
 
 - Update Windows
 - Update Firewall to allow ICMP pings
@@ -19,12 +21,10 @@ There is one Windows cloud script, `cloud.ps1`, which can be run both locally fr
 - Enable Audio by Autostarting the Audio service
 - Enable Accessibility Mouse Keys
 - Set Mouse Pointer Precision
-- Set Automatic Time & Timezone
 - Disable Network Window since always connected via Ethernet
 - Show File Extensions
-- Set the Windows DPI to 150% to enable 4K Streaming
 - Install 7-Zip
-- Install Nvidia Tesla Public Drivers (in addition to GRID drivers, includes Cuda Toolkit 10.2)
+- Install Nvidia Tesla Public Drivers (This step is skipped, as it overrides the Azure GRID driver required for 4K resolution)
 - Disable Tesla TCC mode to enable Tesla Graphics (WDM mode)
 - Set Optimal Tesla M60 GPU Settings
 - Install Curl

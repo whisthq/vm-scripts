@@ -54,10 +54,9 @@ Enable-Audio
 Enable-RemotePowerShell $certificate_password # necessary for running run_on_cloud = $true scripts
 Enable-MouseKeys $run_on_cloud $credentials
 Set-MousePrecision $run_on_cloud $credentials
-Set-Time
 Disable-NetworkWindow
 Install-7Zip
-# Install-NvidiaTeslaPublicDrivers # Not installing, only using GRID drivers for 4K resolution
+# Install-NvidiaTeslaPublicDrivers # Not installing, only using the Azure-installed GRID drivers for up to 4K resolution
 Disable-TCC
 Set-OptimalGPUSettings
 Install-Curl

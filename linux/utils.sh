@@ -24,6 +24,7 @@ function Add-AutoLogin {
 function Disable-AutomaticLockScreen-Gnome {
     echo "Disabling Automatic Lock Screen in Gnome"
     gsettings set org.gnome.desktop.lockdown disable-lock-screen 'true'
+    gsettings set org.gnome.desktop.screensaver lock-enabled 'false'
 }
 
 function Enable-FractalFirewallRule {
