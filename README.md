@@ -42,19 +42,20 @@ In addition to the OS-specific scripts, which install the minimum required to ma
 - Creative Apps
   - Blender
   - Autodesk Maya
-  - ZBrush (can't be installed without a subscription)
-  - Adobe Creative Cloud (can't be installed without a subscription)
+  - ZBrush (Windows only, can't be installed without a subscription)
+  - Adobe Creative Cloud (Windows only, can't be installed without a subscription)
   - Cinema4D
-  - 3DS Max Design (can't be installed without a subscription)
-  - DaVinci Resolve (can't be installed without a subscription)
+  - 3DS Max Design (Windows only, can't be installed without a subscription)
+  - DaVinci Resolve (Windows only, can't be installed without a subscription)
   - Lightworks
-  - Unity
+  - Unity (Windows only)
+  - Gimp (Linux Only)
 
 - Engineering Apps
-  - Solidworks (can't be installed without a subscription)
+  - Solidworks (Windows only, can't be installed without a subscription)
   - Autodesk Fusion 360 (Windows only)
   - Matlab (can't be installed without a subscription)
-  - Mathematica (can't be installed without a subscription)
+  - Mathematica (Windows only, can't be installed without a subscription)
 
 - Software Development Apps
   - Windows Developer Mode Activated (Windows only)
@@ -80,11 +81,9 @@ In addition to the OS-specific scripts, which install the minimum required to ma
   - Valgrind (Linux only)
 
 - Data Science Apps
-  - Git
   - Anaconda & R Studio
   - OpenCV
   - Curl
-  - Gimp
 
 - Productivity Apps
   - Slack
