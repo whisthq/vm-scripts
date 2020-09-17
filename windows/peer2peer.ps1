@@ -29,6 +29,7 @@ Install-FractalAutoUpdate "master" # install the master branch, could be staging
 Enable-FractalFirewallRule
 Install-Unison
 Enable-SSHServer
+Install-ViGEm
 
 # Clean PowerShell install script
 Write-Output "Cleaning up Utils script"

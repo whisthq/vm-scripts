@@ -40,6 +40,7 @@ For VMs, we prepare specific base disks which we clone for production users, so 
 - Download & Set the Fractal wallpaper
 - Download the Unison File Sync executable
 - Enable the OpenSSH Server for File Sync
+- Install ViGEm for Game Controller Emulation
 - Disable UAC to avoid Administrators prompts
 - Disable Shutdown, Logout and Sleep in Start Menu
 - Set Auto-Login (This step is skipped, and is instead ran by the main-webserver to set a user-specific VM password)

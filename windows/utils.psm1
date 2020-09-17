@@ -877,6 +877,24 @@ function Install-DirectX {
     Remove-Item -Path "C:\$directx_exe" -Confirm:$false
 }
 
+function Install-ViGEm {
+    # https://forums.vigem.org/topic/39/new-vigem-installer
+    Write-Output "Installing ViGEm Game Controller Emulator"
+    Register-PSRepository -Name nuget.vigem.org -SourceLocation https://nuget.vigem.org/ -InstallationPolicy Trusted -Confirm:$false
+
+    Write-Output "Update ViGEm Bus Device, if Any"
+    Get-ViGEmBusDevice
+
+    Write-Output "Install ViGEm Management Module"
+    Install-Module ViGEmManagementModule -Repository nuget.vigem.org
+
+    Write-Output "Update ViGEm Bus Device Again, Following Module Install"
+    Get-ViGEmBusDevice
+
+    Write-Output "Add Newly-Installed ViGEm Bus Device"
+    Add-ViGEmBusDevice
+}
+
 function Install-Unison {
     Write-Output "Downloading Unison File Sync from S3 Bucket" 
     $unison_name = "C:\Program Files\Fractal\unison.exe"
