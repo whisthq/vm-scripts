@@ -46,7 +46,7 @@ function Enable-FractalFirewallRule {
 
 function Install-VirtualDisplay-NoGnome {
     echo "Installing Virtual Display Dummy" # for containers
-    sudo apt-get update && sudo apt-get install -y xserver-xorg-video-dummy
+    sudo apt-get install -y xserver-xorg-video-dummy
 }
 
 function Install-VirtualDisplay {
