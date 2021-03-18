@@ -4,7 +4,7 @@ name: Install CI
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   # Linux scripts
