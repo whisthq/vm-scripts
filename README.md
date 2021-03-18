@@ -1,7 +1,5 @@
 # Fractal Setup Scripts
 
-![Install CI](https://github.com/fractalcomputers/setup-scripts/workflows/Install%20CI/badge.svg)
-
 **THIS REPOSITORY WAS ARCHIVED FOLLOWING OUR MIGRATION FROM VIRTUAL MACHINES TO CONTAINERS, FOR WHICH SETUP SCRIPTS ARE BUILT IN TO THE DOCKERFILES DIRECTLY. THE AWS S3 INFRASTRUCTURE HAS BEEN MODIFIED ACCORDINGLY AND SOME OF THE INSTRUCTIONS BELOW MAY NO LONGER WORK. THE REPOSITORY IS LEFT AS ARCHIVED HERE FOR REFERENCE.**
 
 This repository contains the Fractal PowerShell and Bash scripts that get launched at creation/building of a cloud computer/container to set it up in a specific configuration, or when a user sets up their personal computer for peer-to-peer streaming. The base cloud scripts are run on every virtual machine or container, and custom application installation scripts can be run at creation of a Fractal cloud computer (not applicable to containers, which are user-agnostic and only support a specific application) to install requested applications. A combination of many scripts can be run.
